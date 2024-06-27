@@ -6,6 +6,7 @@ import Pagesdisplay from './components/Pagesdisplay';
 
 
 
+
 import './App.css';
 
 
@@ -14,7 +15,7 @@ function App() {
   return (
     <div>
       {/* Header section */}
-      <header className='p-1 text-black sticky-top' style={{backgroundColor:'#F2F2F2 '}}>
+      <header className='p-1 header text-white sticky-top' style={{backgroundColor:'#283758'}}>
         <div className='row'>
           <div className='col-12'>
             <Header/>
@@ -24,16 +25,21 @@ function App() {
       {/* Navbar & Content Section */}
       <div className='content '>
         <div className='row contentfullheight'>
-          <div className='col-1-5  h-100 text-white '>
+          <div className='col-1-5  h-100 text-white ' style={{backgroundColor:'#24314C'}}>
             <Navbaritems/>
           </div>
-          <div className='app col  h-100 '>
-            <Pagesdisplay/>
+          <div className='app col  h-100 ' style={{backgroundColor:'#eeecec'}}>
+            <div className="row">
+              <div className="col">
+                <Pagesdisplay/>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>
       {/* Footer section */}
-      <footer className='p1 bg-dark text-white fixed-bottom'>
+      <footer className='p-1  text-white fixed-bottom ' style={{backgroundColor:'#283758'}}>
         <div className='row'>
           <div className='col'>
             <Footer/>

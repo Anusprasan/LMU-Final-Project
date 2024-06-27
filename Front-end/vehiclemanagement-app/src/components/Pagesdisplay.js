@@ -6,7 +6,7 @@ import Reports from '../pages/Reports';
 import Journey from '../pages/Journey';
 import Mainetnance from '../pages/Maintenance';
 import Realtimedata from '../pages/Realtimedata';
-import Accounts from '../pages/Reports';
+import Accounts from '../pages/Accounts';
 import Logout from '../pages/Logout';
 
 export default function Pagesdisplay() {

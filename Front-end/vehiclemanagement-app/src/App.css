@@ -15,11 +15,6 @@ body,html{
 }
 .contentfullheight{
   height: 100vh;
-  overflow: hidden;
-}
-.contentfullheight .col-1-5{
-  background-color: #24314C;
-}
-.contentfullheight {
-  background-color: #F8F8F8;
+  background-color: #eeecec;
+  
 }
