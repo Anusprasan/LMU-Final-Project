@@ -34,7 +34,6 @@ function App() {
                 <Pagesdisplay/>
               </div>
             </div>
-            
           </div>
         </div>
       </div>
