@@ -1,4 +1,6 @@
 import React from 'react';
+import { useEffect,useState } from 'react';
+import axios from 'axios';
 import Header from './components/Header';
 import Navbaritems from './components/Navbaritems'
 import Footer from './components/Footer';
@@ -11,7 +13,9 @@ import './App.css';
 
 
 
+
 function App() {
+  
   return (
     <div>
       {/* Header section */}

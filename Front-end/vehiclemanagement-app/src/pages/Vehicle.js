@@ -1,8 +1,15 @@
 import React from 'react'
+import { useEffect,useState} from 'react';
+import axios from 'axios';
 
 
 
 export default function Vehicle() {
+  useEffect(() =>{
+   console.log('Anush')
+  },[]);
+  
+
   return (
     <div> 
       <div className="row">
