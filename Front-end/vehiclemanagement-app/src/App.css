@@ -6,7 +6,7 @@
 body,html{
   height: 100%;
  
-  overflow: hidden; /* Prevent scrolling */
+  
 }
 
 .col-1-5 {
@@ -17,4 +17,9 @@ body,html{
   height: 100vh;
   background-color: #eeecec;
   
+}
+
+.sidenav{
+  
+  background-color: red;
 }

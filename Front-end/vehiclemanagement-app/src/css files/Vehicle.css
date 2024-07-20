@@ -1,0 +1,10 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.custom-col{
+    flex: 0 0 20.833%; /* 2.5 out of 12 is approximately 20.833% */
+    max-width: 20.833%;
+}
