@@ -15,9 +15,11 @@ import './App.css';
 
 
 function App() {
+
+
   
   return (
-    <div>
+     <div>
       {/* Header section */}
       <header className='p-1 header text-white sticky-top' style={{backgroundColor:'#283758'}}>
         <div className='row'>
@@ -36,6 +38,7 @@ function App() {
             <div className="row">
               <div className="col">
                 <Pagesdisplay/>
+              
               </div>
             </div>
           </div>

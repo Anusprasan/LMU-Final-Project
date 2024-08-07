@@ -5,65 +5,114 @@ import axios from 'axios';
 export default function Vehicle() {
 
   const [vehicles,setVehicles] = useState([]);
+  const [vehicleTypes,setVehicleTypes] = useState([]);
   const [newVehicleType,setNewVehicleType] = useState("");
+  const [vehicleBrands,setVehicleBrands] = useState([]);
   const [newVehicleBrand,setNewVehicleBrand] = useState("");
   const [newVehicleModel,setNewVehicleModel] = useState("");
   const [newVehiclePlateNo,setNewVehiclePlateNo] = useState("");
+  const [newRevenueLicenceIssuedDate,setNewRevenueLicenceIssuedDate] = useState("");
+  const [newRevenueLicenceExpiryDate,setNewRevenueLicenceExpiryDate] = useState("");
+  const [newInsuranceIssuedDate,setNewInsuranceIssuedDate] = useState("");
+  const [newInsuranceExpirydate,setNewInsuranceExpiryDate] = useState("");
 
   useEffect(()=>{
-
     
-    fetch('https://localhost:7180/api/Vehicle/Vehicle')
+    
+    fetch('https://localhost:7096/api/Vehicle/GetAllVehicles')
     .then((response)=>response.json())
-    .then((data)=>
-      setVehicles(data)
+    .then((data)=>{
+      
+      
+      setVehicles(data)}
+      
     )
     .catch((err)=>console.log(err))
+    
+    fetch('https://localhost:7096/api/VehicleType/GetAllVehicleTypes')
+    .then((response)=>response.json())
+    .then((data)=>{
+
+      setVehicleTypes(data)
+      console.log(data)
+    }
+      
+      
+    )
+    .catch((err)=>console.log(err))
+
+    fetch('https://localhost:7096/api/VehicleBrand/GetAllVehicleBrands')
+    .then((response)=>response.json())
+    .then((data)=>{
+      
+      
+      setVehicleBrands(data)}
+      
+    )
+    .catch((err)=>console.log(err))
+     
+     
+
   },[]);
 
 
    
 
   function handlesubmit(){
-     const vehicleType = newVehicleType.trim();
-     const vehiclebrand = newVehicleBrand.trim();
-     const vehiclemodel = newVehicleModel.trim();
-     const vehicleplateno = newVehiclePlateNo.trim();
+     const type = newVehicleType.trim();
+    //  const brand = newVehicleBrand.trim();
+     const model = newVehicleModel.trim();
+    //  const plate_no = newVehiclePlateNo.trim();
+    //  const LicenceIssuedDate = newRevenueLicenceIssuedDate.trim();
+    //  const LicenceExpiryDate = newRevenueLicenceExpiryDate.trim();
+    //  const InsuranceIssuedDate = newInsuranceIssuedDate.trim();
+    //  const InsuranceExpirydate = newInsuranceExpirydate.trim();
+    // console.log(type);
+    // console.log(model);
 
-     if (vehicleType&& vehiclebrand&& vehiclemodel &&vehicleplateno){
-      fetch('https://localhost:7180/api/Vehicle/getVehicles',
+  
+      fetch('https://localhost:7096/api/Vehicle/AddVehicle',
       {
         method:"POST",
-        body:JSON.stringify({
-          vehicleType,
-          vehiclebrand,
-          vehiclemodel,
-          vehicleplateno
-        }),
-
         headers:{
-          "cotent-Type":"application/json;charset=utf-8"
+          "Content-Type": "application/json"
         },
+        body:JSON.stringify({
+          type,
+          // brand,
+          model
+          // plate_no
+          // LicenceIssuedDate,
+          // LicenceExpiryDate,
+          // InsuranceIssuedDate,
+          // InsuranceExpirydate
+        })
+
+        
         
       }
     
       ).then ((response)  =>response.json())
-      .then(data =>{
-        setVehicles([...vehicles,data]);
-        alert("user added successfully")
+      .then(data =>
+        console.log(data)
+        // setVehicles([...vehicles,data]);
+        // alert("user added successfully");
+        
 
-        setNewVehicleModel(" ");
-        setNewVehiclePlateNo(" ");
-      });
+        // setNewVehicleModel(" ");
+        // setNewVehiclePlateNo(" ");
+      )
+      .catch((err)=>console.log(err));
 
-     }
+     
+    
 
   }
 
   return (
     <div>
-      
-      <h1>{vehicles.plateNo}</h1>
+      <h1>{newVehicleModel}</h1>
+      <h1>{newVehicleType}</h1>
       <div className="row">
         <div className="col">
           <nav>
@@ -74,7 +123,7 @@ export default function Vehicle() {
             </div>
           </nav>
       </div>
-    </div>
+      </div>
     <div className="tab-content" id="nav-tabContent">
       <div className="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
         <div className='vehiclelist card text-bg-light  mx-5 mt-5'>
@@ -90,10 +139,10 @@ export default function Vehicle() {
 
             {vehicles.map((vehicle)=>(
               <div className="row  pt-3 " >
-              <div className="col-1 d-flex justify-content-center" >{vehicle.id}</div>
-              <div className="col-2 ">{vehicle.vehicleType}</div>
+              <div className="col-1 d-flex justify-content-center" >{vehicle.vehicle_id}</div>
+              <div className="col-2 ">{vehicle.type}</div>
               <div className="col-2 "><EditableText  value={vehicle.brand}/></div>
-              <div className="col-2">{vehicle.vehicleModel} </div>
+              <div className="col-2">{vehicle.model} </div>
               <div className="col-2 "><EditableText  value={vehicle.plateNo} /></div>
               <div className="col-2">
                 <button className='btn btn-primary' >Update</button>
@@ -134,8 +183,8 @@ export default function Vehicle() {
                         <span class="visually-hidden">Toggle Dropdown</span>
                       </button>
                       <ul class="dropdown-menu">
-                      {vehicles.map((vehicle)=>(
-                        <li><a  class="dropdown-item" href="#" onClick={()=>setNewVehicleType(vehicle.vehicleType)}>{vehicle.vehicleType}</a></li>
+                      {vehicleTypes.map((types)=>(
+                        <li><a  class="dropdown-item" href="#" onClick={()=>setNewVehicleType(types.type)}>{types.type}</a></li>
                       ))}
                       </ul>
                     
@@ -155,8 +204,8 @@ export default function Vehicle() {
                           <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu">
-                          {vehicles.map((vehicle)=>(
-                            <li><a class="dropdown-item" href="#" onClick={()=>setNewVehicleBrand(vehicle.brand)}>{vehicle.brand}</a></li>
+                          {vehicleBrands.map((brands)=>(
+                            <li><a class="dropdown-item" href="#" onClick={()=>setNewVehicleBrand(brands.brand)}>{brands.brand}</a></li>
                             
                           ))}
                             
@@ -186,7 +235,7 @@ export default function Vehicle() {
                       <label for="vehicleplateno" className="form-label">Vehicle PlateNo</label>    
                   </div>
                   <div className="col-4">
-                    <input  type="text" className="form-control" id="vehicleplateno" placeholder="Enter Vehicle Model..." onChange={(e)=>setNewVehicleModel(e.target.value)}/>
+                    <input  type="text" className="form-control" id="vehicleplateno" placeholder="Enter Vehicle Model..." onChange={(e)=>setNewVehiclePlateNo(e.target.value)}/>
                   </div>
                 </div>
                 
@@ -203,7 +252,7 @@ export default function Vehicle() {
                       <label for="issueddateinput" className="form-label">Issued Date</label>
                     </div>
                     <div className="col-4">
-                      <input type="Date" className='form-control' id="issueddateinput" />     
+                      <input type="Date" className='form-control' id="issueddateinput" onChange={(e)=>setNewRevenueLicenceIssuedDate(e.target.value)}/>     
                     </div>
                 </div>
                 <div className="col-12 d-flex mx-3">
@@ -211,7 +260,7 @@ export default function Vehicle() {
                       <label for="expirydateinput" className="form-label">Expiry Date</label>
                     </div>
                     <div className="col-4 mt-2">
-                      <input type="Date" className='form-control' id="expirydateinput" />     
+                      <input type="Date" className='form-control' id="expirydateinput" onChange={(e)=>setNewRevenueLicenceExpiryDate(e.target.value)}/>     
                     </div>
                 </div>
                 
@@ -223,18 +272,18 @@ export default function Vehicle() {
                 </div>
                 <div className="col-12 d-flex mx-3">
                     <div className="col-4">
-                      <label for="Insurancedateinput" className="form-label">Issued Date</label>
+                      <label for="Insuranceissueddateinput" className="form-label">Issued Date</label>
                     </div>
                     <div className="col-4 mt-2">
-                      <input type="Date" className='form-control' id="Insurancedateinput" />     
+                      <input type="Date" className='form-control' id="Insuranceissueddateinput" onChange={(e)=>setNewInsuranceIssuedDate(e.target.value)}/>     
                     </div>
                 </div>
                 <div className="col-12 d-flex mx-3">
                     <div className="col-4">
-                      <label for="expirydateinput" className="form-label">Expiry Date</label>
+                      <label for="Insuranceexpirydateinput" className="form-label">Expiry Date</label>
                     </div>
                     <div className="col-4 mt-2">
-                      <input type="Date" className='form-control' id="expirydateinput" />     
+                      <input type="Date" className='form-control' id="Insuranceexpirydateinput" onChange={(e)=>setNewInsuranceExpiryDate(e.target.value)} />     
                     </div>
                 </div> 
                 
@@ -242,6 +291,14 @@ export default function Vehicle() {
 
             </div>
           </div>
+          {/* Add and Cancel row */}
+          <div className="row">
+            <div className="col-10"></div>
+            <div className="col d-flex justify-content-end gap-2">
+             <button type="button" class="btn btn-primary w-100" onClick={handlesubmit}>Add</button>
+             <button type="button" class="btn btn-primary w-100">Cancel</button>
+            </div>
+          </div> 
         </div>
             
         </form>

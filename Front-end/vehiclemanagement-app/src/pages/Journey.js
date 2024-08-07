@@ -67,7 +67,7 @@ export default function Journey() {
                       <label for="dateinput" className="form-label">Date</label>
                     </div>
                     <div className="col-4" >
-                    <input type="Date" className='form-control' id="dateinput" />
+                   cd 
                     </div>
                   </div>
 
