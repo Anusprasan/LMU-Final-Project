@@ -2,19 +2,36 @@ import React from 'react'
 
 
 
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 
 
 export default function Journey() {
+  const [plateNo,setPlateNo]= useState([]);
+  // const [journey,setJouney] = useState({
 
-   const [startDate,setStartDate] = useState(new Date());
-   const [value, onChange] = useState('10:00');
+  // })
+  useEffect(()=>{
+    fetch('https://localhost:7096/api/Journey/GetVehiclePlateNo')
+    .then((response)=>response.json())
+    .then((data)=>{
+      setPlateNo(data)
+      console.log(plateNo)
+      
+    })
+    .catch((err)=>console.log(err))
+  },[])
+
+  
+
+
   return (
     <div>
+      <h1>{plateNo[3]}</h1>
       {/* navigation row */}
       <div className="row ">
         <nav>
@@ -51,10 +68,11 @@ export default function Journey() {
                           <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="#">Action</a></li>
-                          <li><a class="dropdown-item" href="#">Another action</a></li>
-                          <li><a class="dropdown-item" href="#">Something else here</a></li>
-                          <li><a class="dropdown-item" href="#">Separated link</a></li>
+                          {plateNo.map((plateno)=>(
+                            <li><a class="dropdown-item" href="#">{plateno}</a></li>
+                          ))}
+                          
+                          
                         </ul>
                       </div>
 
@@ -67,19 +85,11 @@ export default function Journey() {
                       <label for="dateinput" className="form-label">Date</label>
                     </div>
                     <div className="col-4" >
-                   cd 
+                    <input type="Date" className='form-control' id="dateinput" />
                     </div>
                   </div>
 
-                  {/* time row */}
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="timeinput" className="form-label">Time</label>
-                    </div>
-                    <div className="col-4">
-                      <input type="time" className='form-control' id="timeinput" />
-                    </div>
-                  </div>
+                  
                   {/* odemeter reading row */}
                   <div className="row mt-4 mx-2">
                     <div className="col-4">

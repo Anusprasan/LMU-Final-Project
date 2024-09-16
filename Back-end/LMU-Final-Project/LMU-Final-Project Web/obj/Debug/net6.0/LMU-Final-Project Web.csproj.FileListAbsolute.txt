@@ -56,3 +56,11 @@ D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\
 D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\runtimes\win-x86\native\sni.dll
 D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
+D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+D:\Education\Anush Top up(Metro Politan)\Top up final project\LMU Final Project\LMU-Final-Project\Back-end\LMU-Final-Project\LMU-Final-Project Web\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll

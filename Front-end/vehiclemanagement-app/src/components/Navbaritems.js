@@ -15,7 +15,7 @@ export default function Navbaritems() {
     <div>
 
       {/* Home row */}
-      <Link to="/" className='text-decoration-none' style={{color:'#A2A3A3'}}>
+      <Link to="/Home" className='text-decoration-none' style={{color:'#A2A3A3'}}>
         <div className="Navbaritems row ps-2" >
           <div className='col py-3 ' >
             <img src={home} class="img-fluid p-2" alt="..."/>

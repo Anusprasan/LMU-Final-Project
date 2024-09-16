@@ -2,19 +2,23 @@ import React from 'react'
 import{Toaster,EditableText} from '@blueprintjs/core';
 import {useEffect,useState } from 'react';
 import axios from 'axios';
+
+import { useNavigate } from 'react-router-dom';
 export default function Vehicle() {
+  const navigate = useNavigate();
 
   const [vehicles,setVehicles] = useState([]);
   const [vehicleTypes,setVehicleTypes] = useState([]);
-  const [newVehicleType,setNewVehicleType] = useState("");
+  const [newVehicleType,setNewVehicleType] = useState("Select");
   const [vehicleBrands,setVehicleBrands] = useState([]);
-  const [newVehicleBrand,setNewVehicleBrand] = useState("");
+  const [newVehicleBrand,setNewVehicleBrand] = useState("Select");
   const [newVehicleModel,setNewVehicleModel] = useState("");
   const [newVehiclePlateNo,setNewVehiclePlateNo] = useState("");
   const [newRevenueLicenceIssuedDate,setNewRevenueLicenceIssuedDate] = useState("");
   const [newRevenueLicenceExpiryDate,setNewRevenueLicenceExpiryDate] = useState("");
   const [newInsuranceIssuedDate,setNewInsuranceIssuedDate] = useState("");
   const [newInsuranceExpirydate,setNewInsuranceExpiryDate] = useState("");
+  const [vehicleStatus,setVehicleStatus] = useState("");
 
   useEffect(()=>{
     
@@ -25,6 +29,7 @@ export default function Vehicle() {
       
       
       setVehicles(data)}
+      
       
     )
     .catch((err)=>console.log(err))
@@ -60,59 +65,111 @@ export default function Vehicle() {
 
   function handlesubmit(){
      const type = newVehicleType.trim();
-    //  const brand = newVehicleBrand.trim();
+     const brand = newVehicleBrand.trim();
      const model = newVehicleModel.trim();
-    //  const plate_no = newVehiclePlateNo.trim();
-    //  const LicenceIssuedDate = newRevenueLicenceIssuedDate.trim();
-    //  const LicenceExpiryDate = newRevenueLicenceExpiryDate.trim();
-    //  const InsuranceIssuedDate = newInsuranceIssuedDate.trim();
-    //  const InsuranceExpirydate = newInsuranceExpirydate.trim();
+     const plate_no = newVehiclePlateNo.trim();
+     const LicenceIssuedDate =newRevenueLicenceIssuedDate.trim();
+     const LicenceExpiryDate = newRevenueLicenceExpiryDate.trim();
+     const InsuranceIssuedDate = newInsuranceIssuedDate.trim();
+     const InsuranceExpiryDate = newInsuranceExpirydate.trim();
     // console.log(type);
     // console.log(model);
+    // console.log(brand);
+    // console.log(plate_no);
+    // console.log(LicenceIssuedDate);
+    // console.log(LicenceExpiryDate);
+    // console.log(InsuranceIssuedDate);
+    // console.log(InsuranceExpirydate);
 
   
-      fetch('https://localhost:7096/api/Vehicle/AddVehicle',
-      {
-        method:"POST",
-        headers:{
-          "Content-Type": "application/json"
-        },
-        body:JSON.stringify({
-          type,
-          // brand,
-          model
-          // plate_no
-          // LicenceIssuedDate,
-          // LicenceExpiryDate,
-          // InsuranceIssuedDate,
-          // InsuranceExpirydate
-        })
-
+    fetch('https://localhost:7096/api/Vehicle/AddVehicle', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        type,
+        brand,
+        model,
+        plate_no,
+        LicenceIssuedDate,
+        LicenceExpiryDate,
+        InsuranceIssuedDate,
+        InsuranceExpiryDate
+      })
+    })
+      .then((response) => {
+        if (!response.ok) {
+          // Handle HTTP errors
+          throw new Error('Network response was not ok');
+        }
+        return response.json(); // Parse response as JSON
+      })
+      .then(data => {
+        console.log(data); // The response data from the API
+        alert("Vehicle added successfully");
         
-        
-      }
-    
-      ).then ((response)  =>response.json())
-      .then(data =>
-        console.log(data)
-        // setVehicles([...vehicles,data]);
-        // alert("user added successfully");
-        
+        // Reset form fields (optional)
+        // setNewVehicleModel("");
+        // setNewVehiclePlateNo("");
+      })
+      .catch((err) => {
+        console.error('Error:', err); // Catch and log any errors
+        alert("An error occurred while adding the vehicle.");
+      });
 
-        // setNewVehicleModel(" ");
-        // setNewVehiclePlateNo(" ");
-      )
-      .catch((err)=>console.log(err));
-
-     
+      
     
 
   }
+    const onClickUpdate= (vehicleid)=>{
+      navigate(`/Vehicleupdate/${vehicleid}`)
+    };
+
+    const onClickDelete=(vehicle_id)=>{
+        fetch(`https://localhost:7096/api/Vehicle/DeleteVehicle?Vehicle_id=${vehicle_id}`,
+          {
+            method:"POST",
+            headers:{
+              "Content-Type": "application/json"
+            },
+            
+            
+            
+          }
+        
+          ).then ((response)  =>console.log(response.data))
+            
+          .then(data =>{
+            console.log(data)
+            // setVehicles([...vehicles,data]);
+            alert("user added successfully");
+            
+    
+            // setNewVehicleModel(" ");
+            // setNewVehiclePlateNo(" ");
+          })
+          .catch((err)=>console.log(err));
+        
+    };
+
+    // const handleStatusUpdate=(vehicle_id,vehicleCurrentStatus)=>{
+        
+       
+      
+    // }
+  
 
   return (
     <div>
-      <h1>{newVehicleModel}</h1>
+      {/* <h1>{newVehicleModel}</h1>
       <h1>{newVehicleType}</h1>
+      <h1>{newVehiclePlateNo}</h1>
+      <h1>{newVehicleBrand}</h1>
+      <h1>{newRevenueLicenceIssuedDate}</h1>
+      <h1>{newRevenueLicenceExpiryDate}</h1>f
+      <h1>{newInsuranceIssuedDate}</h1>
+      <h1>{newInsuranceExpirydate}</h1> */}
       <div className="row">
         <div className="col">
           <nav>
@@ -138,15 +195,19 @@ export default function Vehicle() {
             </div>
 
             {vehicles.map((vehicle)=>(
-              <div className="row  pt-3 " >
+              <div className="row  pt-3 " key={vehicle.vehicle_id}>
               <div className="col-1 d-flex justify-content-center" >{vehicle.vehicle_id}</div>
               <div className="col-2 ">{vehicle.type}</div>
               <div className="col-2 "><EditableText  value={vehicle.brand}/></div>
               <div className="col-2">{vehicle.model} </div>
-              <div className="col-2 "><EditableText  value={vehicle.plateNo} /></div>
-              <div className="col-2">
-                <button className='btn btn-primary' >Update</button>
-                <button className='btn btn-danger'>Delete</button>
+              <div className="col-2 "><EditableText  value={vehicle.plate_no} /></div>
+              <div className="col-3">
+                <button className='btn btn-primary' onClick={()=>onClickUpdate(vehicle.vehicle_id)}>Update</button>
+                <button className='btn btn-danger' onClick={()=>onClickDelete(vehicle.vehicle_id)}>Delete</button>
+                <button className='btn btn-success' onClick={()=>handleStatusUpdate(vehicle.vehicle_id,vehicle.vehicleStatus)} >{vehicle.vehicleStatus =='Active' ? 'Off' :'On'}</button>
+                {vehicle.vehicle_id}
+                {vehicle.vehicleStatus}
+                {vehicleStatus}
               </div>
             </div>
             ))}
@@ -178,7 +239,7 @@ export default function Vehicle() {
                   </div>
                   <div className="col-4"> 
                     <div class="btn-group w-100">
-                      <button type="button" class="btn btn-secondary " placeholder="Select">Vehicle Type</button>
+                      <button type="button" class="btn btn-secondary " placeholder="Select">{newVehicleType}</button>
                       <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="visually-hidden">Toggle Dropdown</span>
                       </button>
@@ -195,11 +256,11 @@ export default function Vehicle() {
                 {/* vehiclebrandrow */}
                 <div className="row mt-4 mx-2">
                   <div className="col-4">
-                    <label for="plateno" className="form-label">Plate No</label>
+                    <label for="plateno" className="form-label">Brand</label>
                   </div>
                   <div className="col-4">
                     <div class="btn-group w-100">
-                        <button type="button" class="btn btn-secondary " >Brand</button>
+                        <button type="button" class="btn btn-secondary " >{newVehicleBrand}</button>
                         <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                           <span class="visually-hidden">Toggle Dropdown</span>
                         </button>

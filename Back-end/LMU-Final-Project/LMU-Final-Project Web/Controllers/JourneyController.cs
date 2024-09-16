@@ -2,6 +2,7 @@
 using LMU_Final_Project_Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace LMU_Final_Project_Web.Controllers
 {
@@ -20,6 +21,22 @@ namespace LMU_Final_Project_Web.Controllers
 
         }
 
-        
+        [Route("[action]")]
+        [HttpGet]
+
+        public ActionResult<List<string>>GetVehiclePlateNo()
+        {
+            JourneyRepository journeyRepository = new JourneyRepository();
+            List<string> plate_nos = journeyRepository.GetPlateNo();
+            return Ok(plate_nos);
+        }
+
+        //public ActionResult InsertJourney([FromBody]Journey journey)
+        //{
+
+        //    return Ok();
+        //}
+
+
     }
 }

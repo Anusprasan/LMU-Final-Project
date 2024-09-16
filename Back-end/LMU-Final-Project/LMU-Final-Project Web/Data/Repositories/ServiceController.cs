@@ -1,9 +1,8 @@
-﻿using LMU_Final_Project_Web.Data.Repositories;
-using LMU_Final_Project_Web.Models;
+﻿using LMU_Final_Project_Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LMU_Final_Project_Web.Controllers
+namespace LMU_Final_Project_Web.Data.Repositories
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -18,9 +17,9 @@ namespace LMU_Final_Project_Web.Controllers
             var serviceList = repositoryObject.GetServices();
 
             return Ok(serviceList);
-           
+
         }
 
-       
+
     }
 }

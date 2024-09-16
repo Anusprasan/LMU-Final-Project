@@ -12,13 +12,13 @@ namespace LMU_Final_Project_Web.Data
         {
             _connectionString = "Data Source=DESKTOP-14A84VG;Initial Catalog=vehiclemanagementappdb;Integrated Security=True";
         }
-        
+
 
         public List<Vehicle> LoadVehicles(string sqlQuery)
 
         {
             List<Vehicle> vehicles = new List<Vehicle>();
-            using(SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sqlQuery, conn);
@@ -26,24 +26,30 @@ namespace LMU_Final_Project_Web.Data
                 while (reader.Read())
                 {
                     Vehicle vehicle = new Vehicle();
+                    vehicle.Vehicle_id = Convert.ToInt32(reader["Vehicle_id"]);
                     vehicle.Model = Convert.ToString(reader["Model"]);
-                    //vehicle.Plate_no = Convert.ToString(reader["Plate_no"]);
+                    vehicle.Plate_no = Convert.ToString(reader["Plate_no"]);
                     vehicle.Type = Convert.ToString(reader["Type"]);
-                    //vehicle.Brand = Convert.ToString(reader["Brand"]);
+                    vehicle.Brand = Convert.ToString(reader["Brand"]);
+                    vehicle.LicenceIssuedDate = Convert.ToDateTime(reader["Licence_Issued_Date"]);
+                    vehicle.LicenceExpiryDate = Convert.ToDateTime(reader["Licence_Expiry_Date"]);
+                    vehicle.InsuranceIssuedDate = Convert.ToDateTime(reader["Insurance_Issued_Date"]);
+                    vehicle.InsuranceExpiryDate = Convert.ToDateTime(reader["Insurance_Expiry_Date"]);
+                    //vehicle.VehicleStatus = Convert.ToString(reader["VehicleStatus"]);
 
                     vehicles.Add(vehicle);
                 }
 
                 reader.Close();
 
-                
+
 
 
             }
             return vehicles;
 
         }
-        
+
 
 
 
@@ -51,7 +57,7 @@ namespace LMU_Final_Project_Web.Data
         public List<Client> LoadClientData(string sqlQuery)
         {
             List<Client> Clients = new List<Client>();
-            using(SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sqlQuery, conn);
@@ -74,18 +80,18 @@ namespace LMU_Final_Project_Web.Data
 
 
                     Clients.Add(client);
-                     
+
                 }
                 reader.Close();
                 return Clients;
 
-                
+
             }
         }
 
         public List<User> LoadUserData(string sqlQuery)
         {
-           List<User> users = new List<User>();
+            List<User> users = new List<User>();
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
@@ -120,11 +126,11 @@ namespace LMU_Final_Project_Web.Data
 
         public List<Service> LoadServiceData(string sqlQuery)
         {
-            List<Service> services = new List<Service> ();
-            using(SqlConnection conn = new SqlConnection(_connectionString))
+            List<Service> services = new List<Service>();
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand(sqlQuery,conn);
+                SqlCommand cmd = new SqlCommand(sqlQuery, conn);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -143,11 +149,11 @@ namespace LMU_Final_Project_Web.Data
                     service.Modify_by = Convert.ToString(reader["Modify_by"]);
                     service.Modify_on = Convert.ToDateTime(reader["Modify_on"]);
 
-                    services.Add(service); 
+                    services.Add(service);
 
                 }
                 reader.Close();
-                return services;    
+                return services;
             }
         }
 
@@ -158,7 +164,7 @@ namespace LMU_Final_Project_Web.Data
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand(SqlQuery,conn);
+                SqlCommand cmd = new SqlCommand(SqlQuery, conn);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -190,11 +196,11 @@ namespace LMU_Final_Project_Web.Data
 
         public List<Devicedata> LoadDeviceData(string SqlQuery)
         {
-            List<Devicedata> devicedatas= new List<Devicedata>();
-            using(SqlConnection conn = new SqlConnection(_connectionString))
+            List<Devicedata> devicedatas = new List<Devicedata>();
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand(SqlQuery,conn);
+                SqlCommand cmd = new SqlCommand(SqlQuery, conn);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -210,15 +216,15 @@ namespace LMU_Final_Project_Web.Data
 
             }
             return devicedatas;
-            
+
         }
-        public  List<Journey> LoadJourneyDetails(string SqlQuery)
+        public List<Journey> LoadJourneyDetails(string SqlQuery)
         {
             List<Journey> journeys = new List<Journey>(); ;
-            using(SqlConnection  conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand(SqlQuery,conn);
+                SqlCommand cmd = new SqlCommand(SqlQuery, conn);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -256,11 +262,11 @@ namespace LMU_Final_Project_Web.Data
 
         public List<VehicleType> LoadVehicleTypes(string sqlQuery)
         {
-            List<VehicleType> vehicleTypes= new List<VehicleType>();
+            List<VehicleType> vehicleTypes = new List<VehicleType>();
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand(sqlQuery,conn);
+                SqlCommand cmd = new SqlCommand(sqlQuery, conn);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -275,17 +281,17 @@ namespace LMU_Final_Project_Web.Data
                 conn.Close();
             }
             return vehicleTypes;
-     
-        
+
+
         }
 
         public List<VehicleBrand> LoadVehicleBrands(string sqlQuery)
         {
             List<VehicleBrand> vehicleBrands = new List<VehicleBrand>();
-            using(SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand(sqlQuery,conn);
+                SqlCommand cmd = new SqlCommand(sqlQuery, conn);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -293,7 +299,7 @@ namespace LMU_Final_Project_Web.Data
                     vehicleBrand.Brand_id = Convert.ToInt32(reader["Brand_id"]);
                     vehicleBrand.Brand = Convert.ToString(reader["Brand"]);
 
-                    vehicleBrands.Add(vehicleBrand);    
+                    vehicleBrands.Add(vehicleBrand);
                 }
                 conn.Close();
 
@@ -304,17 +310,24 @@ namespace LMU_Final_Project_Web.Data
         public List<Vehicle> LoadVehicleById(string SqlQuery)
         {
             List<Vehicle> vehicles = new List<Vehicle>();
-            using(SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand(SqlQuery,conn);
+                SqlCommand cmd = new SqlCommand(SqlQuery, conn);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     Vehicle vehicle = new Vehicle();
+                    vehicle.Vehicle_id = Convert.ToInt32(reader["Vehicle_id"]);
                     vehicle.Model = Convert.ToString(reader["Model"]);
-                    //vehicle.Plate_no = Convert.ToString(reader["Plate_no"]);
+                    vehicle.Plate_no = Convert.ToString(reader["Plate_no"]);
                     vehicle.Type = Convert.ToString(reader["Type"]);
+                    vehicle.Brand = Convert.ToString(reader["Brand"]);
+                    vehicle.LicenceIssuedDate = Convert.ToDateTime(reader["Licence_Issued_Date"]);
+                    vehicle.LicenceExpiryDate = Convert.ToDateTime(reader["Licence_Expiry_Date"]);
+                    vehicle.InsuranceIssuedDate = Convert.ToDateTime(reader["Insurance_Issued_Date"]);
+                    vehicle.InsuranceExpiryDate = Convert.ToDateTime(reader["Insurance_Expiry_Date"]);
+
 
                     vehicles.Add(vehicle);
 
@@ -325,23 +338,92 @@ namespace LMU_Final_Project_Web.Data
             return vehicles;
         }
 
-        public void  InsertVehicle(string SqlQuery)
+        public void InsertVehicle(string SqlQuery)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand(SqlQuery, conn);
+                SqlCommand cmd = new SqlCommand();
                 SqlDataAdapter sqlDataAdapter = new SqlDataAdapter();
                 sqlDataAdapter.InsertCommand = new SqlCommand(SqlQuery, conn);
                 sqlDataAdapter.InsertCommand.ExecuteNonQuery();
                 conn.Close();
             }
 
-            
-        }
-        
-    
-    
-    }
 
+        }
+
+        public void InsertUpdateVehicle(string SqlQuery)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand();
+                SqlDataAdapter sqlDataAdapter = new SqlDataAdapter();
+                sqlDataAdapter.InsertCommand = new SqlCommand(SqlQuery, conn);
+                sqlDataAdapter.InsertCommand.ExecuteNonQuery();
+                conn.Close();
+
+            }
+        }
+
+
+        public void InsertDeleteVehicle(string SqlQuery)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand();
+                SqlDataAdapter sqlDataAdapter = new SqlDataAdapter();
+                sqlDataAdapter.InsertCommand = new SqlCommand(SqlQuery, conn);
+                sqlDataAdapter.InsertCommand.ExecuteNonQuery();
+                conn.Close();
+
+            }
+
+        }
+
+        public bool ValidateUser(string SqlQuery)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(SqlQuery, conn))
+                {
+
+
+                    conn.Open();
+                    int result = (int)cmd.ExecuteScalar();
+                    conn.Close();
+
+                    return result > 0;
+                }
+
+            }
+
+
+
+        }
+
+        public List<string> GetPlateNo(string SqlQuery)
+        {
+            List<string> PlateNos= new List<string>();
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(SqlQuery, conn);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    
+                    string Plate_no = Convert.ToString(reader["Plate_no"]);
+                    PlateNos.Add(Plate_no);
+                }
+                conn.Close();
+
+            }
+            return PlateNos;
+        }
+    }
 }
+
+        

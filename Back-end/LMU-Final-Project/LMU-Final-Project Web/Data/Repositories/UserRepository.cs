@@ -13,6 +13,13 @@ namespace LMU_Final_Project_Web.Data.Repositories
             return sqlAccess.LoadUserData(sqlString);
         }
 
+        public bool ValidateUser(User user)
+
+        {
+            string sqlString = $" select count(1) from Users where User_name = '{user.User_name}' and Password ='{user.Password}'";
+            return sqlAccess.ValidateUser(sqlString);
+        }
+
     }
 }
 

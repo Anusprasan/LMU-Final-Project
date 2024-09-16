@@ -2,12 +2,16 @@ import React from 'react'
 import axios from "axios";
 import { useState ,useEffect} from 'react';
 import Reactcrud from './components/Reactcrud';
+import Login from './components/Login';
+import Check from './components/check';
 
 export default function App(){
 
   return(
     <div>
-      <Reactcrud/>
+      {/* <Reactcrud/> */}
+      {/* <Login/> */}
+      <Check/>
     </div>
   )
 }

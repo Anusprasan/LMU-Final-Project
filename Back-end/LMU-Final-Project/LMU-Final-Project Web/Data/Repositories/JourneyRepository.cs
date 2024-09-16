@@ -13,5 +13,12 @@ namespace LMU_Final_Project_Web.Data.Repositories
             return sqlAccess.LoadJourneyDetails(SqlString);
 
         }
+
+        public List<string> GetPlateNo()
+        {
+            string sqlString = $"select Plate_no from [vehicle]";
+
+            return sqlAccess.GetPlateNo(sqlString);
+        }
     }
 }
