@@ -19,7 +19,7 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
         public void AddVehicle(Vehicle vehicleData)
         {
-            string sqlString = $"insert into Vehicle (Type,Brand,Model,Plate_no ,Licence_Issued_Date,Licence_Expiry_Date ,Insurance_Issued_Date ,Insurance_Expiry_Date, VehicleStatus) values('{vehicleData.Type}','{vehicleData.Brand}','{vehicleData.Model}','{vehicleData.Plate_no}','{vehicleData.LicenceIssuedDate}','{vehicleData.LicenceExpiryDate }','{vehicleData.InsuranceIssuedDate }','{vehicleData.InsuranceExpiryDate }','Active')";
+            string sqlString = $"insert into Vehicle (Type,Brand,Model,Plate_no ,Licence_Issued_Date,Licence_Expiry_Date ,Insurance_Issued_Date ,Insurance_Expiry_Date, VehicleStatus) values('{vehicleData.Type}','{vehicleData.Brand}','{vehicleData.Model}','{vehicleData.Plate_no}','{vehicleData.LicenceIssuedDate}','{vehicleData.LicenceExpiryDate }','{vehicleData.InsuranceIssuedDate }','{vehicleData.InsuranceExpiryDate }','Available')";
             sqlAccess.InsertVehicle(sqlString);
         }
         

@@ -35,7 +35,7 @@ namespace LMU_Final_Project_Web.Data
                     vehicle.LicenceExpiryDate = Convert.ToDateTime(reader["Licence_Expiry_Date"]);
                     vehicle.InsuranceIssuedDate = Convert.ToDateTime(reader["Insurance_Issued_Date"]);
                     vehicle.InsuranceExpiryDate = Convert.ToDateTime(reader["Insurance_Expiry_Date"]);
-                    //vehicle.VehicleStatus = Convert.ToString(reader["VehicleStatus"]);
+                    vehicle.VehicleStatus = Convert.ToString(reader["VehicleStatus"]);
 
                     vehicles.Add(vehicle);
                 }
@@ -103,12 +103,12 @@ namespace LMU_Final_Project_Web.Data
                     user.User_id = Convert.ToInt32(reader["User_id"]);
                     user.User_name = Convert.ToString(reader["User_name"]);
                     user.Password = Convert.ToString(reader["Password"]);
-                    user.Email = Convert.ToString(reader["Email"]);
-                    user.Salt = Convert.ToString(reader["Salt"]);
-                    user.Created_by = Convert.ToString(reader["Created_by"]);
-                    user.Created_on = Convert.ToDateTime(reader["Created_on"]);
-                    user.Modify_by = Convert.ToString(reader["Modify_by"]);
-                    user.Modify_on = Convert.ToDateTime(reader["Modify_on"]);
+                    //user.Email = Convert.ToString(reader["Email"]);
+                    //user.Salt = Convert.ToString(reader["Salt"]);
+                    //user.created_by = Convert.ToString(reader["Created_by"]);
+                    //user.created_on = Convert.ToDateTime(reader["Created_on"]);
+                    //user.modify_by = Convert.ToString(reader["Modify_by"]);
+                    //user.modify_on = Convert.ToDateTime(reader["Modify_on"]);
 
                     users.Add(user);
 
@@ -422,6 +422,35 @@ namespace LMU_Final_Project_Web.Data
 
             }
             return PlateNos;
+        }
+
+        public bool GetSessionData(string SqlQuery)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                SqlCommand command = new SqlCommand(SqlQuery, conn);
+
+
+                conn.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    // Credentials are valid, store session data
+                    Session.ID = Convert.ToInt32(reader["User_id"]);
+                    Session.UserName = reader["User_name"].ToString();
+                    Session.FullName = reader["FullName"].ToString();
+                    return true;
+                }
+
+
+                else
+                {
+                    return false;
+                }
+
+                reader.Close();
+            }
         }
     }
 }

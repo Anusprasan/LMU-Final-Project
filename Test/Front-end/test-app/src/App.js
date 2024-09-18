@@ -10,8 +10,8 @@ export default function App(){
   return(
     <div>
       {/* <Reactcrud/> */}
-      {/* <Login/> */}
-      <Check/>
+      <Login/>
+      {/* <Check/> */}
     </div>
   )
 }

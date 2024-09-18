@@ -37,6 +37,8 @@ namespace LMU_Final_Project_Web.Controllers
             UserRepository userRepositoryObject = new UserRepository();
            if (userRepositoryObject.ValidateUser(user))
             {
+                userRepositoryObject.GetSessionData(user);
+                var FullName = Session.FullName;
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
                 var tokenDescripter = new SecurityTokenDescriptor
@@ -52,7 +54,7 @@ namespace LMU_Final_Project_Web.Controllers
 
                 var token = tokenHandler.CreateToken(tokenDescripter);
                 string userToken = tokenHandler.WriteToken(token);
-                return Ok(userToken);
+                return Ok(new { userToken,FullName });
             }
             else
             {

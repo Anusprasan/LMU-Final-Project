@@ -20,6 +20,13 @@ namespace LMU_Final_Project_Web.Data.Repositories
             return sqlAccess.ValidateUser(sqlString);
         }
 
+        public void GetSessionData(User user)
+        {
+            string sqlString = $"SELECT User_id, User_name,FullName FROM users WHERE User_name='{user.User_name}' AND Password='{user.Password}'";
+
+            sqlAccess.GetSessionData(sqlString);
+        }
+
     }
 }
 

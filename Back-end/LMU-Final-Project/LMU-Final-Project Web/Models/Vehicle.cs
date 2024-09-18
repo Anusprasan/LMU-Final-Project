@@ -14,7 +14,7 @@
         public DateTime InsuranceIssuedDate { get; set; }
         public DateTime InsuranceExpiryDate { get; set; }
 
-        //public string VehicleStatus { get; set; }
+        public string VehicleStatus { get; set; }
         //public string Created_by { get; set; }
         //public DateTime Created_on { get; set; }
         //public string Modify_by { get; set; }
