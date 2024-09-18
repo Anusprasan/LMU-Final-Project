@@ -11,6 +11,10 @@ import logout from '../assets/images/logout.png';
 import service from '../assets/images/service.png';
 
 export default function Navbaritems() {
+  function handleLogout(){
+    localStorage.removeItem("token");
+    window.location.href = "/Login";
+  }
   return (
     <div>
 
@@ -85,14 +89,14 @@ export default function Navbaritems() {
       </Link>
       
       {/* Logout row */}
-      <Link to="/Logout" className=' text-decoration-none' style={{color:'#A2A3A3'}}>
+      <div className=' text-decoration-none' onClick={handleLogout} style={{color:'#A2A3A3'}}>
         <div className="row Navbaritems ps-2">
           <div className='col py-3 '>
             <img src={logout} class="img-fluid p-2 " alt="..."/>
               Logout
           </div>
         </div>
-      </Link>
+      </div>
 
       
     

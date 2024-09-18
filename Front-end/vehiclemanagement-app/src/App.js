@@ -6,7 +6,8 @@ import Navbaritems from './components/Navbaritems'
 import Footer from './components/Footer';
 import Pagesdisplay from './components/Pagesdisplay';
 import Login from './pages/Login';
-import {Route} from "react-router-dom";
+import {Route,Routes,Navigate} from "react-router-dom";
+
 
 
 
@@ -18,8 +19,19 @@ import './App.css';
 
 
 function App() {
-  const isAuthenticated =true;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Mock authentication check, replace with real API call
+  const handleLoginSuccess = (token) => {
+    // localStorage.setItem('token', token); // Store the token in local storage
+    setIsAuthenticated(true); // Set authenticated state to true
+  };
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true); // If token exists, mark user as authenticated
+    }
+  }, []);
   
   return (
      <div>
@@ -58,8 +70,9 @@ function App() {
             </div>
           </footer>
         </div>
-      ):
-       <Login/>}
+      ):(
+        <Login onLoginSuccess={handleLoginSuccess}/>
+      )}
       
       
     </div>

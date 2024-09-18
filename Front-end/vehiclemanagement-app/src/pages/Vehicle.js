@@ -19,20 +19,12 @@ export default function Vehicle() {
   const [newInsuranceIssuedDate,setNewInsuranceIssuedDate] = useState("");
   const [newInsuranceExpirydate,setNewInsuranceExpiryDate] = useState("");
   const [vehicleStatus,setVehicleStatus] = useState("");
+  const [hoveredVehicleId, setHoveredVehicleId] = useState(null);
 
   useEffect(()=>{
+    GetVehicleData();
     
     
-    fetch('https://localhost:7096/api/Vehicle/GetAllVehicles')
-    .then((response)=>response.json())
-    .then((data)=>{
-      
-      
-      setVehicles(data)}
-      
-      
-    )
-    .catch((err)=>console.log(err))
     
     fetch('https://localhost:7096/api/VehicleType/GetAllVehicleTypes')
     .then((response)=>response.json())
@@ -59,6 +51,19 @@ export default function Vehicle() {
      
 
   },[]);
+  //function for get all vehicle data
+  function GetVehicleData(){
+    fetch('https://localhost:7096/api/Vehicle/GetAllVehicles')
+  .then((response)=>response.json())
+  .then((data)=>{
+    
+    
+    setVehicles(data)}
+    
+    
+  )
+  .catch((err)=>console.log(err))
+}
 
 
    
@@ -95,19 +100,16 @@ export default function Vehicle() {
         LicenceIssuedDate,
         LicenceExpiryDate,
         InsuranceIssuedDate,
-        InsuranceExpiryDate
+        InsuranceExpiryDate,
+        vehicleStatus:""
+        
       })
     })
-      .then((response) => {
-        if (!response.ok) {
-          // Handle HTTP errors
-          throw new Error('Network response was not ok');
-        }
-        return response.json(); // Parse response as JSON
-      })
+      
       .then(data => {
         console.log(data); // The response data from the API
         alert("Vehicle added successfully");
+        
         
         // Reset form fields (optional)
         // setNewVehicleModel("");
@@ -116,8 +118,9 @@ export default function Vehicle() {
       .catch((err) => {
         console.error('Error:', err); // Catch and log any errors
         alert("An error occurred while adding the vehicle.");
+        GetVehicleData();
       });
-
+      
       
     
 
@@ -143,13 +146,16 @@ export default function Vehicle() {
           .then(data =>{
             console.log(data)
             // setVehicles([...vehicles,data]);
-            alert("user added successfully");
+            alert("Vehicle Deleted successfully");
+            GetVehicleData();
+            
             
     
             // setNewVehicleModel(" ");
             // setNewVehiclePlateNo(" ");
           })
           .catch((err)=>console.log(err));
+          
         
     };
 
@@ -158,7 +164,17 @@ export default function Vehicle() {
        
       
     // }
+    const handleMouseEnter = (vehicleId) => {
+      setHoveredVehicleId(vehicleId);  // Set the hovered vehicle ID
+    };
   
+    const handleMouseLeave = () => {
+      setHoveredVehicleId(null);  // Reset the hovered vehicle ID when mouse leaves
+    };
+
+    function handleStatusUpdate(){
+      
+    }
 
   return (
     <div>
@@ -182,191 +198,190 @@ export default function Vehicle() {
       </div>
       </div>
     <div className="tab-content" id="nav-tabContent">
-      <div className="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-        <div className='vehiclelist card text-bg-light  mx-5 mt-5'>
-          
-            <div className="row  pt-2" >
-              <div className="col-1 d-flex justify-content-center"><h5>ID</h5></div>
-              <div className="col-2"><h5>Vehicle Type</h5></div>
-              <div className="col-2 "><h5>Brand</h5></div>
-              <div className='col-2 '><h5>Vehicle Model</h5></div>
-              <div className='col-2 '><h5>Plate No</h5></div>
-              <div className="col-2"><h5>Action</h5></div>
-            </div>
+    <div className="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+  <div className='vehiclelist card text-bg-light mx-5 mt-5' 
+    style={{
+      borderRadius: '10px', 
+      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+      padding: '15px'
+    }}>
+    
+    {/* Header Row */}
+    <div className="row pt-3 mx-1" style={{borderBottom: '2px solid #007BFF', paddingBottom: '10px'}}>
+      <div className="col-1 d-flex justify-content-center"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>ID</h5></div>
+      <div className="col-2"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Vehicle Type</h5></div>
+      <div className="col-2"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Brand</h5></div>
+      <div className='col-2'><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Vehicle Model</h5></div>
+      <div className='col-2'><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Plate No</h5></div>
+      
+      <div className="col-2"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Action</h5></div>
+      <div className='col-1'><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Status</h5></div>
+    </div>
 
-            {vehicles.map((vehicle)=>(
-              <div className="row  pt-3 " key={vehicle.vehicle_id}>
-              <div className="col-1 d-flex justify-content-center" >{vehicle.vehicle_id}</div>
-              <div className="col-2 ">{vehicle.type}</div>
-              <div className="col-2 "><EditableText  value={vehicle.brand}/></div>
-              <div className="col-2">{vehicle.model} </div>
-              <div className="col-2 "><EditableText  value={vehicle.plate_no} /></div>
-              <div className="col-3">
-                <button className='btn btn-primary' onClick={()=>onClickUpdate(vehicle.vehicle_id)}>Update</button>
-                <button className='btn btn-danger' onClick={()=>onClickDelete(vehicle.vehicle_id)}>Delete</button>
-                <button className='btn btn-success' onClick={()=>handleStatusUpdate(vehicle.vehicle_id,vehicle.vehicleStatus)} >{vehicle.vehicleStatus =='Active' ? 'Off' :'On'}</button>
-                {vehicle.vehicle_id}
-                {vehicle.vehicleStatus}
-                {vehicleStatus}
-              </div>
-            </div>
-            ))}
-            
-            
-            
+    {/* Vehicle Rows */}
+    {vehicles.map((vehicle) => (
+      <div className="row pt-4 mx-1 d-flex justify-content-center align-items-center" 
+        key={vehicle.vehicle_id}
+        onMouseEnter={() => handleMouseEnter(vehicle.vehicle_id)}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          cursor: 'pointer',
+          backgroundColor: hoveredVehicleId === vehicle.vehicle_id ? '#e9f7ff' : 'white',
+          borderBottom: '1px solid #007BFF',
+          transition: 'background-color 0.3s ease'
+        }}
+      >
+        <div className="col-1 d-flex justify-content-center align-items-center" style={{ fontWeight: '500' }}>{vehicle.vehicle_id}</div>
+        <div className="col-2">{vehicle.type}</div>
+        <div className="col-2"><EditableText value={vehicle.brand}/></div>
+        <div className="col-2">{vehicle.model}</div>
+        <div className="col-2"><EditableText value={vehicle.plate_no}/></div>
+        <div className="col-2 d-flex align-items-center">
+          <button className='btn' style={{ backgroundColor: '#007BFF', color: 'white', marginRight: '10px', borderRadius: '5px', padding: '5px 15px' }} onClick={() => onClickUpdate(vehicle.vehicle_id)}>Update</button>
+          <button className='btn' style={{ backgroundColor: '#dc3545', color: 'white', marginRight: '10px', borderRadius: '5px', padding: '5px 15px' }} onClick={() => onClickDelete(vehicle.vehicle_id)}>Delete</button>
+          
         </div>
-        
+        <div className="col-1" style={{color: vehicle.vehicleStatus === 'Available' ? 'green' : 'Red',fontWeight: 'bold',}}>{vehicle.vehicleStatus }</div>
       </div>
+    ))}
+  </div>
+</div>
+
       <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
         <form>
-        <div className='addvehiclecontent card text-bg-light  mx-1 mt-3'>
-           {/* heading row */}
-           <div className="row mt-2 mx-2 ">
-                    <div className="col d-flex justify-content-center">
-                      <h4>Vehicle General Information</h4>
-                    </div>
-                    
-                </div>
-          <div className="row">
-            {/* vehicle general information */}
-            <div className="col-6">
-              
+          <div className="addvehiclecontent card text-bg-light mx-1 mt-3 p-3 shadow-lg" style={{ borderRadius: '15px' }}>
+            {/* heading row */}
+            <div className="row mb-3">
+              <div className="col d-flex justify-content-center">
+                <h4 style={{ color: '#007BFF', fontWeight: 'bold' }}>Vehicle General Information</h4>
+              </div>
+            </div>
 
+            <div className="row">
+              {/* vehicle general information */}
+              <div className="col-6">
                 {/* vehicleType row */}
-                <div className="row mt-4 mx-2">
+                <div className="row my-3">
                   <div className="col-4">
-                    <label for="plateno" className="form-label">Vehicle Type</label>
+                    <label htmlFor="plateno" className="form-label" style={{ fontWeight: 'bold' }}>Vehicle Type</label>
                   </div>
-                  <div className="col-4"> 
-                    <div class="btn-group w-100">
-                      <button type="button" class="btn btn-secondary " placeholder="Select">{newVehicleType}</button>
-                      <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="visually-hidden">Toggle Dropdown</span>
+                  <div className="col-8">
+                    <div className="btn-group w-100">
+                      <button type="button" className="btn btn-secondary">{newVehicleType}</button>
+                      <button type="button" className="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span className="visually-hidden">Toggle Dropdown</span>
                       </button>
-                      <ul class="dropdown-menu">
-                      {vehicleTypes.map((types)=>(
-                        <li><a  class="dropdown-item" href="#" onClick={()=>setNewVehicleType(types.type)}>{types.type}</a></li>
-                      ))}
+                      <ul className="dropdown-menu">
+                        {vehicleTypes.map((types) => (
+                          <li key={types.type}><a className="dropdown-item" href="#" onClick={() => setNewVehicleType(types.type)}>{types.type}</a></li>
+                        ))}
                       </ul>
-                    
                     </div>
                   </div>
                 </div>
 
-                {/* vehiclebrandrow */}
-                <div className="row mt-4 mx-2">
+                {/* vehiclebrand row */}
+                <div className="row my-3">
                   <div className="col-4">
-                    <label for="plateno" className="form-label">Brand</label>
+                    <label htmlFor="plateno" className="form-label" style={{ fontWeight: 'bold' }}>Brand</label>
                   </div>
-                  <div className="col-4">
-                    <div class="btn-group w-100">
-                        <button type="button" class="btn btn-secondary " >{newVehicleBrand}</button>
-                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                          <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                          {vehicleBrands.map((brands)=>(
-                            <li><a class="dropdown-item" href="#" onClick={()=>setNewVehicleBrand(brands.brand)}>{brands.brand}</a></li>
-                            
-                          ))}
-                            
-                          
-                          
-                        </ul>
-                        
+                  <div className="col-8">
+                    <div className="btn-group w-100">
+                      <button type="button" className="btn btn-secondary">{newVehicleBrand}</button>
+                      <button type="button" className="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span className="visually-hidden">Toggle Dropdown</span>
+                      </button>
+                      <ul className="dropdown-menu">
+                        {vehicleBrands.map((brands) => (
+                          <li key={brands.brand}><a className="dropdown-item" href="#" onClick={() => setNewVehicleBrand(brands.brand)}>{brands.brand}</a></li>
+                        ))}
+                      </ul>
                     </div>
-                  
                   </div>
                 </div>
 
-                {/* vehicle modelrow */}
-                <div className="row mt-4 mx-2">
+                {/* vehicle model row */}
+                <div className="row my-3">
                   <div className="col-4">
-                      <label for="vehicleModel" className="form-label">Vehicle Model</label>    
+                    <label htmlFor="vehicleModel" className="form-label" style={{ fontWeight: 'bold' }}>Vehicle Model</label>
                   </div>
-                  <div className="col-4">
-                    <input  type="text" className="form-control" id="vehicleModel" placeholder="Enter Vehicle Model..." onChange={(e)=>setNewVehicleModel(e.target.value)}/>
+                  <div className="col-8">
+                    <input type="text" className="form-control" id="vehicleModel" placeholder="Enter Vehicle Model..." onChange={(e) => setNewVehicleModel(e.target.value)} />
                   </div>
                 </div>
 
                 {/* vehicle plate no row */}
-
-                <div className="row mt-4 mx-2">
+                <div className="row my-3">
                   <div className="col-4">
-                      <label for="vehicleplateno" className="form-label">Vehicle PlateNo</label>    
+                    <label htmlFor="vehicleplateno" className="form-label" style={{ fontWeight: 'bold' }}>Vehicle Plate No</label>
                   </div>
-                  <div className="col-4">
-                    <input  type="text" className="form-control" id="vehicleplateno" placeholder="Enter Vehicle Model..." onChange={(e)=>setNewVehiclePlateNo(e.target.value)}/>
+                  <div className="col-8">
+                    <input type="text" className="form-control" id="vehicleplateno" placeholder="Enter Vehicle Plate No..." onChange={(e) => setNewVehiclePlateNo(e.target.value)} />
                   </div>
                 </div>
-                
-                
+              </div>
+
+              <div className="col-6">
+                {/* revenue licence row */}
+                <div className="row mb-3">
+                  <div className="col-12">
+                    <h6 style={{ color: '#007BFF', fontWeight: 'bold' }}>Revenue Licence</h6>
+                  </div>
+                  <div className="col-12 d-flex">
+                    <div className="col-4">
+                      <label htmlFor="issueddateinput" className="form-label" style={{ fontWeight: 'bold' }}>Issued Date</label>
+                    </div>
+                    <div className="col-8">
+                      <input type="date" className="form-control" id="issueddateinput" onChange={(e) => setNewRevenueLicenceIssuedDate(e.target.value)} />
+                    </div>
+                  </div>
+                  <div className="col-12 d-flex mt-3">
+                    <div className="col-4">
+                      <label htmlFor="expirydateinput" className="form-label" style={{ fontWeight: 'bold' }}>Expiry Date</label>
+                    </div>
+                    <div className="col-8">
+                      <input type="date" className="form-control" id="expirydateinput" onChange={(e) => setNewRevenueLicenceExpiryDate(e.target.value)} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* insurance details row */}
+                <div className="row mb-3">
+                  <div className="col-12">
+                    <h6 style={{ color: '#007BFF', fontWeight: 'bold' }}>Vehicle Insurance</h6>
+                  </div>
+                  <div className="col-12 d-flex">
+                    <div className="col-4">
+                      <label htmlFor="Insuranceissueddateinput" className="form-label" style={{ fontWeight: 'bold' }}>Issued Date</label>
+                    </div>
+                    <div className="col-8">
+                      <input type="date" className="form-control" id="Insuranceissueddateinput" onChange={(e) => setNewInsuranceIssuedDate(e.target.value)} />
+                    </div>
+                  </div>
+                  <div className="col-12 d-flex mt-3">
+                    <div className="col-4">
+                      <label htmlFor="Insuranceexpirydateinput" className="form-label" style={{ fontWeight: 'bold' }}>Expiry Date</label>
+                    </div>
+                    <div className="col-8">
+                      <input type="date" className="form-control" id="Insuranceexpirydateinput" onChange={(e) => setNewInsuranceExpiryDate(e.target.value)} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="col-6">
-              {/* revenuelicence row */}
-              <div className="row ">
-                <div className="col-12">
-                    <h6>Revenue Licence</h6>
-                </div>
-                <div className="col-12 d-flex mx-3">
-                    <div className="col-4">
-                      <label for="issueddateinput" className="form-label">Issued Date</label>
-                    </div>
-                    <div className="col-4">
-                      <input type="Date" className='form-control' id="issueddateinput" onChange={(e)=>setNewRevenueLicenceIssuedDate(e.target.value)}/>     
-                    </div>
-                </div>
-                <div className="col-12 d-flex mx-3">
-                    <div className="col-4">
-                      <label for="expirydateinput" className="form-label">Expiry Date</label>
-                    </div>
-                    <div className="col-4 mt-2">
-                      <input type="Date" className='form-control' id="expirydateinput" onChange={(e)=>setNewRevenueLicenceExpiryDate(e.target.value)}/>     
-                    </div>
-                </div>
-                
-              </div>
-              {/* insurance details row */}
-              <div className="row ">
-                <div className="col-12">
-                    <h6>Vehicle Insurance</h6>
-                </div>
-                <div className="col-12 d-flex mx-3">
-                    <div className="col-4">
-                      <label for="Insuranceissueddateinput" className="form-label">Issued Date</label>
-                    </div>
-                    <div className="col-4 mt-2">
-                      <input type="Date" className='form-control' id="Insuranceissueddateinput" onChange={(e)=>setNewInsuranceIssuedDate(e.target.value)}/>     
-                    </div>
-                </div>
-                <div className="col-12 d-flex mx-3">
-                    <div className="col-4">
-                      <label for="Insuranceexpirydateinput" className="form-label">Expiry Date</label>
-                    </div>
-                    <div className="col-4 mt-2">
-                      <input type="Date" className='form-control' id="Insuranceexpirydateinput" onChange={(e)=>setNewInsuranceExpiryDate(e.target.value)} />     
-                    </div>
-                </div> 
-                
-              </div>
 
+            {/* Add and Cancel row */}
+            <div className="row mt-4">
+              <div className="col-10"></div>
+              <div className="col-2 d-flex justify-content-end gap-2">
+                <button type="button" className="btn btn-primary w-100" style={{ borderRadius: '25px' }} onClick={handlesubmit}>Add</button>
+                <button type="button" className="btn btn-secondary w-100" style={{ borderRadius: '25px' }}>Cancel</button>
+              </div>
             </div>
           </div>
-          {/* Add and Cancel row */}
-          <div className="row">
-            <div className="col-10"></div>
-            <div className="col d-flex justify-content-end gap-2">
-             <button type="button" class="btn btn-primary w-100" onClick={handlesubmit}>Add</button>
-             <button type="button" class="btn btn-primary w-100">Cancel</button>
-            </div>
-          </div> 
-        </div>
-            
         </form>
-        
-        
-          
       </div>
+
               
     </div>
       
