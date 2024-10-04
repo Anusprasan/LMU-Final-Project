@@ -1,5 +1,6 @@
 ﻿using LMU_Final_Project_Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace LMU_Final_Project_Web.Data
@@ -36,6 +37,7 @@ namespace LMU_Final_Project_Web.Data
                     vehicle.InsuranceIssuedDate = Convert.ToDateTime(reader["Insurance_Issued_Date"]);
                     vehicle.InsuranceExpiryDate = Convert.ToDateTime(reader["Insurance_Expiry_Date"]);
                     vehicle.VehicleStatus = Convert.ToString(reader["VehicleStatus"]);
+                    //vehicle.User_id = Convert.ToInt32(reader["User_id"]);
 
                     vehicles.Add(vehicle);
                 }
@@ -66,7 +68,7 @@ namespace LMU_Final_Project_Web.Data
                 {
                     Client client = new Client();
                     client.Client_id = Convert.ToInt32(reader["Client_id"]);
-                    client.Vehicle_id = Convert.ToInt32(reader["Vehicle_id"]);
+                    client.Journey_id = Convert.ToInt32(reader["Journey_id"]);
                     client.Name = Convert.ToString(reader["Name"]);
                     client.Address = Convert.ToString(reader["Address"]);
                     client.Phone_no = Convert.ToInt32(reader["Phone_no"]);
@@ -238,16 +240,16 @@ namespace LMU_Final_Project_Web.Data
                     journey.Journey_description = Convert.ToString(reader["Journey_description"]);
                     journey.Vehiclestatus_beforejourney = Convert.ToString(reader["Vehiclestatus_beforejourney"]);
                     journey.Vehiclestatus_afterjourney = Convert.ToString(reader["Vehiclestatus_afterjourney"]);
-                    journey.Vehiclephoto_beforejourney = Convert.ToString(reader["Vehiclephoto_beforejourney"]);
-                    journey.Vehiclephoto_afterjourney = Convert.ToString(reader["Vehiclephoto_afterjourney"]);
-                    journey.Journeystarted_createdby = Convert.ToString(reader["Journeyatarted_createdby"]);
-                    journey.Journeystarted_createdon = Convert.ToDateTime(reader["Journeyend_createdon"]);
-                    journey.Journeystarted_modifyby = Convert.ToString(reader["Journeystarted_modifyby"]);
-                    journey.Journeystarted_modifyon = Convert.ToDateTime(reader["Journeystarted_modifyon"]);
-                    journey.Journeyend_createdby = Convert.ToString(reader["Journeyend_createdby"]);
-                    journey.Journeyend_createdon = Convert.ToDateTime(reader["Journeyend_createdon"]);
-                    journey.Journeyend_modifyby = Convert.ToString(reader["Journeyend_modifyby"]);
-                    journey.Journeyend_modifyon = Convert.ToDateTime(reader["Journeyend_modifyon"]);
+                    //journey.Vehiclephoto_beforejourney = Convert.ToString(reader["Vehiclephoto_beforejourney"]);
+                    //journey.Vehiclephoto_afterjourney = Convert.ToString(reader["Vehiclephoto_afterjourney"]);
+                    //journey.Journeystarted_createdby = Convert.ToString(reader["Journeyatarted_createdby"]);
+                    //journey.Journeystarted_createdon = Convert.ToDateTime(reader["Journeyend_createdon"]);
+                    //journey.Journeystarted_modifyby = Convert.ToString(reader["Journeystarted_modifyby"]);
+                    //journey.Journeystarted_modifyon = Convert.ToDateTime(reader["Journeystarted_modifyon"]);
+                    //journey.Journeyend_createdby = Convert.ToString(reader["Journeyend_createdby"]);
+                    //journey.Journeyend_createdon = Convert.ToDateTime(reader["Journeyend_createdon"]);
+                    //journey.Journeyend_modifyby = Convert.ToString(reader["Journeyend_modifyby"]);
+                    //journey.Journeyend_modifyon = Convert.ToDateTime(reader["Journeyend_modifyon"]);
 
                     journeys.Add(journey);
 
@@ -404,9 +406,9 @@ namespace LMU_Final_Project_Web.Data
 
         }
 
-        public List<string> GetPlateNo(string SqlQuery)
+        public List<int> GetVehicleId(string SqlQuery)
         {
-            List<string> PlateNos= new List<string>();
+            List<int> VehicleIds= new List<int>();
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
@@ -415,13 +417,13 @@ namespace LMU_Final_Project_Web.Data
                 while (reader.Read())
                 {
                     
-                    string Plate_no = Convert.ToString(reader["Plate_no"]);
-                    PlateNos.Add(Plate_no);
+                    int VehicleId = Convert.ToInt32(reader["Vehicle_id"]);
+                    VehicleIds.Add(VehicleId);
                 }
                 conn.Close();
 
             }
-            return PlateNos;
+            return VehicleIds;
         }
 
         public bool GetSessionData(string SqlQuery)
@@ -450,6 +452,41 @@ namespace LMU_Final_Project_Web.Data
                 }
 
                 reader.Close();
+            }
+        }
+
+        public bool Insertdata (string SqlQuery)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(SqlQuery, conn);
+                int rowCount = cmd.ExecuteNonQuery();
+                conn.Close();
+
+                if (rowCount > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                
+            }
+        }
+
+        public DataTable GetDataFromTables(string SqlQuery)
+        {
+            using(SqlConnection conn = new SqlConnection(_connectionString))
+            {
+              
+                SqlDataAdapter adapter = new SqlDataAdapter(SqlQuery, conn);
+                DataTable dataTable= new DataTable();
+                adapter.Fill(dataTable); 
+                
+
+                return dataTable;
             }
         }
     }

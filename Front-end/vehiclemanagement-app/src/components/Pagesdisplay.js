@@ -10,6 +10,7 @@ import Accounts from '../pages/Accounts';
 import Logout from '../pages/Logout';
 import Vehicleupdate from '../pages/Vehicleupdate';
 import Login from '../pages/Login';
+import Journeyclientdetails from '../pages/Journeyclientdetails';
 
 export default function Pagesdisplay() {
   return (
@@ -26,6 +27,7 @@ export default function Pagesdisplay() {
         <Route path="/Accounts" element={<Accounts />} />
         <Route path="/Logout" element={<Logout />} />
         <Route path="/VehicleUpdate/:vehicle_id" element={<Vehicleupdate/>}></Route>
+        <Route path="/Journeyclientdetails" element ={<Journeyclientdetails/>}></Route>
       </Routes>
       
       

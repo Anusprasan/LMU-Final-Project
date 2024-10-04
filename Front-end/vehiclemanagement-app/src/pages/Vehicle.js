@@ -1,7 +1,7 @@
 import React from 'react'
 import{Toaster,EditableText} from '@blueprintjs/core';
 import {useEffect,useState } from 'react';
-import axios from 'axios';
+
 
 import { useNavigate } from 'react-router-dom';
 export default function Vehicle() {
@@ -20,10 +20,13 @@ export default function Vehicle() {
   const [newInsuranceExpirydate,setNewInsuranceExpiryDate] = useState("");
   const [vehicleStatus,setVehicleStatus] = useState("");
   const [hoveredVehicleId, setHoveredVehicleId] = useState(null);
+  const [userId,setUserId] = useState('');
+ 
 
   useEffect(()=>{
-    GetVehicleData();
-    
+    // GetVehicleData();
+    const userId = localStorage.getItem("userId");
+    setUserId(userId);
     
     
     fetch('https://localhost:7096/api/VehicleType/GetAllVehicleTypes')
@@ -48,22 +51,23 @@ export default function Vehicle() {
     )
     .catch((err)=>console.log(err))
      
-     
+    fetch(`https://localhost:7096/api/Vehicle/GetAllVehicles?userId=${userId}`)
+    .then((response)=>response.json())
+    .then((data)=>{
+      
+      
+      setVehicles(data)}
+      
+      
+    )
+    .catch((err)=>console.log(err))
+          
 
   },[]);
   //function for get all vehicle data
-  function GetVehicleData(){
-    fetch('https://localhost:7096/api/Vehicle/GetAllVehicles')
-  .then((response)=>response.json())
-  .then((data)=>{
-    
-    
-    setVehicles(data)}
-    
-    
-  )
-  .catch((err)=>console.log(err))
-}
+//   function GetVehicleData(){
+   
+// }
 
 
    
@@ -77,6 +81,8 @@ export default function Vehicle() {
      const LicenceExpiryDate = newRevenueLicenceExpiryDate.trim();
      const InsuranceIssuedDate = newInsuranceIssuedDate.trim();
      const InsuranceExpiryDate = newInsuranceExpirydate.trim();
+     const User_id  = userId;
+     
     // console.log(type);
     // console.log(model);
     // console.log(brand);
@@ -101,7 +107,8 @@ export default function Vehicle() {
         LicenceExpiryDate,
         InsuranceIssuedDate,
         InsuranceExpiryDate,
-        vehicleStatus:""
+        vehicleStatus:"",
+        User_id
         
       })
     })
@@ -118,7 +125,7 @@ export default function Vehicle() {
       .catch((err) => {
         console.error('Error:', err); // Catch and log any errors
         alert("An error occurred while adding the vehicle.");
-        GetVehicleData();
+        // GetVehicleData();
       });
       
       
@@ -127,7 +134,7 @@ export default function Vehicle() {
   }
     const onClickUpdate= (vehicleid)=>{
       navigate(`/Vehicleupdate/${vehicleid}`)
-    };
+    }
 
     const onClickDelete=(vehicle_id)=>{
         fetch(`https://localhost:7096/api/Vehicle/DeleteVehicle?Vehicle_id=${vehicle_id}`,
@@ -147,7 +154,7 @@ export default function Vehicle() {
             console.log(data)
             // setVehicles([...vehicles,data]);
             alert("Vehicle Deleted successfully");
-            GetVehicleData();
+            // GetVehicleData();
             
             
     
@@ -208,6 +215,7 @@ export default function Vehicle() {
     
     {/* Header Row */}
     <div className="row pt-3 mx-1" style={{borderBottom: '2px solid #007BFF', paddingBottom: '10px'}}>
+      
       <div className="col-1 d-flex justify-content-center"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>ID</h5></div>
       <div className="col-2"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Vehicle Type</h5></div>
       <div className="col-2"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Brand</h5></div>
@@ -251,13 +259,16 @@ export default function Vehicle() {
         <form>
           <div className="addvehiclecontent card text-bg-light mx-1 mt-3 p-3 shadow-lg" style={{ borderRadius: '15px' }}>
             {/* heading row */}
+           <div className="card-header" >
             <div className="row mb-3">
-              <div className="col d-flex justify-content-center">
-                <h4 style={{ color: '#007BFF', fontWeight: 'bold' }}>Vehicle General Information</h4>
+                <div className="col d-flex justify-content-center">
+                  <h4 style={{ color: '#007BFF', fontWeight: 'bold' }}>Vehicle General Information</h4>
+                </div>
               </div>
-            </div>
-
-            <div className="row">
+            </div>  
+           
+           <div className="card-body">
+           <div className="row">
               {/* vehicle general information */}
               <div className="col-6">
                 {/* vehicleType row */}
@@ -331,7 +342,8 @@ export default function Vehicle() {
                     <div className="col-4">
                       <label htmlFor="issueddateinput" className="form-label" style={{ fontWeight: 'bold' }}>Issued Date</label>
                     </div>
-                    <div className="col-8">
+                    <div className="c'
+                    ol-8">
                       <input type="date" className="form-control" id="issueddateinput" onChange={(e) => setNewRevenueLicenceIssuedDate(e.target.value)} />
                     </div>
                   </div>
@@ -371,13 +383,16 @@ export default function Vehicle() {
             </div>
 
             {/* Add and Cancel row */}
-            <div className="row mt-4">
-              <div className="col-10"></div>
-              <div className="col-2 d-flex justify-content-end gap-2">
+            <div className="row mt-4 ">
+              <div className="col-10 "></div>
+              <div className="col-2 d-flex justify-content-end gap-2 ">
                 <button type="button" className="btn btn-primary w-100" style={{ borderRadius: '25px' }} onClick={handlesubmit}>Add</button>
                 <button type="button" className="btn btn-secondary w-100" style={{ borderRadius: '25px' }}>Cancel</button>
               </div>
             </div>
+           </div>
+
+
           </div>
         </form>
       </div>

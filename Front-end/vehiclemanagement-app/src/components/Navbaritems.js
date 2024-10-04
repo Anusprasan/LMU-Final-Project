@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Navbaritems.css';
 import { Link } from 'react-router-dom';
 import home from '../assets/images/home.png';
@@ -11,16 +11,23 @@ import logout from '../assets/images/logout.png';
 import service from '../assets/images/service.png';
 
 export default function Navbaritems() {
+
+  const [divColor, setDivColor] = useState('#2B527E');
   function handleLogout(){
     localStorage.removeItem("token");
     window.location.href = "/Login";
+  }
+
+  const handlelinkcolour = () => {
+
+    setDivColor('#2B527E')
   }
   return (
     <div>
 
       {/* Home row */}
-      <Link to="/Home" className='text-decoration-none' style={{color:'#A2A3A3'}}>
-        <div className="Navbaritems row ps-2" >
+      <Link to="/Home" className='text-decoration-none'  style={{color:'#A2A3A3'}}>
+        <div className="Navbaritems row ps-2" onClick={handlelinkcolour} style={{backgroundColor:divColor}}>
           <div className='col py-3 ' >
             <img src={home} class="img-fluid p-2" alt="..."/>
               Home

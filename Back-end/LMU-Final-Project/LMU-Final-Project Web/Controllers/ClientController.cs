@@ -9,6 +9,7 @@ namespace LMU_Final_Project_Web.Controllers
     [ApiController]
     public class ClientController : ControllerBase
     {
+        ClientRepository clientRepository = new ClientRepository();
 
         [Route("[action]")]
         [HttpGet]
@@ -22,6 +23,41 @@ namespace LMU_Final_Project_Web.Controllers
 
            
 
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+
+        public ActionResult AddClients([FromBody]Client client)
+        {
+            ClientRepository clientRepository = new ClientRepository();
+            bool isAdded = clientRepository.AddClients(client);
+
+            if(isAdded)
+            {
+                return Ok(new { message = "Client Added Successfully" });
+            }
+            else
+            {
+                return BadRequest(new { message = "Operation Failed" });
+            }
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+
+        public ActionResult CancelJourney(int journeyId)
+        {
+            bool isCancelled = clientRepository.CancelJourney(journeyId);
+
+            if(isCancelled)
+            {
+                return Ok(new { message = " Journey Cancelled Successfully" }); 
+            }
+            else
+            {
+                return BadRequest(new { message = "Operation Failed" });
+            }
         }
     }
 }

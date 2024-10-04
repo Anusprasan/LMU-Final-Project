@@ -6,32 +6,140 @@ import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useNavigate } from 'react-router-dom';
+
 
 import { useState,useEffect } from 'react';
 
 
 export default function Journey() {
-  const [plateNo,setPlateNo]= useState([]);
+  const navigate = useNavigate();
+  const [allVehicleId,setAllVehicleId]= useState([]);
+  const [userId,setUserId] = useState('');
+  const [vehicleId,setVehicleId] = useState('Select');
+  const [jouneyStartDate,setJouneyStartDate] = useState('');
+  const [odoReading,setOdoReading] = useState('');
+  const [journeyDescription, setJourneyDescription] = useState('');
+  const [malfunction, setMalfunction] = useState('');
+  const [vehiclePhoto, setVehiclePhoto] = useState('');
+  const [clientName, setClientName] = useState('');  
+  const [clientPhoneNo, setClientPhoneNo] = useState('');
+  const [clientAddress, setClientAddress] = useState(''); 
+  const [clientNIC, setClientNIC] = useState(''); 
+  const [drivingLicensePhoto, setDrivingLicensePhoto] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
   // const [journey,setJouney] = useState({
 
   // })
   useEffect(()=>{
-    fetch('https://localhost:7096/api/Journey/GetVehiclePlateNo')
-    .then((response)=>response.json())
-    .then((data)=>{
-      setPlateNo(data)
-      console.log(plateNo)
-      
-    })
-    .catch((err)=>console.log(err))
-  },[])
 
+    const UserId = localStorage.getItem("userId");
+    setUserId(UserId);
+
+    fetch(`https://localhost:7096/api/Journey/GetVehicleId?userId=${userId}`) // Replace with your correct API URL
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Step 3: Store the fetched vehicle IDs in the state
+        if (Array.isArray(data)) {
+          setAllVehicleId(data); // data should be [55, 59, 82, 83, 89]
+        } else {
+          throw new Error("Unexpected API response format");
+        }
+      })
+      .catch(error => {
+        // Handle any errors during the fetch operation
+        console.error('Error fetching vehicle IDs:', error);
+        
+      })
+      
+  }, [userId]);
+
+  function handleSubmit(){
+
+    const journeyData = {
+       vehicle_id:vehicleId,
+       started_date: jouneyStartDate,
+       UserId :userId,
+      //  End_date:"",
+       odometerreading_beforejourney :odoReading,
+      //  odometerreading_afterjjourney :"",
+       journey_description :journeyDescription,
+      //  vehiclestatus_beforejouney :"",
+      //  vehiclestatus_afterjounrey : "",
+       Vehiclestatus_beforejourney : malfunction
+    }
+    if(!vehicleId||!jouneyStartDate||!odoReading||!malfunction||!journeyDescription){
+      alert("Check your fields");
+      
+      
+    }
+    else{
+      fetch(`https://localhost:7096/api/Journey/AddJourney`,
+        {
+          method:"POST",
+          headers:{
+            "Content-Type": "application/json"
+          },
+          
+          
+          
+        
+        body: JSON.stringify(journeyData)
+      })
+      
+        .then (response  =>{
+          if (!response.ok){
+            throw new Error(`HTtp error! Status:${response.status}`);
+          }
+          return response.json();
+        })
+          
+        .then(data =>{
+          console.log(data);
+          
+          alert("sdbccbxnbnm")
+          setShowAlert(true);
   
+          // Auto-hide the alert after 3 seconds
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 3000);
+  
+          navigate(`/Journeyclientdetails/`);
+          
+          
+  
+      
+        })
+        .catch((err)=>{
+          console.log(err);
+          alert("Operation failed");
+      
+         });
+    }
+   
+
+    
+
+
+   
+
+
+
+
+
+
+  }
 
 
   return (
     <div>
-      <h1>{plateNo[3]}</h1>
+       
       {/* navigation row */}
       <div className="row ">
         <nav>
@@ -55,21 +163,35 @@ export default function Journey() {
                     </div>
                     
                   </div>
-                  
-                  {/* plateno */}
+                  {/* Testing Purpose */}
+                  {allVehicleId}
+                  {userId}
+                  {vehicleId}
+                  {jouneyStartDate}
+                  {odoReading}
+                  {journeyDescription}
+                  {malfunction}
+                  {vehiclePhoto}
+                  {clientName}
+                  {clientPhoneNo}
+                  {clientAddress}
+                  {clientNIC}
+                  {drivingLicensePhoto}
+
+                  {/* Vehicle Id*/}
                   <div className="row mt-4 mx-2">
                     <div className="col-4">
-                      <label for="plateno" className="form-label">Plate No</label>
+                      <label for="plateno" className="form-label">Vehicle Id</label>
                     </div>
                     <div className="col-4">
                       <div class="btn-group w-100">
-                        <button type="button" class="btn btn-secondary" style={{backgroundColor:'#24314C'}}>Select</button>
-                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:'#24314C'}}>
+                        <button type="button" class="btn btn-secondary" style={{backgroundColor:'#24314C'}}>{vehicleId}</button>
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:'#24314C'}} required>
                           <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu">
-                          {plateNo.map((plateno)=>(
-                            <li><a class="dropdown-item" href="#">{plateno}</a></li>
+                          {allVehicleId.map((vehicleId)=>(
+                            <li key={vehicleId}><a class="dropdown-item" href="#" onClick={()=>setVehicleId(vehicleId)}>{vehicleId}</a></li>
                           ))}
                           
                           
@@ -85,7 +207,7 @@ export default function Journey() {
                       <label for="dateinput" className="form-label">Date</label>
                     </div>
                     <div className="col-4" >
-                    <input type="Date" className='form-control' id="dateinput" />
+                    <input type="Date" className='form-control' id="dateinput" onChange={(e)=>setJouneyStartDate(e.target.value)} />
                     </div>
                   </div>
 
@@ -97,7 +219,7 @@ export default function Journey() {
                     </div>
                     <div className="col-4">
                       
-                      <input  type="text" className="form-control w-100" id="odometerreadinginput" />
+                      <input  type="number" className="form-control w-100" id="odometerreadinginput" value={odoReading} onChange={(e) => setOdoReading(e.target.value)}  />
                     </div>
                   </div>
                   {/* Journey Description */}
@@ -107,7 +229,7 @@ export default function Journey() {
                     </div>
                     <div className="col-4">
                       
-                      <textarea className="form-control " id="journeydescription" />
+                      <textarea className="form-control " id="journeydescription" value={journeyDescription} onChange={(e) => setJourneyDescription(e.target.value)} />
                     </div>
                   </div>
                   {/* Malfunction*/}
@@ -117,100 +239,49 @@ export default function Journey() {
                     </div>
                     <div className="col-4">
                       
-                      <textarea className="form-control w-100" id="malfunctioninput" />
+                      <textarea className="form-control w-100" id="malfunctioninput" value={malfunction}onChange={(e) => setMalfunction(e.target.value)} />
                     </div>
                   </div>
-                  {/* uploadvehiclephotos */}
+                  {/* uploadvehiclephotos
                   <div className="row mt-4 mx-2">
                     <div className="col-4">
                       <label for="uploadinput" className="form-label">Upload Vehicle Photo</label>
                     </div>
                     <div className="col-6">
-                      <input class="form-control" type="file" id="formFileMultiple" multiple/>
+                      <input class="form-control" type="file"  id="vehiclePhotoInput" onChange={(e) => setVehiclePhoto(e.target.files[0])}/>
                     </div>
-                  </div>
+                  </div> */}
                  
                   
                   
                 </div>
-                <div className="col-6">
-                  {/* client details headingrow */}
-                  <div className="row mt-2 mx-2">
-                    <div className="col "> 
-                      <h4>Client  Details</h4>  
-                    </div>
-                    
-                  </div>
-
-                  {/* clientname row */}
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="clientnameinput" className="form-label">Name</label>
-                    </div>
-                    <div className="col-4">
-                      
-                      <input  type="text" className="form-control w-100" id="clientnameinput" />
-                    </div>
-                  </div>
-                  {/* clientphoneNo */}
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="clientphonenoinput" className="form-label">Phone No</label>
-                    </div>
-                    <div className="col-4">
-                      
-                      <input  type="text" className="form-control w-100" id="clientphonenoinput" />
-                    </div>
-                  </div>
-                  {/* Address */}
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="clientphonenoinput" className="form-label">Address</label>
-                    </div>
-                    <div className="col-4">
-                      
-                      <input  type="text" className="form-control w-100" id="clientphonenoinput" />
-                    </div>
-                  </div>
-                  {/* NIC No */}
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="nicnoinput" className="form-label">NIC No</label>
-                    </div>
-                    <div className="col-4">
-                      
-                      <input  type="text" className="form-control w-100" id="nicnoinput" />
-                    </div>
-                  </div>
-                  {/* uploaddrivinglicense */}
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="uploadinput" className="form-label">Driving License Photo</label>
-                    </div>
-                    <div className="col-6">
-                      <input class="form-control" type="file" id="formFileMultiple" multiple/>
-                    </div>
-                  </div>
-                  
-                </div>
+                
               </div>
               {/* save and cancel row */}
-              <div className="row d-flex justify-content-end mt-5"> 
+              <div className="row d-flex justify-content-center mt-5"> 
                 <div className="col-2 d-flex gap-2">
-                  <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}}>Save</button>
+                  <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}} onClick={handleSubmit}>Next</button>
+                  
                   <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}}>Cancel</button>
                 </div>
                 
               </div>
             
             </div>
+            {showAlert && (
+              <div className="alert alert-success" role="alert">
+                Data inserted successfully!
+              </div>
+            )}
           
           </div>
           {/* End Journey Tab */}
           <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <div className='card '>
             <div className="row">
-              <div className="col-5">
-                <div className='startjourneycontent card text-bg-light  mx-1 mt-3'>
+              <div className="col-6">
+                
+                <div className='startjourneycontent card-body text-bg-light  mx-1 mt-3'>
                     
                     {/* plateno */}
                     <div className="row mt-4 mx-2 d-flex justify-content-center">
@@ -220,7 +291,7 @@ export default function Journey() {
                         <div className="col-4">
                           <div class="btn-group w-100">
                             <button type="button" class="btn btn-secondary" style={{backgroundColor:'#24314C'}}>Select</button>
-                            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:'#24314C'}}>
+                            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:'#24314C'}} required>
                               <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu">
@@ -240,7 +311,7 @@ export default function Journey() {
                         <label for="dateinput" className="form-label">Date</label>
                       </div>
                       <div className="col-4" >
-                      <input type="Date" className='form-control' id="dateinput" />
+                      <input type="Date" className='form-control' id="dateinput" required />
                       </div>
                     </div>
 
@@ -250,7 +321,7 @@ export default function Journey() {
                         <label for="timeinput" className="form-label">Time</label>
                       </div>
                       <div className="col-4">
-                        <input type="time" className='form-control' id="timeinput" />
+                        <input type="time" className='form-control' id="timeinput" required/>
                       </div>
                     </div>
 
@@ -261,7 +332,7 @@ export default function Journey() {
                       </div>
                       <div className="col-4">
                         
-                        <input  type="text" className="form-control w-100" id="odometerreadinginput" />
+                        <input  type="text" className="form-control w-100" id="odometerreadinginput" required/>
                       </div>
                     </div>
                     {/* Fuel Cost */}
@@ -271,7 +342,7 @@ export default function Journey() {
                     </div>
                     <div className="col-4">
                       
-                      <input  type="number" className="form-control " id="fuelcostinput" />
+                      <input  type="number" className="form-control " id="fuelcostinput" required/>
                     </div>
                   </div>
 
@@ -282,7 +353,7 @@ export default function Journey() {
                     </div>
                     <div className="col-4">
                       
-                      <input  type="number" className="form-control " id="iverpaymentinput" />
+                      <input  type="number" className="form-control " id="iverpaymentinput" required/>
                     </div>
                   </div>
 
@@ -293,7 +364,7 @@ export default function Journey() {
                     </div>
                     <div className="col-4">
                       
-                      <input  type="number" className="form-control " id="othervehicleexpensesinput" />
+                      <input  type="number" className="form-control " id="othervehicleexpensesinput" required/>
                     </div>
                   </div>
 
@@ -311,7 +382,7 @@ export default function Journey() {
                   {/* save and cancel row */}
                   <div className="row d-flex justify-content-center mt-5"> 
                     <div className="col-2 d-flex gap-2">
-                      <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}}>Save</button>
+                      <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}} onClick={handleSubmit}>Save</button>
                       <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}}>Cancel</button>
                     </div>
                     
@@ -324,6 +395,8 @@ export default function Journey() {
 
               </div>
             </div>
+            </div>
+            
           </div>
           
         </div>

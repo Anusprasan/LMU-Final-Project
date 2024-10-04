@@ -44,9 +44,10 @@ export default function Login({ onLoginSuccess }) {
       
       if (data.userToken) {
         // console.log(data.userToken)
-        localStorage.setItem('token', data.userToken);
-        sessionStorage.setItem('fullName',data.fullName)
-        onLoginSuccess(data.userToken);
+        // localStorage.setItem('token', data.userToken);
+        // localStorageStorage.setItem('fullName',data.fullName)
+        // localStorage.setItem('userId',data.userId)
+        onLoginSuccess(data);
         alert('Login successful');
 
       } else {
@@ -54,7 +55,7 @@ export default function Login({ onLoginSuccess }) {
       }
     })
     .catch(error => {
-      setError(Error.message);
+      setError(error.message);
     });
 };
 
