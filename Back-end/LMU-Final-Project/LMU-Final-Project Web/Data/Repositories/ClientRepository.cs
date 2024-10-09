@@ -24,6 +24,13 @@ namespace LMU_Final_Project_Web.Data.Repositories
             string sqlString = $" Delete from Journey where Journey_id='{journeyId}'";
             return sqlAccess.Insertdata(sqlString);
         }
+
+        public bool UpdateVehicleStatus (int vehicleId)
+        {
+            string SqlString = $"update Vehicle set VehicleStatus = 'Available' where Vehicle_id= '{vehicleId}'";
+
+            return sqlAccess.Insertdata(SqlString);
+        }
     }
 
     

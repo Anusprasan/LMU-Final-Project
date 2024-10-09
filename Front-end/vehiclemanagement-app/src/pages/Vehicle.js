@@ -249,23 +249,20 @@ export default function Vehicle() {
           <button className='btn' style={{ backgroundColor: '#dc3545', color: 'white', marginRight: '10px', borderRadius: '5px', padding: '5px 15px' }} onClick={() => onClickDelete(vehicle.vehicle_id)}>Delete</button>
           
         </div>
-        <div className="col-1" style={{color: vehicle.vehicleStatus === 'Available' ? 'green' : 'Red',fontWeight: 'bold',}}>{vehicle.vehicleStatus }</div>
+        <div className="col-1" style={{color: vehicle.vehicleStatus === 'Available' ? 'green' :vehicle.vehicleStatus==='On Journey' ? 'Blue': 'Red',fontWeight: 'bold',}}>{vehicle.vehicleStatus }</div>
       </div>
     ))}
   </div>
 </div>
 
       <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-        <form>
+        <div className='row'>
+          <div className='col'>
           <div className="addvehiclecontent card text-bg-light mx-1 mt-3 p-3 shadow-lg" style={{ borderRadius: '15px' }}>
             {/* heading row */}
            <div className="card-header" >
-            <div className="row mb-3">
-                <div className="col d-flex justify-content-center">
-                  <h4 style={{ color: '#007BFF', fontWeight: 'bold' }}>Vehicle General Information</h4>
-                </div>
-              </div>
-            </div>  
+              <h4 className='text-center'>Vehicle General Information</h4>
+           </div>  
            
            <div className="card-body">
            <div className="row">
@@ -274,9 +271,9 @@ export default function Vehicle() {
                 {/* vehicleType row */}
                 <div className="row my-3">
                   <div className="col-4">
-                    <label htmlFor="plateno" className="form-label" style={{ fontWeight: 'bold' }}>Vehicle Type</label>
+                    <label htmlFor="plateno" className="form-label" >Vehicle Type</label>
                   </div>
-                  <div className="col-8">
+                  <div className="col-6">
                     <div className="btn-group w-100">
                       <button type="button" className="btn btn-secondary">{newVehicleType}</button>
                       <button type="button" className="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
@@ -294,9 +291,9 @@ export default function Vehicle() {
                 {/* vehiclebrand row */}
                 <div className="row my-3">
                   <div className="col-4">
-                    <label htmlFor="plateno" className="form-label" style={{ fontWeight: 'bold' }}>Brand</label>
+                    <label htmlFor="plateno" className="form-label" >Brand</label>
                   </div>
-                  <div className="col-8">
+                  <div className="col-6">
                     <div className="btn-group w-100">
                       <button type="button" className="btn btn-secondary">{newVehicleBrand}</button>
                       <button type="button" className="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
@@ -313,20 +310,16 @@ export default function Vehicle() {
 
                 {/* vehicle model row */}
                 <div className="row my-3">
-                  <div className="col-4">
-                    <label htmlFor="vehicleModel" className="form-label" style={{ fontWeight: 'bold' }}>Vehicle Model</label>
-                  </div>
-                  <div className="col-8">
+                  <div className="col-10">
+                    <label htmlFor="vehicleModel" className="form-label" >Vehicle Model</label>
                     <input type="text" className="form-control" id="vehicleModel" placeholder="Enter Vehicle Model..." onChange={(e) => setNewVehicleModel(e.target.value)} />
                   </div>
                 </div>
 
                 {/* vehicle plate no row */}
                 <div className="row my-3">
-                  <div className="col-4">
-                    <label htmlFor="vehicleplateno" className="form-label" style={{ fontWeight: 'bold' }}>Vehicle Plate No</label>
-                  </div>
-                  <div className="col-8">
+                  <div className="col-10">
+                    <label htmlFor="vehicleplateno" className="form-label" >Vehicle Plate No</label>
                     <input type="text" className="form-control" id="vehicleplateno" placeholder="Enter Vehicle Plate No..." onChange={(e) => setNewVehiclePlateNo(e.target.value)} />
                   </div>
                 </div>
@@ -340,16 +333,15 @@ export default function Vehicle() {
                   </div>
                   <div className="col-12 d-flex">
                     <div className="col-4">
-                      <label htmlFor="issueddateinput" className="form-label" style={{ fontWeight: 'bold' }}>Issued Date</label>
+                      <label htmlFor="issueddateinput" className="form-label" >Issued Date</label>
                     </div>
-                    <div className="c'
-                    ol-8">
+                    <div className="col-8">
                       <input type="date" className="form-control" id="issueddateinput" onChange={(e) => setNewRevenueLicenceIssuedDate(e.target.value)} />
                     </div>
                   </div>
                   <div className="col-12 d-flex mt-3">
                     <div className="col-4">
-                      <label htmlFor="expirydateinput" className="form-label" style={{ fontWeight: 'bold' }}>Expiry Date</label>
+                      <label htmlFor="expirydateinput" className="form-label" >Expiry Date</label>
                     </div>
                     <div className="col-8">
                       <input type="date" className="form-control" id="expirydateinput" onChange={(e) => setNewRevenueLicenceExpiryDate(e.target.value)} />
@@ -364,7 +356,7 @@ export default function Vehicle() {
                   </div>
                   <div className="col-12 d-flex">
                     <div className="col-4">
-                      <label htmlFor="Insuranceissueddateinput" className="form-label" style={{ fontWeight: 'bold' }}>Issued Date</label>
+                      <label htmlFor="Insuranceissueddateinput" className="form-label" >Issued Date</label>
                     </div>
                     <div className="col-8">
                       <input type="date" className="form-control" id="Insuranceissueddateinput" onChange={(e) => setNewInsuranceIssuedDate(e.target.value)} />
@@ -372,7 +364,7 @@ export default function Vehicle() {
                   </div>
                   <div className="col-12 d-flex mt-3">
                     <div className="col-4">
-                      <label htmlFor="Insuranceexpirydateinput" className="form-label" style={{ fontWeight: 'bold' }}>Expiry Date</label>
+                      <label htmlFor="Insuranceexpirydateinput" className="form-label" >Expiry Date</label>
                     </div>
                     <div className="col-8">
                       <input type="date" className="form-control" id="Insuranceexpirydateinput" onChange={(e) => setNewInsuranceExpiryDate(e.target.value)} />
@@ -382,19 +374,35 @@ export default function Vehicle() {
               </div>
             </div>
 
+            {/* <div className="row ">
+                <div className="col-6">
+                  <label for="imageUpload" className="form-label ">Choose an image:</label>
+                  <input type="file" id="imageUpload" className="form-control"accept="image/*"/>
+                </div>
+            </div> */}
+
             {/* Add and Cancel row */}
-            <div className="row mt-4 ">
-              <div className="col-10 "></div>
-              <div className="col-2 d-flex justify-content-end gap-2 ">
-                <button type="button" className="btn btn-primary w-100" style={{ borderRadius: '25px' }} onClick={handlesubmit}>Add</button>
-                <button type="button" className="btn btn-secondary w-100" style={{ borderRadius: '25px' }}>Cancel</button>
+            <div className="row justify-content-center mt-4 ">
+              <div className="col-6 ">
+               <button type="button" className="btn btn-success w-100"  onClick={handlesubmit}>Add</button>
               </div>
             </div>
-           </div>
+
+            <div className="row justify-content-center mt-4 ">
+              <div className="col-3">
+                <button type="button" className="btn btn-danger w-100" >Cancel</button>
+              </div>
+            </div>
+
+            
+            </div>
 
 
           </div>
-        </form>
+        
+          </div>
+        </div>
+          
       </div>
 
               

@@ -8,6 +8,7 @@ export default function Journeyclientdetails() {
   const navigate = useNavigate();
   const [clientName, setClientName] = useState('');  
   const [lastJourneyId,setLastJourneyId] = useState('');
+  const [lastJourneyVehicleId,setLastJourneyVehicleId] = useState('');
   const [clientPhoneNo, setClientPhoneNo] = useState('');
   const [clientAddress, setClientAddress] = useState(''); 
   const [clientNIC, setClientNIC] = useState(''); 
@@ -22,7 +23,8 @@ export default function Journeyclientdetails() {
         return response.json();
     })
     .then((data)=>{
-        setLastJourneyId(data)
+        setLastJourneyId(data.journeyId)
+        setLastJourneyVehicleId(data.vehicleId)
     })
     .catch((error)=>{
         console.error(error)
@@ -81,7 +83,8 @@ export default function Journeyclientdetails() {
   }
 
   function handleCancelSubmit (){
-        fetch(`https://localhost:7096/api/Client/CancelJourney?journeyId=${lastJourneyId}`,
+    // console.log(`Journey ID: ${lastJourneyId}, Vehicle ID: ${lastJourneyVehicleId}`);
+        fetch(`https://localhost:7096/api/Client/CancelJourney?journeyId=${lastJourneyId}&vehicleId=${lastJourneyVehicleId}`,
             {
                 method:"POST",
                 headers: {
@@ -112,6 +115,7 @@ export default function Journeyclientdetails() {
   return (
     <div>
         {lastJourneyId}
+        {lastJourneyVehicleId}
         {/* FOR TESTING PURPOSE
         
         {clientName}

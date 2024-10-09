@@ -15,6 +15,7 @@ namespace LMU_Final_Project_Web.Controllers
     {
 
         JourneyRepository journeyRepository = new JourneyRepository();
+        VehicleRepository vehicleRepository = new VehicleRepository();
         [Route("[action]")]
         [HttpGet]
         public ActionResult<List<Journey>> GetAllJourneys()
@@ -31,26 +32,34 @@ namespace LMU_Final_Project_Web.Controllers
         public ActionResult<List<int>>GetVehicleId(int userId)
         {
             JourneyRepository journeyRepository = new JourneyRepository();
-            List<int> plate_nos = journeyRepository.GetVehicleId(userId);
-            return Ok(plate_nos);
+            List<int> vehicleId = journeyRepository.GetVehicleId(userId);
+            return Ok(vehicleId);
         }
 
         [Route("[action]")]
         [HttpPost]
         public ActionResult AddJourney ([FromBody]Journey journey )
         {
-           JourneyRepository journeyRepository = new JourneyRepository();
+            JourneyRepository journeyRepository = new JourneyRepository();
+           
+
             
                 bool isAdded = journeyRepository.AddJourney(journey);
 
-                if (isAdded)
+            if (isAdded)
+            {
+                bool isVehicleStatusAdded = vehicleRepository.UpdateVehicleStatus(journey.Vehicle_id);
+                if (isVehicleStatusAdded)
                 {
                     return Ok(new { message = "Journey addded successfully" });
                 }
-                else
-                {
-                    return BadRequest("Failed to add dthe journey");
-                }
+                return BadRequest("Failed to add the journey");
+
+            }
+            else
+            {
+                return BadRequest("Failed to add the journey");
+            }
             
            
         }
@@ -69,19 +78,25 @@ namespace LMU_Final_Project_Web.Controllers
                 return NotFound();
 
             }
-            int journeyId = Convert.ToInt32(journeyIdDataTable.Rows[0]["Journey_id"]);
+            else
+            {
+                int journeyId = Convert.ToInt32(journeyIdDataTable.Rows[0]["Journey_id"]);
+                int vehicleId = Convert.ToInt32(journeyIdDataTable.Rows[0]["Vehicle_id"]);
+               
 
-            return Ok(journeyId);
+              
+               
+                    return Ok(new { journeyId, vehicleId });
+               
+            }
+            
+
+            
 
 
 
         }
-        //public ActionResult InsertJourney([FromBody]Journey journey)
-        //{
-
-        //    return Ok();
-        //}
-
+        
 
     }
 }

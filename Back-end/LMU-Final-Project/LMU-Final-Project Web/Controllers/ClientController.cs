@@ -46,11 +46,12 @@ namespace LMU_Final_Project_Web.Controllers
         [Route("[action]")]
         [HttpPost]
 
-        public ActionResult CancelJourney(int journeyId)
+        public ActionResult CancelJourney(int journeyId, int vehicleId)
         {
             bool isCancelled = clientRepository.CancelJourney(journeyId);
+            bool isUpdated = clientRepository.UpdateVehicleStatus(vehicleId);
 
-            if(isCancelled)
+            if(isCancelled&&isUpdated)
             {
                 return Ok(new { message = " Journey Cancelled Successfully" }); 
             }

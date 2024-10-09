@@ -22,6 +22,7 @@ export default function Vehicleupdate() {
   const [licenceExpiryDate,setLicenceExpirydate] = useState("");
   const [insuranceIssuedDate,setInsuranceIssuedDate] = useState("");
   const [insuranceExpiryDate,setInsuranceExpiry] = useState("");
+  const [vehicleStatus, setVehiclestatus] = useState("");
 
 
   
@@ -59,7 +60,8 @@ export default function Vehicleupdate() {
       setLicenceIssuedDate(vehicledata.licenceIssuedDate?.split('T')[0] || ""),
       setLicenceExpirydate(vehicledata.licenceExpiryDate?.split('T')[0] || ""),
       setInsuranceIssuedDate(vehicledata.insuranceIssuedDate?.split('T')[0] || ""),
-      setInsuranceExpiry(vehicledata.insuranceExpiryDate?.split('T')[0] || "")
+      setInsuranceExpiry(vehicledata.insuranceExpiryDate?.split('T')[0] || ""),
+      setVehiclestatus(vehicledata.vehicleStatus)
     ))
 
   }, [vehicleById]);
@@ -74,6 +76,7 @@ export default function Vehicleupdate() {
     const vehiclelicenceExpiryDate =  licenceExpiryDate.trim();
     const vehicleinsuranceIssuedDate = insuranceIssuedDate.trim();
     const vehicleinsuranceExpiryDate = insuranceExpiryDate.trim();
+    const VehicleStatus = vehicleStatus.trim();
 
 
     // console.log(vehicletype);
@@ -100,7 +103,8 @@ export default function Vehicleupdate() {
           LicenceIssuedDate:vehiclelicenceIssuedDate,
           LicenceExpiryDate:vehiclelicenceExpiryDate,
           InsuranceIssuedDate:vehicleinsuranceIssuedDate,
-          InsuranceExpiryDate:vehicleinsuranceExpiryDate
+          InsuranceExpiryDate:vehicleinsuranceExpiryDate,
+          vehicleStatus:VehicleStatus
         })
 
         
@@ -112,7 +116,7 @@ export default function Vehicleupdate() {
       .then(data =>{
         console.log(data)
         // setVehicles([...vehicles,data]);
-        alert("user added successfully");
+        alert("Vehicle Updated  successfully");
         
 
         // setNewVehicleModel(" ");
@@ -135,12 +139,14 @@ export default function Vehicleupdate() {
       <h1>{licenceExpiryDate}</h1>
       <h1>{insuranceIssuedDate}</h1>
       <h1>{insuranceExpiryDate}</h1> */}
+      {/* {vehicleStatus}
+      {model} */}
       <form>
       <div className='addvehiclecontent card text-bg-light  mx-1 mt-3'>
          {/* heading row */}
          <div className="row mt-2 mx-2 ">
                   <div className="col d-flex justify-content-center">
-                    <h4>Vehicle General Information</h4>
+                    <h4>Update Vehicle Data</h4>
                   </div>
                   
               </div>
@@ -224,6 +230,23 @@ export default function Vehicleupdate() {
                   
                 </div>
               </div>
+              {/*Vehicle Status*/}
+
+              <div className="row mt-4 mx-2">
+                <div className="col-4">
+                    <label for="vehicleStatus" className="form-label" >Vehicle Status</label>    
+                </div>
+                <div className="col-4">
+                  
+                <select className="form-control " id="vehicleStatus" name="vehicleStatus"  value={vehicleStatus} onChange={(e) => setVehiclestatus(e.target.value)}>
+                    <option  disabled selected>Select Status </option>
+                    <option>Available </option>
+                    <option>!Available </option>
+                </select>
+              
+                  
+                </div>
+              </div>
               
               
           </div>
@@ -282,13 +305,17 @@ export default function Vehicleupdate() {
           </div>
         </div>
         {/* Add and Cancel row */}
-        <div className="row">
-          <div className="col-10"></div>
-          <div className="col d-flex justify-content-end gap-2">
-           <button type="button" class="btn btn-primary w-100" onClick={handleUpdate}>Update</button>
-           <button type="button" class="btn btn-primary w-100"><Link to="/Vehicle" className='text-decoration-none' style={{color:'White'}}>Cancel</Link></button>
+        <div className="row justify-content-center mt-4  mx-2 "> 
+          <div className="col-3 d-flex gap-2">
+            <button type="button" class="btn btn-success w-100" onClick={handleUpdate}>Update</button>
           </div>
-        </div> 
+        </div>
+
+        <div className="row justify-content-center my-2  mx-2 "> 
+          <div className="col-2 d-flex gap-2">
+            <button type="button" class="btn btn-danger w-100"><Link to="/Vehicle" className='text-decoration-none' style={{color:'White'}}>Cancel</Link></button>
+          </div>
+        </div>
       </div>
           
       </form>

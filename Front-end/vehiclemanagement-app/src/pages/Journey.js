@@ -36,7 +36,7 @@ export default function Journey() {
     const UserId = localStorage.getItem("userId");
     setUserId(UserId);
 
-    fetch(`https://localhost:7096/api/Journey/GetVehicleId?userId=${userId}`) // Replace with your correct API URL
+    fetch(`https://localhost:7096/api/Journey/GetVehicleId?userId=${UserId}`) // Replace with your correct API URL
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -102,7 +102,7 @@ export default function Journey() {
         .then(data =>{
           console.log(data);
           
-          alert("sdbccbxnbnm")
+          // alert("sdbccbxnbnm")
           setShowAlert(true);
   
           // Auto-hide the alert after 3 seconds
@@ -145,138 +145,140 @@ export default function Journey() {
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Journey Start</button>
-            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Journey End</button>
+            <button class="nav-link" id="nav-Journeyend-tab" data-bs-toggle="tab" data-bs-target="#nav-Journeyend" type="button" role="tab" aria-controls="nav-Journeyend" aria-selected="false">Journey End</button>
+            <button class="nav-link" id="nav-Journeyhistory-tab" data-bs-toggle="tab" data-bs-target="#nav-Journeyhistory" type="button" role="tab" aria-controls="nav-Journeyhistory" aria-selected="false">Journey history</button>
             
           </div>
         </nav>
-        <div class="tab-content" id="nav-tabContent">
+          <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-            <div className='startjourneycontent card text-bg-light  mx-1 mt-3'>
-              
-              <div className="row">
-                {/* journey vehicle column */}
-                <div className="col-6">
-                  {/* heading row */}
-                  <div className="row mt-2 mx-2">
-                    <div className="col ">
-                      <h4>Journey Details</h4>
+            <div className='row justify-content-center'>
+              <div className='col-6'>
+                <div className='card'>
+                  <div className='card-header'>
+                    <h4 className='text-center'>Journey Details</h4>
+                  </div>
+                  <div className='card-body'>
+
+                  </div>
+                
+                <div className="row">
+                  
+                  
+                  
+                    {/* {userId}
+                    
+                    {jouneyStartDate}
+                    {odoReading}
+                    {journeyDescription}
+                    {malfunction}
+                    {vehiclePhoto}
+                    {clientName}
+                    {clientPhoneNo}
+                    {clientAddress}
+                    {clientNIC}
+                    {drivingLicensePhoto} */}
+
+                    {/* Vehicle Id*/}
+                    <div className="row my-1 mx-2">
+                      <div className="col-4">
+                        <label for="plateno" className="form-label">Vehicle Id</label>
+                      </div>
+                      <div className="col-4">
+                        <div class="btn-group w-100">
+                          <button type="button" class="btn btn-secondary" style={{backgroundColor:'#24314C'}}>{vehicleId}</button>
+                          <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:'#24314C'}} required>
+                            <span class="visually-hidden">Toggle Dropdown</span>
+                          </button>
+                          <ul class="dropdown-menu">
+                            {allVehicleId.map((vehicleId)=>(
+                              <li key={vehicleId}><a class="dropdown-item" href="#" onClick={()=>setVehicleId(vehicleId)}>{vehicleId}</a></li>
+                            ))}
+                            
+                            
+                          </ul>
+                        </div>
+
+                      </div>
                     </div>
+                    {/* date row */}
+
+                    <div className="row my-1 mx-2">
+                      <div className="col-4">
+                        <label for="dateinput" className="form-label">Date</label>
+                      </div>
+                      <div className="col-4" >
+                      <input type="datetime-local" className='form-control' id="dateinput" onChange={(e)=>setJouneyStartDate(e.target.value)} />
+                      </div>
+                    </div>
+
+                    
+                    {/* odemeter reading row */}
+                    <div className="row my-1 mx-2">
+                      <div className='col-11'>
+                        <label for="odometerreadinginput" className="form-label">Odometer Reading(Km)</label>
+                        <input  type="text" className="form-control w-100" id="odometerreadinginput" value={odoReading} onChange={(e) => setOdoReading(e.target.value.replace(/\D/g, ''))}  maxLength={6}/>
+                      </div>
+                    </div>
+                    {/* Journey Description */}
+                    <div className="row my-1 mx-2">
+                      <div className='col-11'>
+                      <label for="journeydescription" className="form-label">Journey Description</label>
+                      <textarea className="form-control " id="journeydescription" value={journeyDescription} onChange={(e) => setJourneyDescription(e.target.value)} />
+                      </div>
+                       
+                    </div>
+                    {/* Malfunction*/}
+                    <div className="row my-1 mx-2">
+                      <div className='col-11'>
+                        <label for="malfunctioninput" className="form-label">Malfunction</label>
+                        <textarea className="form-control w-100" id="malfunctioninput" value={malfunction}onChange={(e) => setMalfunction(e.target.value)} />
+                      </div>
+                      
+                    </div>
+                    {/* uploadvehiclephotos
+                    <div className="row mt-4 mx-2">
+                      <div className="col-4">
+                        <label for="uploadinput" className="form-label">Upload Vehicle Photo</label>
+                      </div>
+                      <div className="col-6">
+                        <input class="form-control" type="file"  id="vehiclePhotoInput" onChange={(e) => setVehiclePhoto(e.target.files[0])}/>
+                      </div>
+                    </div> */}
+                  
+                    
                     
                   </div>
-                  {/* Testing Purpose */}
-                  {allVehicleId}
-                  {userId}
-                  {vehicleId}
-                  {jouneyStartDate}
-                  {odoReading}
-                  {journeyDescription}
-                  {malfunction}
-                  {vehiclePhoto}
-                  {clientName}
-                  {clientPhoneNo}
-                  {clientAddress}
-                  {clientNIC}
-                  {drivingLicensePhoto}
-
-                  {/* Vehicle Id*/}
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="plateno" className="form-label">Vehicle Id</label>
-                    </div>
-                    <div className="col-4">
-                      <div class="btn-group w-100">
-                        <button type="button" class="btn btn-secondary" style={{backgroundColor:'#24314C'}}>{vehicleId}</button>
-                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:'#24314C'}} required>
-                          <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                          {allVehicleId.map((vehicleId)=>(
-                            <li key={vehicleId}><a class="dropdown-item" href="#" onClick={()=>setVehicleId(vehicleId)}>{vehicleId}</a></li>
-                          ))}
-                          
-                          
-                        </ul>
+                  
+                {/* save and cancel row */}
+                <div className="row d-flex justify-content-center my-1"> 
+                      <div className='col-6'>
+                        <button type="button" class="btn btn-success w-100"onClick={handleSubmit}>Next</button>
                       </div>
+                </div>
 
-                    </div>
-                  </div>
-                  {/* date row */}
-
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="dateinput" className="form-label">Date</label>
-                    </div>
-                    <div className="col-4" >
-                    <input type="Date" className='form-control' id="dateinput" onChange={(e)=>setJouneyStartDate(e.target.value)} />
-                    </div>
-                  </div>
-
-                  
-                  {/* odemeter reading row */}
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="odometerreadinginput" className="form-label">Odometer Reading(Km)</label>
-                    </div>
-                    <div className="col-4">
-                      
-                      <input  type="number" className="form-control w-100" id="odometerreadinginput" value={odoReading} onChange={(e) => setOdoReading(e.target.value)}  />
-                    </div>
-                  </div>
-                  {/* Journey Description */}
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="journeydescription" className="form-label">Journey Description</label>
-                    </div>
-                    <div className="col-4">
-                      
-                      <textarea className="form-control " id="journeydescription" value={journeyDescription} onChange={(e) => setJourneyDescription(e.target.value)} />
-                    </div>
-                  </div>
-                  {/* Malfunction*/}
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="malfunctioninput" className="form-label">Malfunction</label>
-                    </div>
-                    <div className="col-4">
-                      
-                      <textarea className="form-control w-100" id="malfunctioninput" value={malfunction}onChange={(e) => setMalfunction(e.target.value)} />
-                    </div>
-                  </div>
-                  {/* uploadvehiclephotos
-                  <div className="row mt-4 mx-2">
-                    <div className="col-4">
-                      <label for="uploadinput" className="form-label">Upload Vehicle Photo</label>
-                    </div>
-                    <div className="col-6">
-                      <input class="form-control" type="file"  id="vehiclePhotoInput" onChange={(e) => setVehiclePhoto(e.target.files[0])}/>
-                    </div>
-                  </div> */}
-                 
-                  
-                  
+                <div className="row d-flex justify-content-center my-1"> 
+                      <div className='col-3'>
+                      <button type="button" class="btn btn-danger w-100">Cancel</button>
+                      </div>
+                </div>
                 </div>
                 
-              </div>
-              {/* save and cancel row */}
-              <div className="row d-flex justify-content-center mt-5"> 
-                <div className="col-2 d-flex gap-2">
-                  <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}} onClick={handleSubmit}>Next</button>
-                  
-                  <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}}>Cancel</button>
+              
                 </div>
-                
               </div>
-            
-            </div>
-            {showAlert && (
+              {showAlert && (
               <div className="alert alert-success" role="alert">
                 Data inserted successfully!
               </div>
             )}
-          
           </div>
-          {/* End Journey Tab */}
-          <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            
+            
+          
+             {/* End Journey Tab */}
+          
+          <div class="tab-pane fade" id="nav-Journeyend" role="tabpanel" aria-labelledby="nav-Journeyend-tab">
             <div className='card '>
             <div className="row">
               <div className="col-6">
@@ -399,9 +401,35 @@ export default function Journey() {
             
           </div>
           
+          
+
+          {/* Journey History Tab */}
+          <div class="tab-pane fade" id="nav-Journeyhistory" role="tabpanel" aria-labelledby="nav-Journeyhistory-tab">
+              <div className='row justify-content-center mt-3 mx-1'>
+                <div class =" col-md-12">
+                  <table id="tblCategory" class=" table table-striped table-bordered table-hover" >
+                    <thead>
+                      <tr>
+                        <th>Journey ID</th>
+                        <th>Vehicle ID</th>
+                        <th>Client Name</th>
+                        <th>NIC No</th>
+                        <th>Date of Departure</th>
+                        <th>Journey Status</th>
+                        
+                      </tr>
+
+                    </thead>
+                  </table>
+                </div>
+              </div>
+            
+          </div>
+          </div>
+         
         </div>
       
       </div>
-    </div>
+    
   )
 }

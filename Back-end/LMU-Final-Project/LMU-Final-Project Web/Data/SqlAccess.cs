@@ -144,8 +144,6 @@ namespace LMU_Final_Project_Web.Data
                     service.Description = Convert.ToString(reader["Description"]);
                     service.Date = Convert.ToDateTime(reader["Date"]);
                     service.Amount = Convert.ToDouble(reader["Amount"]);
-                    service.Additional_expensesdescription = Convert.ToString(reader["Additional_expensesdescription"]);
-                    service.Additional_expensesamount = Convert.ToInt32(reader["Additional_expensesamount"]);
                     service.Created_by = Convert.ToString(reader["Created_by"]);
                     service.Created_on = Convert.ToDateTime(reader["Created_on"]);
                     service.Modify_by = Convert.ToString(reader["Modify_by"]);
@@ -179,7 +177,7 @@ namespace LMU_Final_Project_Web.Data
                     repair.Phone_no = Convert.ToInt32(reader["Phone_no"]);
                     repair.Malfunction_details = Convert.ToString(reader["Malfunction_details"]);
                     repair.Total_amount = Convert.ToDouble(reader["Total_amount"]);
-                    repair.Repaired_parts = Convert.ToString(reader["Repaired_parts"]); ;
+                    //repair.Repaired_parts = Convert.ToString(reader["Repaired_parts"]); ;
                     repair.Created_by = Convert.ToString(reader["Created_by"]);
                     repair.Created_on = Convert.ToDateTime(reader["created_on"]);
                     repair.Modify_by = Convert.ToString(reader["Modify_by"]);
@@ -232,7 +230,7 @@ namespace LMU_Final_Project_Web.Data
                 {
                     Journey journey = new Journey();
                     journey.Journey_id = Convert.ToInt32(reader["Journey_id"]);
-                    journey.vehicle_id = Convert.ToInt32(reader["Vehicle_id"]);
+                    journey.Vehicle_id = Convert.ToInt32(reader["Vehicle_id"]);
                     journey.Started_date = Convert.ToDateTime(reader["Started_date"]);
                     journey.End_date = Convert.ToDateTime(reader["End_date"]);
                     journey.Odometerreading_beforejourney = Convert.ToInt32(reader["Odometerreading_beforejourney"]);
@@ -329,6 +327,7 @@ namespace LMU_Final_Project_Web.Data
                     vehicle.LicenceExpiryDate = Convert.ToDateTime(reader["Licence_Expiry_Date"]);
                     vehicle.InsuranceIssuedDate = Convert.ToDateTime(reader["Insurance_Issued_Date"]);
                     vehicle.InsuranceExpiryDate = Convert.ToDateTime(reader["Insurance_Expiry_Date"]);
+                    vehicle.VehicleStatus = Convert.ToString(reader["VehicleStatus"]);
 
 
                     vehicles.Add(vehicle);
@@ -442,6 +441,7 @@ namespace LMU_Final_Project_Web.Data
                     Session.ID = Convert.ToInt32(reader["User_id"]);
                     Session.UserName = reader["User_name"].ToString();
                     Session.FullName = reader["FullName"].ToString();
+                    Session.UserType = reader["UserType"].ToString();
                     return true;
                 }
 

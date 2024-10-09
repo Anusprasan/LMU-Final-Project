@@ -2,140 +2,296 @@ import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import {useEffect,useState } from 'react';
 
 export default function Maintenance() {
+
+  const [userId,setUserId] = useState('');
+  const [vehicleIds, setVehicleIds] = useState([]);
+  const [vehicleId,setVehicleId] =useState('');
+  const [repairDate,setRepairDate] = useState('');
+  const [garageName,setGarageName] = useState('');
+  const [address,setAddress] = useState('');
+  const [phoneNo,setPhoneNo] = useState('');
+  const [malfunctionDetails,setMalfunctionDetails] =useState('');
+  const [totalAmount, setTotalAmount] =useState('');
+  const [serviceVehicleId, setServiceVehicleId] = useState('');
+  const [vehicleServicedate, setVehicleServiceDate] = useState();
+  const [serviceOdoReading, setServiceOdoReading] = useState();
+  const [service,setService] = useState('');
+  const [servicePhoneNo, setServicePhoneNo] = useState('');
+  const [serviceDescription, setServiceDescription] = useState('');
+  const [serviceTotalAmount,setServiceTotalAmount] = useState('');
+
+
+
+  useEffect(()=>{
+    const userid = localStorage.getItem("userId");
+    setUserId(userid)
+
+    fetch(`https://localhost:7096/api/Repair/GetVehicleId?userId=${userid}`)
+    .then(response=>{
+      if(!response.ok){
+        throw new Error ('Network response was not ok ');
+      }
+      return response.json();
+    })
+    .then(data =>{
+        setVehicleIds(data);
+    
+    })
+    .catch(err =>{
+
+      console.error(err)
+    })
+  },[]);
+
+  function handleRepairSubmit(){
+    const repairData = {
+        vehicle_id : vehicleId,
+        garage_name : garageName,
+        date: repairDate,
+        address : address,
+        phone_no : phoneNo,
+        malfunction_details : malfunctionDetails,
+        total_amount : totalAmount,
+        created_by : userId
+        
+
+    }
+
+    if(!vehicleId||!repairDate||!garageName||!address||!phoneNo||!malfunctionDetails||!totalAmount){
+      alert("Enter Valid Data For All Fields");
+    }
+    else{
+      fetch('https://localhost:7096/api/Repair/InsertVehicleRepairs',
+        {
+          method:"POST",
+          headers:{
+            "Content-Type": "application/json"
+          },
+
+          body:JSON.stringify(repairData)
+        }
+      )
+      .then(response =>{
+        if(!response.ok){
+          throw new Error(`Http error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data =>{
+        console.log(data);
+        alert("Repairs added successfully")
+
+      })
+      .catch((err)=>{
+        console.error(err);
+        alert("Operation Failed")
+      })
+    }
+
+    
+  }
+
+  function handleServiceSubmit(){
+
+    const serviceData ={
+      vehicle_Id : serviceVehicleId,
+      service_center : service,
+      phone_no : servicePhoneNo,
+      odometer_reading : serviceOdoReading,
+      description : serviceDescription,
+      date :vehicleServicedate,
+      amount :serviceTotalAmount,
+      created_by : userId
+    
+
+    }
+
+    if(!vehicleId||!service||!servicePhoneNo||!serviceOdoReading||!serviceDescription||!serviceOdoReading||!vehicleServicedate||!serviceTotalAmount){
+      alert("Enter valid data for all fields");
+    }else{
+        fetch ('https://localhost:7096/api/Service/InsertService',
+      {
+        method : "POST",
+        headers:{
+          "Content-Type": "application/json"
+        },
+
+        body:JSON.stringify(serviceData)
+
+      }
+    )
+    .then(response =>{
+      if(!response.ok){
+        throw new Error(`Http error!Status :${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data =>{
+      console.log(data);
+
+      alert("Service Added SuccessFully")
+    })
+    .catch(err=>{
+      console.log(err);
+      alert("operaton Failed");
+    })
+    }
+
+  
+  }
+
+  function handleCancel(){
+    setVehicleId('');
+    setRepairDate('');
+    setGarageName('');
+    setAddress('');
+    setPhoneNo('');
+    setMalfunctionDetails('');
+    setTotalAmount('');
+    setVehicleId('');
+
+  }
+
+  function handleServiceCancel(){
+    setServiceVehicleId('');
+    setVehicleServiceDate('');
+    setServiceOdoReading('');
+    setService('');
+    setServicePhoneNo('');
+    setServiceDescription('');
+    setServiceTotalAmount('');
+  }
+  
   return (
     <div>
+      {/* {vehicleIds} */}
+      {/* {vehicleId}
+      {repairDate}
+      {garageName}
+      {address}
+      {phoneno}
+      {malfunctionDetails}
+      {totalAmount} */}
+
+      {vehicleServicedate}
+      {serviceOdoReading}
+      {service}
+      {servicePhoneNo}
+      {serviceDescription}
+      {serviceTotalAmount}
+      {serviceVehicleId}
+
       {/* nav row */}
       <div className="row">
+
           <nav>
             <div class="nav nav-tabs " id="nav-tab" role="tablist">
-              <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Add Repairs</button>
-              <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Maintenance History</button>
+              <button class="nav-link active" id="nav-AddRepair-tab" data-bs-toggle="tab" data-bs-target="#nav-AddRepair" type="button" role="tab" aria-controls="nav-AddRepair" aria-selected="true">Add Repairs</button>
+              <button class="nav-link" id="nav-AddService-tab" data-bs-toggle="tab" data-bs-target="#nav-AddService" type="button" role="tab" aria-controls="nav-AddService" aria-selected="false">Add Services</button>
+              <button class="nav-link" id="nav-MaintenanceHistory-tab" data-bs-toggle="tab" data-bs-target="#nav-MaintenanceHistory" type="button" role="tab" aria-controls="nav-MaintenanceHistory" aria-selected="false">Maintenance History</button>
              
             </div>
           </nav>
           <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-            <div className="row">
+            <div class="tab-pane fade show active" id="nav-AddRepair" role="tabpanel" aria-labelledby="nav-AddRepair-tab">
+            <div className="row justify-content-center">
               <div className="col-6">
-                <div className='startjourneycontent card text-bg-light  mx-1 mt-3'>
-                    {/* heading row */}
-                      <div className="row mt-2 mx-2 ">
-                        <div className="col d-flex justify-content-center">
-                          <h4>Vehicle Repairs</h4>
-                        </div>
-                        
-                      </div>
+                <div className='card'>
+                  <div className='card-header'>
+                    <h4 className='text-center'>Vehicle Repairs</h4>
+                  </div>
+                  
+                  <div className='card-body'>
+                    
+                  </div>
 
-                    {/* save and cancel row */}
-                    <div className="row d-flex mt-4 mx-2 "> 
-                      <div className="col-3 d-flex gap-2">
-                        <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}}>Save</button>
-                        <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}}>Cancel</button>
-                      </div>
-                      
-                    </div>
+                  
             
                     
                     {/* plateno */}
-                    <div className="row mt-4 mx-2 ">
+                    <div className="row  mx-2 ">
                         <div className="col-5">
-                          <label for="plateno" className="form-label">Plate No</label>
+                          <label for="plateno" className="form-label">Vehicle Id</label>
                         </div>
-                        <div className="col-3">
-                          <div class="btn-group w-100">
-                            <button type="button" class="btn btn-secondary" style={{backgroundColor:'#24314C'}}>Select</button>
-                            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:'#24314C'}}>
-                              <span class="visually-hidden">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="#">Action</a></li>
-                              <li><a class="dropdown-item" href="#">Another action</a></li>
-                              <li><a class="dropdown-item" href="#">Something else here</a></li>
-                              <li><a class="dropdown-item" href="#">Separated link</a></li>
-                            </ul>
-                          </div>
+                        <div className="col-5">
+                            <select class="form-control " id="vehicleType" name="vehicleType"  value={vehicleId} onChange={(e) => setVehicleId(e.target.value)}>
+                                <option value="" disabled selected>Select Vehicle </option>
+                                
+                                  {vehicleIds.map((ids,index)=>(
+                                    <option key={index} >{ids}</option>
+                                  ))}
+                            </select>
+                          
 
                         </div>
                       </div>
 
                     {/* date row */}
-                    <div className="row mt-4 mx-2 ">
+                    <div className="row my-2 mx-2 ">
                       <div className="col-5">
                         <label for="dateinput" className="form-label">Date</label>
                       </div>
-                      <div className="col-6" >
-                      <input type="Date" className='form-control' id="dateinput" />
+                      <div className="col-5" >
+                      <input type="Datetime-local" className='form-control' id="dateinput"  value={repairDate} onChange={(e)=>setRepairDate(e.target.value)} />
                       </div>
                     </div>
 
                     {/* Garage Name */}
-                    <div className="row mt-4 mx-2 ">
-                      <div className="col-5">
+                    <div className="row  mx-2 ">
+                      <div className='col'>
                         <label for="garagenameinput" className="form-label">Garage Name</label>
-                      </div>
-                      <div className="col-6">
-                        
-                        <input  type="text" className="form-control w-100" id="garagenameinputs" />
+                        <input  type="text" className="form-control w-100" id="garagenameinputs" value={garageName} onChange={(e)=>setGarageName(e.target.value)}/>
                       </div>
                     </div>
                     {/* Garage Address */}
-                    <div className="row mt-4 mx-2 ">
-                    <div className="col-5">
-                      <label for="garageaddressinput" className="form-label">Address</label>
+                    <div className="row  mx-2 ">
+                      <div className='col'>
+                        <label for="garageaddressinput" className="form-label">Address</label> 
+                        <input  type="text" className="form-control " id="garageaddressinput" value={address} onChange={(e)=>setAddress(e.target.value)}/>
+                      </div>
                     </div>
-                    <div className="col-6">
-                      
-                      <input  type="text" className="form-control " id="garageaddressinput" />
-                    </div>
-                  </div>
 
-                  {/* Garage Phone No */}
-                  <div className="row mt-4 mx-2 ">
-                    <div className="col-5">
-                      <label for="garagephonenoinput" className="form-label">Phone No</label>
+                    {/* Garage Phone No */}
+                    <div className="row  mx-2 ">
+                      <div className='col'>
+                        <label for="garagephonenoinput" className="form-label">Phone No</label>
+                        <input  type="tel" className="form-control " id="garagephonenoinput" value={phoneNo} onChange={(e) => setPhoneNo(e.target.value.replace(/\D/g, ''))} maxLength={10} />
+                      </div>
+                     
                     </div>
-                    <div className="col-6">
-                      
-                      <input  type="text" className="form-control " id="garagephonenoinput" />
-                    </div>
-                  </div>
 
                   {/* Malfunction details */}
-                  <div className="row mt-4 mx-2 ">
-                    <div className="col-5">
+                  <div className="row  mx-2 ">
+                    <div className='col'>
                       <label for="malfunctioninput" className="form-label">Malfunction Details</label>
-                    </div>
-                    <div className="col-6">
-                      
-                      <textarea className="form-control " id="malfunctioninput" />
+                      <textarea className="form-control " id="malfunctioninput"  value={malfunctionDetails} onChange={(e)=>setMalfunctionDetails(e.target.value)}/>
                     </div>
                   </div>
 
                   {/* Total Payment */}
-                  <div className="row mt-4 mx-2 ">
-                    <div className="col-5">
+                  <div className="row  mx-2 ">
+                    <div className='col'>
                       <label for="totalamountinput" className="form-label">Total Amount</label>
-                    </div>
-                    <div className="col-6">
-                      
-                      <input  type="number" className="form-control " id="totalamountinput" />
+                      <input  type="number" className="form-control " id="totalamountinput" value={totalAmount} onChange={(e)=> setTotalAmount(e.target.value)}/>
                     </div>
                   </div>
 
-                  {/* repaired parts */}
-                  <div className="row mt-4 mx-2 ">
-                      <div className="col-5">
-                        <label for="repairedpartsinput" className="form-label">Repaired Parts</label>
-                      </div>
-                      <div className="col-6 d-flex gap-2">
-                        
-                        <input  type="text" className="form-control w-100" id="repairedpartsinput" />
-                        <button type="button" class="btn " style={{backgroundColor:'#24314C',color:'white'}}>+</button>
-
-                      </div>
+                 
+                  {/* save and cancel row */}
+                  <div className="row my-2 justify-content-center"> 
+                    <div className="col-6">
+                      <button type="button" class="btn btn-success w-100"  onClick={handleRepairSubmit}>Save</button>
                     </div>
+                  </div>
+
+                  <div className="row my-2 justify-content-center"> 
+                    <div className="col-3">
+                      <button type="button" class="btn btn-danger w-100" onClick={handleCancel}>Clear</button>
+                    </div>
+                  </div>
 
                   
                   
@@ -146,141 +302,134 @@ export default function Maintenance() {
                 </div>
 
               </div>
-              <div className="col-6">
-                <div className='startjourneycontent card text-bg-light  mx-1 mt-3'>
-                    {/* heading row */}
-                      <div className="row mt-2 mx-2 ">
-                        <div className="col d-flex justify-content-center">
-                          <h4>General Services</h4>
-                        </div>
-                        
-                      </div>
+              
 
-                    {/* save and cancel row */}
-                    <div className="row d-flex mt-4 mx-2 "> 
-                      <div className="col-3 d-flex gap-2">
-                        <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}}>Save</button>
-                        <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}}>Cancel</button>
-                      </div>
-                      
-                    </div>
+            </div>
             
-                    
-                    {/* plateno */}
-                    <div className="row mt-4 mx-2 ">
-                        <div className="col-5">
-                          <label for="plateno" className="form-label">Plate No</label>
-                        </div>
-                        <div className="col-3">
-                          <div class="btn-group w-100">
-                            <button type="button" class="btn btn-secondary" style={{backgroundColor:'#24314C'}}>Select</button>
-                            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:'#24314C'}}>
-                              <span class="visually-hidden">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="#">Action</a></li>
-                              <li><a class="dropdown-item" href="#">Another action</a></li>
-                              <li><a class="dropdown-item" href="#">Something else here</a></li>
-                              <li><a class="dropdown-item" href="#">Separated link</a></li>
-                            </ul>
+            </div>
+            <div class="tab-pane fade" id="nav-AddService" role="tabpanel" aria-labelledby="nav-AddService-tab">
+              <div className='row justify-content-center'>
+                <div className="col-6">
+                  <div className='card'>
+                    <div className='card-header'>
+                      <h4 className='text-center'>General Services</h4>
+                    </div>
+
+                    <div className='card-body'>
+                      {/* plateno */}
+                      <div className="row mt-4 mx-2 ">
+                          <div className="col-5">
+                            <label for="plateno" className="form-label">Vehicle Id</label>
                           </div>
+                          
+                          <div className="col-6">
+                            
+                            <select class="form-control " id="vehicleType" name="vehicleType" value={serviceVehicleId} onChange={(e) => setServiceVehicleId(e.target.value)}>
+                            <option value="" disabled selected>Select Vehicle </option>
+                            {vehicleIds.map((ids,index)=>(
+                               <option key={index} >{ids}</option>
+                            ))}
+                                
+                               
+                               
+                            </select>
+                          
 
+                          </div>
+                      </div>
+
+                      
+              
+                      
+                      
+
+                      {/* date row */}
+                      <div className="row mt-4 mx-2 ">
+                        <div className="col-5">
+                          <label for="dateinput" className="form-label">Date</label>
+                        </div>
+                        <div className="col-6" >
+                        <input type="Datetime-local" className='form-control' id="dateinput" value={vehicleServicedate} onChange={(e)=> setVehicleServiceDate(e.target.value)}/>
                         </div>
                       </div>
 
-                    {/* date row */}
-                    <div className="row mt-4 mx-2 ">
-                      <div className="col-5">
-                        <label for="dateinput" className="form-label">Date</label>
+                      {/* odemeter reading row */}
+                      <div className="row  mx-2">
+                        <div className="col">
+                          <label for="odometerreadinginput" className="form-label" >Odometer Reading(Km)</label>
+                          <input  type="text" className="form-control w-100" id="odometerreadinginput" value={serviceOdoReading} onChange={(e) => setServiceOdoReading(e.target.value.replace(/\D/g, ''))}  maxLength={10}/>
+                        </div>
                       </div>
-                      <div className="col-6" >
-                      <input type="Date" className='form-control' id="dateinput" />
-                      </div>
-                    </div>
 
-                    {/* odemeter reading row */}
-                    <div className="row mt-4 mx-2">
-                      <div className="col-5">
-                        <label for="odometerreadinginput" className="form-label">Odometer Reading(Km)</label>
+                      {/* Service Center */}
+                      <div className="row  mx-2 ">
+                        <div className="col">
+                          <label for="servicecenterinput" className="form-label">Service Center</label>
+                          <input  type="text" className="form-control w-100" id="servicecenterinput" value={service} onChange={(e)=>setService(e.target.value)}/>
+                        </div>
+                      </div>                         
+                          
+                      {/* Service  Phone No */}
+                      <div className="row  mx-2 ">
+                        <div className="col">
+                          <label for="centerphonenoinput" className="form-label">Phone No</label>
+                          <input  type="text" className="form-control " id="centerphonenoinput" value={servicePhoneNo} onChange={(e)=>setServicePhoneNo(e.target.value.replace(/\D/g, ''))} maxLength={10}/>
+                        </div>
                       </div>
-                      <div className="col-6">
                         
-                        <input  type="text" className="form-control w-100" id="odometerreadinginput" />
+                      {/* Service Description */}
+                      <div className="row  mx-2 ">
+                        <div className="col">
+                          <label for="servicedescriptioninput" className="form-label">Service Description </label>
+                          <textarea className="form-control " id="servicedescriptioninput" value={serviceDescription} onChange={(e)=>setServiceDescription(e.target.value)}/>
+                        </div>
                       </div>
-                    </div>
-
-                    {/* Service Center */}
-                    <div className="row mt-4 mx-2 ">
-                      <div className="col-5">
-                        <label for="servicecenterinput" className="form-label">Service Center</label>
-                      </div>
-                      <div className="col-6">
                         
-                        <input  type="text" className="form-control w-100" id="servicecenterinput" />
+                      {/* Total Payment */}
+                      <div className="row  mx-2 ">
+                        <div className="col">
+                          <label for="totalamountinput" className="form-label">Total Amount</label>
+                          <input  type="number" className="form-control " id="totalamountinput" value={serviceTotalAmount} onChange={(e)=>setServiceTotalAmount(e.target.value)}/>
+                        </div>
                       </div>
-                    </div>
-                   
-                  {/* Service  Phone No */}
-                  <div className="row mt-4 mx-2 ">
-                    <div className="col-5">
-                      <label for="centerphonenoinput" className="form-label">Phone No</label>
-                    </div>
-                    <div className="col-6">
-                      
-                      <input  type="text" className="form-control " id="centerphonenoinput" />
-                    </div>
-                  </div>
-
-                  {/* Service Description */}
-                  <div className="row mt-4 mx-2 ">
-                    <div className="col-5">
-                      <label for="servicedescriptioninput" className="form-label">Service Description </label>
-                    </div>
-                    <div className="col-6">
-                      
-                      <textarea className="form-control " id="servicedescriptioninput" />
-                    </div>
-                  </div>
-
-                  {/* Total Payment */}
-                  <div className="row mt-4 mx-2 ">
-                    <div className="col-5">
-                      <label for="totalamountinput" className="form-label">Total Amount</label>
-                    </div>
-                    <div className="col-6">
-                      
-                      <input  type="number" className="form-control " id="totalamountinput" />
-                    </div>
-                  </div>
-
-                  {/* Additional Expenses */}
-                  <div className="row mt-4 mx-2 ">
-                      <div className="col-5">
-                        <label for="additionalexpenses" className="form-label">Additional Expenses</label>
-                      </div>
-                      <div className="col-7 d-flex gap-2">
                         
-                        <input  type="text" className="form-control w-100" id="additionalexpenses" placeholder='description'/>
-                        <input  type="number" className="form-control w-100" id="additionalexpenses" placeholder='Amount'/>
-                        <button type="button" class="btn " style={{backgroundColor:'#24314C',color:'white'}}>+</button>
-
+                      {/* save and cancel row */}
+                      <div className="row justify-content-center my-2  mx-2 "> 
+                        <div className="col-6 d-flex gap-2">
+                          <button type="button" class="btn btn-success w-100" onClick={handleServiceSubmit}>Save</button>
+                        </div>
                       </div>
+
+                      <div className="row justify-content-center my-1  mx-2 "> 
+                        <div className="col-3 d-flex gap-2">
+                          <button type="button" class="btn btn-danger w-100" onClick={handleServiceCancel} >Cancel</button>
+                        </div>
+                      </div>
+
+                      
+                        
+                    
                     </div>
 
+                  </div>
                   
-                  
-            
                      
 
+                      
+
                     
+                    
+              
+                      
+
+                      
+                  
+
                 </div>
-
               </div>
-
             </div>
-            
-            </div>
-            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <div class="tab-pane fade" id="nav-MaintenanceHistory" role="tabpanel" aria-labelledby="nav-MaintenanceHistory-tab">
+              dfsdffgfdgfdgfdg
             </div>
             
           </div>

@@ -6,5 +6,6 @@
         public static int ID;
         public static string FullName;
         public static string UserName;
+        public static string UserType;
     }
 }
