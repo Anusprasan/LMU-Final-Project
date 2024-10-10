@@ -312,8 +312,8 @@ export default function Vehicleupdate() {
         </div>
 
         <div className="row justify-content-center my-2  mx-2 "> 
-          <div className="col-2 d-flex gap-2">
-            <button type="button" class="btn btn-danger w-100"><Link to="/Vehicle" className='text-decoration-none' style={{color:'White'}}>Cancel</Link></button>
+          <div className="col-2">
+            <Link to="/Vehicle" className='text-decoration-none' style={{color:'White'}}><button type="button" class="btn btn-danger w-100">Cancel</button></Link>
           </div>
         </div>
       </div>

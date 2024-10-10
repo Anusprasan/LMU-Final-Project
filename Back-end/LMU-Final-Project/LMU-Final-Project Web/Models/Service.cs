@@ -3,6 +3,8 @@
     public class Service
     {
         public int? Service_id { get; set; } 
+        public int? CompanyId { get; set; }
+        public int? UserId { get; set; }
 
         public int? Vehicle_Id { get; set; }
         public string? Service_center { get; set; }

@@ -3,9 +3,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {useEffect,useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Maintenance() {
-
+  const navigate = useNavigate();
   const [userId,setUserId] = useState('');
   const [vehicleIds, setVehicleIds] = useState([]);
   const [vehicleId,setVehicleId] =useState('');
@@ -22,12 +23,34 @@ export default function Maintenance() {
   const [servicePhoneNo, setServicePhoneNo] = useState('');
   const [serviceDescription, setServiceDescription] = useState('');
   const [serviceTotalAmount,setServiceTotalAmount] = useState('');
+  const [companyId,setCompanyId] = useState('');
+  const [allRepairDatas,setAllRepairDatas] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [updateInputData, setUpdateInputData]  = useState('');
 
 
 
   useEffect(()=>{
     const userid = localStorage.getItem("userId");
-    setUserId(userid)
+    setUserId(userid);
+
+    const CompanyId = localStorage.getItem("companyId");
+    setCompanyId(CompanyId);
+
+    fetch(`https://localhost:7096/api/Repair/GetAllRepairData?companyId=${CompanyId}`)
+    .then(response =>{
+      if(!response.ok){
+        throw new Error(`Http error! status:${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data=>{
+      console.log(data);
+      setAllRepairDatas(data);
+    })
+    .catch(error =>{
+      console.error('Error fetching repair Data',error);
+    })
 
     fetch(`https://localhost:7096/api/Repair/GetVehicleId?userId=${userid}`)
     .then(response=>{
@@ -55,7 +78,10 @@ export default function Maintenance() {
         phone_no : phoneNo,
         malfunction_details : malfunctionDetails,
         total_amount : totalAmount,
-        created_by : userId
+        created_by : userId,
+        userId,
+        companyId
+
         
 
     }
@@ -104,7 +130,9 @@ export default function Maintenance() {
       description : serviceDescription,
       date :vehicleServicedate,
       amount :serviceTotalAmount,
-      created_by : userId
+      created_by : userId,
+      companyId,
+      userId
     
 
     }
@@ -164,6 +192,30 @@ export default function Maintenance() {
     setServiceDescription('');
     setServiceTotalAmount('');
   }
+
+  function handleViewClick(repairId){
+    navigate(`/RepairViewMore/${repairId}`);
+    
+  }
+
+  const filteredRepairDatas = allRepairDatas.filter((data) => {
+    return (
+      data.repair_id.toString().includes(searchTerm) ||
+      data.date.includes(searchTerm) ||
+      data.vehicle_id.toString().includes(searchTerm) ||
+      data.garage_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      data.phone_no.toString().includes(searchTerm) ||
+      data.total_amount.toString().includes(searchTerm)
+    );
+  });
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+ const handleTableOnclick=(repairId)=>{
+      setUpdateInputData(repairId);
+  };
   
   return (
     <div>
@@ -189,14 +241,83 @@ export default function Maintenance() {
 
           <nav>
             <div class="nav nav-tabs " id="nav-tab" role="tablist">
-              <button class="nav-link active" id="nav-AddRepair-tab" data-bs-toggle="tab" data-bs-target="#nav-AddRepair" type="button" role="tab" aria-controls="nav-AddRepair" aria-selected="true">Add Repairs</button>
+              <button class="nav-link active" id="nav-RepairHistory-tab" data-bs-toggle="tab" data-bs-target="#nav-RepairHistory" type="button" role="tab" aria-controls="nav-RepairHistory" aria-selected="true">Repair History</button>
+              <button class="nav-link " id="nav-ServiceHistory-tab" data-bs-toggle="tab" data-bs-target="#nav-ServiceHistory" type="button" role="tab" aria-controls="nav-ServiceHistory" aria-selected="false">Service History</button>
+              <button class="nav-link " id="nav-AddRepair-tab" data-bs-toggle="tab" data-bs-target="#nav-AddRepair" type="button" role="tab" aria-controls="nav-AddRepair" aria-selected="false">Add Repairs</button>
               <button class="nav-link" id="nav-AddService-tab" data-bs-toggle="tab" data-bs-target="#nav-AddService" type="button" role="tab" aria-controls="nav-AddService" aria-selected="false">Add Services</button>
-              <button class="nav-link" id="nav-MaintenanceHistory-tab" data-bs-toggle="tab" data-bs-target="#nav-MaintenanceHistory" type="button" role="tab" aria-controls="nav-MaintenanceHistory" aria-selected="false">Maintenance History</button>
+              
              
             </div>
           </nav>
           <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-AddRepair" role="tabpanel" aria-labelledby="nav-AddRepair-tab">
+            <div class="tab-pane fade show active" id="nav-RepairHistory" role="tabpanel" aria-labelledby="nav-RepairHistory-tab">
+              <div className='row mx-1 mt-3'>
+                <div className='col'>
+                  <input
+                    type="text"
+                    className="form-control w-25"
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    
+                  />
+                </div>
+                <div className='col-3 d-flex justify-content-end'> 
+                  <input className='form-control mx-2' type="text" id="updateRepair" placeholder="Enter RepairId..." value={updateInputData} />
+                  <button className='btn btn-success mx-2'>Update</button>
+                  
+                  <button className='btn btn-danger'>Delete</button>
+                  
+
+                </div>
+              </div>
+              <div className='row justify-content-center mt-3 mx-1'>
+                <div class =" col-md-12">
+                  
+                  <table id="tblCategory" class=" table table-striped table-bordered table-hover" >
+                    <thead>
+                      <tr>
+                        <th>Repair ID</th>
+                        <th>Date</th>
+                        <th>Vehicle Id</th>
+                        <th>Garage Name</th>
+                        <th>Contact Number</th>
+                        <th>Total Amount</th>
+                        <th></th>
+                      </tr>
+
+                    </thead>
+                    <tbody>
+                      {filteredRepairDatas.length>0?(
+                        filteredRepairDatas.map((data)=>(
+                          <tr key={data.repair_id} onClick={()=>handleTableOnclick(data.repair_id)}>
+                            <td>{data.repair_id}</td>
+                            <td>{data.date}</td>
+                            <td>{data.vehicle_id}</td>
+                            <td>{data.garage_name}</td>
+                            <td>{data.phone_no}</td>
+                            <td>{data.total_amount}</td>
+                            <td className='text-center'><button className='btn btn-info' onClick={()=>handleViewClick(data.repair_id)}>View</button></td>
+                          
+
+                        </tr>
+                        ))
+                      ):(
+                        <tr>
+                          <td colSpan="7" className="text-center">No results found</td>
+                        </tr>
+                      )}
+                     
+                      
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade " id="nav-ServiceHistory" role="tabpanel" aria-labelledby="nav-ServiceHistory-tab">
+                Anush
+            </div>
+            <div class="tab-pane fade " id="nav-AddRepair" role="tabpanel" aria-labelledby="nav-AddRepair-tab">
             <div className="row justify-content-center">
               <div className="col-6">
                 <div className='card'>
@@ -427,9 +548,6 @@ export default function Maintenance() {
 
                 </div>
               </div>
-            </div>
-            <div class="tab-pane fade" id="nav-MaintenanceHistory" role="tabpanel" aria-labelledby="nav-MaintenanceHistory-tab">
-              dfsdffgfdgfdgfdg
             </div>
             
           </div>

@@ -442,6 +442,7 @@ namespace LMU_Final_Project_Web.Data
                     Session.UserName = reader["User_name"].ToString();
                     Session.FullName = reader["FullName"].ToString();
                     Session.UserType = reader["UserType"].ToString();
+                    Session.CompanyId = Convert.ToInt32(reader["CompanyId"]);
                     return true;
                 }
 

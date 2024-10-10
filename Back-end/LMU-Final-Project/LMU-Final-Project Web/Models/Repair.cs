@@ -6,6 +6,8 @@ namespace LMU_Final_Project_Web.Models
     public class Repair
     {
         public int? Repair_id { get; set; }
+        public int? CompanyId { get; set; }
+        public int? UserId { get; set; }
         public int? Vehicle_id { get; set; }
         public string? Garage_name { get; set; }
         public DateTime? Date { get; set; }

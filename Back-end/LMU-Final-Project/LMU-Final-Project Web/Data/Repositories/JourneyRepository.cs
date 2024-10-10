@@ -24,7 +24,7 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
         public bool AddJourney(Journey journey)
         {
-            string SqlString = $"Insert into Journey (Vehicle_id,UserId,Started_date,Odometerreading_beforejourney,Journey_description,Vehiclestatus_beforejourney,JourneyStatus) values ('{journey.Vehicle_id}','{journey.UserId}','{journey.Started_date}','{journey.Odometerreading_beforejourney}','{journey.Journey_description}','{journey.Vehiclestatus_beforejourney}','In Progress')";
+            string SqlString = $"Insert into Journey (CompanyId,Vehicle_id,UserId,Started_date,Odometerreading_beforejourney,Journey_description,Vehiclestatus_beforejourney,JourneyStatus,CreatedBy,CreatedOn) values ('{journey.CompanyId}','{journey.Vehicle_id}','{journey.UserId}','{journey.Started_date}','{journey.Odometerreading_beforejourney}','{journey.Journey_description}','{journey.Vehiclestatus_beforejourney}','In Progress','{journey.UserId}',GETDATE())";
 
             return sqlAccess.Insertdata(SqlString);
 
@@ -38,6 +38,12 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
             return sqlAccess.GetDataFromTables(SqlString);
         }
-                
+
+        public DataTable GetJourneyDataTable()
+        {
+            string SqlString = "select Journey_id,Vehicle_id,Started_date,JourneyStatus";
+
+            return sqlAccess.GetDataFromTables(SqlString);
         }
+    }
 }

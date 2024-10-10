@@ -4,6 +4,7 @@
 
     {
         public int? Journey_id { get; set; }
+        public int? CompanyId { get; set; }
         public int? Vehicle_id { get; set; }
         public int? UserId { get; set; }
         public DateTime? Started_date { get; set; }

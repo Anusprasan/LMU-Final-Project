@@ -21,12 +21,16 @@ export default function Vehicle() {
   const [vehicleStatus,setVehicleStatus] = useState("");
   const [hoveredVehicleId, setHoveredVehicleId] = useState(null);
   const [userId,setUserId] = useState('');
+  const [companyId,setCompanyId] = useState('');
  
 
   useEffect(()=>{
     // GetVehicleData();
     const userId = localStorage.getItem("userId");
     setUserId(userId);
+
+    const CompanyId = localStorage.getItem("companyId");
+    setCompanyId(CompanyId); 
     
     
     fetch('https://localhost:7096/api/VehicleType/GetAllVehicleTypes')
@@ -51,7 +55,7 @@ export default function Vehicle() {
     )
     .catch((err)=>console.log(err))
      
-    fetch(`https://localhost:7096/api/Vehicle/GetAllVehicles?userId=${userId}`)
+    fetch(`https://localhost:7096/api/Vehicle/GetAllVehicles?companyId=${CompanyId}`)
     .then((response)=>response.json())
     .then((data)=>{
       
@@ -82,6 +86,8 @@ export default function Vehicle() {
      const InsuranceIssuedDate = newInsuranceIssuedDate.trim();
      const InsuranceExpiryDate = newInsuranceExpirydate.trim();
      const User_id  = userId;
+     const CompanyId =companyId;
+     
      
     // console.log(type);
     // console.log(model);
@@ -108,7 +114,8 @@ export default function Vehicle() {
         InsuranceIssuedDate,
         InsuranceExpiryDate,
         vehicleStatus:"",
-        User_id
+        User_id,
+        CompanyId
         
       })
     })

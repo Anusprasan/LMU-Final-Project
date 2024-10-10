@@ -3,9 +3,11 @@
     public class Session
 
     {
-        public static int ID;
-        public static string FullName;
-        public static string UserName;
-        public static string UserType;
+        public static int? ID { get; set; }
+        public static string? FullName { get; set; }
+        public static string? UserName { get; set; }
+
+        public static string? UserType { get; set; }
+        public static int? CompanyId { get; set; }
     }
 }

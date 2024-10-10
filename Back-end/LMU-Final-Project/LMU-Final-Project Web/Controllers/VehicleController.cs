@@ -18,10 +18,10 @@ namespace LMU_Final_Project_Web.Controllers
         
         [Route("[action]")]
         [HttpGet]
-        public ActionResult<Vehicle>  GetAllVehicles(int userId)
+        public ActionResult<List<Vehicle>>  GetAllVehicles(int companyId)
         {
            VehicleRepository vehicleRepositoryObject = new VehicleRepository();
-           var vehicleList = vehicleRepositoryObject.GetVehicles(userId);
+           var vehicleList = vehicleRepositoryObject.GetVehicles(companyId);
            
            return Ok(vehicleList);
             

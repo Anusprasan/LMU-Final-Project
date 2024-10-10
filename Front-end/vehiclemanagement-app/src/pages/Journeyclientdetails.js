@@ -6,14 +6,22 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Journeyclientdetails() {
   const navigate = useNavigate();
+  const [userId,setUserId] = useState('');
   const [clientName, setClientName] = useState('');  
   const [lastJourneyId,setLastJourneyId] = useState('');
   const [lastJourneyVehicleId,setLastJourneyVehicleId] = useState('');
   const [clientPhoneNo, setClientPhoneNo] = useState('');
   const [clientAddress, setClientAddress] = useState(''); 
   const [clientNIC, setClientNIC] = useState(''); 
+  const [companyId,setCompanyId] = useState('');
 
   useEffect(()=>{
+
+    const UserId = localStorage.getItem("userId");
+    setUserId(UserId);
+
+    const CompanyId =localStorage.getItem("companyId");
+    setCompanyId(CompanyId)
     fetch('https://localhost:7096/api/Journey/GetJourneyId')
     .then((response) =>{
         if(!response.ok){
@@ -38,7 +46,12 @@ export default function Journeyclientdetails() {
         phone_no : clientPhoneNo,
         address: clientAddress,
         nic_no :clientNIC,
-        Journey_id: lastJourneyId
+        Journey_id: lastJourneyId,
+        companyId,
+        created_by:userId,
+        vehicleId:lastJourneyVehicleId,
+        userId
+        
         
 
     };
@@ -68,6 +81,7 @@ export default function Journeyclientdetails() {
             .then(data =>{
                 console.log(data);
                 alert("Journey Added Successfully");
+                navigate("/Journey/");
             })
             .catch((err)=>{
                 console.log(err);

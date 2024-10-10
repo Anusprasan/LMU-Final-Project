@@ -1,4 +1,5 @@
 ﻿using LMU_Final_Project_Web.Models;
+using System.Data;
 
 namespace LMU_Final_Project_Web.Data.Repositories
 {
@@ -14,8 +15,22 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
         public bool InsertVehicleRepairs(Repair repair)
         {
-            string SqlString = $"Insert into Repair (Vehicle_id,Garage_name,Date,Address,Phone_no, Malfunction_details,Total_amount) values('{repair.Vehicle_id}', '{repair.Garage_name}','{repair.Date}','{repair.Address}','{repair.Phone_no}','{repair.Malfunction_details}','{repair.Total_amount}')";
+            string SqlString = $"Insert into Repair (CompanyId,UserId,Vehicle_id,Garage_name,Date,Address,Phone_no, Malfunction_details,Total_amount,created_by,created_on) values('{repair.CompanyId}','{repair.UserId}','{repair.Vehicle_id}', '{repair.Garage_name}','{repair.Date}','{repair.Address}','{repair.Phone_no}','{repair.Malfunction_details}','{repair.Total_amount}','{repair.UserId}',GETDATE())";
             return sqlAccess.Insertdata(SqlString);
+        }
+
+        public DataTable GetAllRepairData(int companyId)
+        {
+            string SqlString = $"select * from Repair where CompanyId = '{companyId}'";
+            return sqlAccess.GetDataFromTables(SqlString);
+
+        }
+
+        public DataTable GetRepairDataByRepairId(int repairId)
+        {
+            string SqlString = $"select * from Repair where Repair_id = '{repairId}'";
+
+            return sqlAccess.GetDataFromTables(SqlString);
         }
     }
 }

@@ -96,7 +96,15 @@ namespace LMU_Final_Project_Web.Controllers
 
 
         }
-        
+
+        //public ActionResult<List<Journey>> GetAllJourneyDatas()
+        //{
+
+        //    DataTable journeyDataTable = journeyRepository.GetJourneyDataTable();
+
+        //    return Ok();
+        //}
+
 
     }
 }

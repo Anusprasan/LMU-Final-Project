@@ -15,7 +15,7 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
         public bool AddClients(Client client)
         {
-            string SqlString = $" Insert into Client (Journey_id,Name,Address,Phone_no,Nic_no) values ('{client.Journey_id}','{client.Name}','{client.Address}','{client.Phone_no}','{client.Nic_no}')";
+            string SqlString = $" Insert into Client (CompanyId,UserId,VehicleId,Journey_id,Name,Address,Phone_no,Nic_no,Created_by,Created_on) values ('{client.CompanyId}','{client.UserId}','{client.VehicleId}','{client.Journey_id}','{client.Name}','{client.Address}','{client.Phone_no}','{client.Nic_no}','{client.Created_by}',GETDATE())";
             return sqlAccess.Insertdata(SqlString);
         }
 

@@ -20,14 +20,14 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
         public void AddVehicle(Vehicle vehicleData)
         {
-            string sqlString = $"insert into Vehicle (Type,Brand,Model,Plate_no ,Licence_Issued_Date,Licence_Expiry_Date ,Insurance_Issued_Date ,Insurance_Expiry_Date, VehicleStatus,User_id) values('{vehicleData.Type}','{vehicleData.Brand}','{vehicleData.Model}','{vehicleData.Plate_no}','{vehicleData.LicenceIssuedDate}','{vehicleData.LicenceExpiryDate }','{vehicleData.InsuranceIssuedDate }','{vehicleData.InsuranceExpiryDate }','Available','{vehicleData.User_id}')";
+            string sqlString = $"insert into Vehicle (Type,Brand,Model,Plate_no ,Licence_Issued_Date,Licence_Expiry_Date ,Insurance_Issued_Date ,Insurance_Expiry_Date, VehicleStatus,User_id,CompanyId,Created_by,Created_on) values('{vehicleData.Type}','{vehicleData.Brand}','{vehicleData.Model}','{vehicleData.Plate_no}','{vehicleData.LicenceIssuedDate}','{vehicleData.LicenceExpiryDate }','{vehicleData.InsuranceIssuedDate }','{vehicleData.InsuranceExpiryDate }','Available','{vehicleData.User_id}','{vehicleData.CompanyId}','{vehicleData.User_id}',GETDATE())";
             sqlAccess.InsertVehicle(sqlString);
         }
         
-        public List<Vehicle> GetVehicles(int userId)
+        public List<Vehicle> GetVehicles(int companyId)
            
         {
-            string sqlString = $"select Vehicle_id,model,type,brand,plate_no,Licence_Issued_Date,Licence_Expiry_Date,Insurance_Issued_Date,Insurance_Expiry_Date,vehicleStatus from dbo.vehicle  where User_id={userId} order by Vehicle_id";
+            string sqlString = $"select Vehicle_id,model,type,brand,plate_no,Licence_Issued_Date,Licence_Expiry_Date,Insurance_Issued_Date,Insurance_Expiry_Date,vehicleStatus from dbo.vehicle  where CompanyId={companyId} order by Vehicle_id";
 
             return sqlAccess.LoadVehicles(sqlString);
             

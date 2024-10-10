@@ -28,6 +28,7 @@ function App() {
       localStorage.setItem('fullName',data.fullName)
       localStorage.setItem('userId',data.userId)
       localStorage.setItem('userType',data.userType)
+      localStorage.setItem('companyId',data.companyId)
       setIsAuthenticated(true); 
        
     

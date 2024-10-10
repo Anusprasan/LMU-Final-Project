@@ -28,6 +28,8 @@ export default function Journey() {
   const [clientNIC, setClientNIC] = useState(''); 
   const [drivingLicensePhoto, setDrivingLicensePhoto] = useState('');
   const [showAlert, setShowAlert] = useState(false);
+  const [companyId,setCompanyId] = useState('');
+ 
   // const [journey,setJouney] = useState({
 
   // })
@@ -35,6 +37,9 @@ export default function Journey() {
 
     const UserId = localStorage.getItem("userId");
     setUserId(UserId);
+
+    const CompanyId = localStorage.getItem("companyId");
+    setCompanyId(CompanyId);
 
     fetch(`https://localhost:7096/api/Journey/GetVehicleId?userId=${UserId}`) // Replace with your correct API URL
       .then(response => {
@@ -71,7 +76,8 @@ export default function Journey() {
        journey_description :journeyDescription,
       //  vehiclestatus_beforejouney :"",
       //  vehiclestatus_afterjounrey : "",
-       Vehiclestatus_beforejourney : malfunction
+       Vehiclestatus_beforejourney : malfunction,
+       companyId
     }
     if(!vehicleId||!jouneyStartDate||!odoReading||!malfunction||!journeyDescription){
       alert("Check your fields");
