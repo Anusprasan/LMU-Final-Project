@@ -490,6 +490,27 @@ namespace LMU_Final_Project_Web.Data
                 return dataTable;
             }
         }
+
+        public bool CheckData(string SqlQuery)
+        {
+            
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(SqlQuery, conn);
+                var result = cmd.ExecuteScalar();
+                conn.Close();
+
+                if (result != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
     }
 }
 

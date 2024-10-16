@@ -2,6 +2,7 @@
 using LMU_Final_Project_Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Server;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -180,6 +181,51 @@ namespace LMU_Final_Project_Web.Controllers
 
 
 
+
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+
+        public ActionResult DeleteRepairData(int repairId)
+        {
+            
+            try
+            {
+                bool isDeleted = repairsRepository.DeleteRepairData(repairId);
+                if (isDeleted)
+                {
+                    return Ok(new { message = "Repair Data Deleted SuccessFully" });
+                }
+                else
+                {
+                    return BadRequest(new { message = "Operation Failed" });
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+            }
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+
+        public ActionResult CheckUserType (int userId)
+        {
+            bool isDataAvailable = repairsRepository.CheckUserType(userId);
+
+
+                if (isDataAvailable)
+                {
+                    return Ok(new { isDataAvailable });
+                }
+                else
+                {
+                return BadRequest(new { message="You Do not Have Permission To Update Repair Data" });
+                }
+           
 
         }
 

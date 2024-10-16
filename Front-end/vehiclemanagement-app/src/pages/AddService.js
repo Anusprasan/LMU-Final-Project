@@ -1,7 +1,6 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+
 import {useEffect,useState } from 'react';
 
 export default function AddService() {
@@ -59,7 +58,7 @@ export default function AddService() {
     
         }
     
-        if(!vehicleId||!service||!servicePhoneNo||!serviceOdoReading||!serviceDescription||!serviceOdoReading||!vehicleServicedate||!serviceTotalAmount){
+        if(!serviceVehicleId||!service||!servicePhoneNo||!serviceOdoReading||!serviceDescription||!serviceOdoReading||!vehicleServicedate||!serviceTotalAmount){
           alert("Enter valid data for all fields");
         }else{
             fetch ('https://localhost:7096/api/Service/InsertService',

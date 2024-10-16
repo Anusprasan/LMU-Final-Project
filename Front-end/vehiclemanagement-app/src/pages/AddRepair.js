@@ -1,7 +1,6 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+
 import {useEffect,useState } from 'react';
 
 export default function AddRepair() {
@@ -82,6 +81,15 @@ export default function AddRepair() {
       .then(data =>{
         console.log(data);
         alert("Repairs added successfully")
+        setVehicleId('');
+        setRepairDate('');
+        setGarageName('');
+        setAddress('');
+        setPhoneNo('');
+        setMalfunctionDetails('');
+        setTotalAmount('');
+        setVehicleId('');
+
 
       })
       .catch((err)=>{

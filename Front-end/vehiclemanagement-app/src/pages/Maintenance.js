@@ -1,7 +1,6 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+
 import {useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,6 +15,15 @@ export default function Maintenance() {
   const [phoneNo,setPhoneNo] = useState('');
   const [malfunctionDetails,setMalfunctionDetails] =useState('');
   const [totalAmount, setTotalAmount] =useState('');
+  const [companyId,setCompanyId] = useState('');
+  const [allRepairDatas,setAllRepairDatas] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [updateInputData, setUpdateInputData]  = useState('');
+  const [repairId , setRepairId] = useState('');
+
+  // service Datas
+  const [allserviceDatas,setAllServiceDatas] = useState([]);
+  const [serviceCompanyId, setServiceCompanyId] = useState('');
   const [serviceVehicleId, setServiceVehicleId] = useState('');
   const [vehicleServicedate, setVehicleServiceDate] = useState();
   const [serviceOdoReading, setServiceOdoReading] = useState();
@@ -23,10 +31,8 @@ export default function Maintenance() {
   const [servicePhoneNo, setServicePhoneNo] = useState('');
   const [serviceDescription, setServiceDescription] = useState('');
   const [serviceTotalAmount,setServiceTotalAmount] = useState('');
-  const [companyId,setCompanyId] = useState('');
-  const [allRepairDatas,setAllRepairDatas] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [updateInputData, setUpdateInputData]  = useState('');
+  const [serviceSearchTerm,setServiceSearchTerm] = useState('');
+  const [serviceUpdateInputData , setSerViceUpdateInputData] = useState('');
 
 
 
@@ -68,6 +74,29 @@ export default function Maintenance() {
       console.error(err)
     })
   },[]);
+
+  // useEffect for Service Tab
+  useEffect(()=>{
+    const CompanyId = localStorage.getItem("companyId");
+    setServiceCompanyId(CompanyId)
+
+    fetch(`https://localhost:7096/api/Service/GetAllServiceData?companyId=${CompanyId}`)
+    .then(response =>{
+      if(!response.ok){
+        throw new Error(`Http Error !Status :${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data =>{
+      console.log(data);
+      setAllServiceDatas(data);
+      
+    })
+    .then(err =>{
+      console.log(err);
+
+    })
+  },[])
 
   function handleRepairSubmit(){
     const repairData = {
@@ -137,7 +166,7 @@ export default function Maintenance() {
 
     }
 
-    if(!vehicleId||!service||!servicePhoneNo||!serviceOdoReading||!serviceDescription||!serviceOdoReading||!vehicleServicedate||!serviceTotalAmount){
+    if(!serviceVehicleId||!service||!servicePhoneNo||!serviceOdoReading||!serviceDescription||!vehicleServicedate||!serviceTotalAmount){
       alert("Enter valid data for all fields");
     }else{
         fetch ('https://localhost:7096/api/Service/InsertService',
@@ -171,27 +200,27 @@ export default function Maintenance() {
   
   }
 
-  function handleCancel(){
-    setVehicleId('');
-    setRepairDate('');
-    setGarageName('');
-    setAddress('');
-    setPhoneNo('');
-    setMalfunctionDetails('');
-    setTotalAmount('');
-    setVehicleId('');
+  // function handleCancel(){
+  //   setVehicleId('');
+  //   setRepairDate('');
+  //   setGarageName('');
+  //   setAddress('');
+  //   setPhoneNo('');
+  //   setMalfunctionDetails('');
+  //   setTotalAmount('');
+  //   setVehicleId('');
 
-  }
+  // }
 
-  function handleServiceCancel(){
-    setServiceVehicleId('');
-    setVehicleServiceDate('');
-    setServiceOdoReading('');
-    setService('');
-    setServicePhoneNo('');
-    setServiceDescription('');
-    setServiceTotalAmount('');
-  }
+  // function handleServiceCancel(){
+  //   setServiceVehicleId('');
+  //   setVehicleServiceDate('');
+  //   setServiceOdoReading('');
+  //   setService('');
+  //   setServicePhoneNo('');
+  //   setServiceDescription('');
+  //   setServiceTotalAmount('');
+  // }
 
   function handleViewClick(repairId){
     navigate(`/RepairViewMore/${repairId}`);
@@ -217,8 +246,164 @@ export default function Maintenance() {
       setUpdateInputData(repairId);
   };
   
+  const handleUpdate=()=>{
+    const navigateToRepairUpdate = async () => {
+      try{
+
+        const UserId = localStorage.getItem('userId');
+        setUserId(UserId);
+        if(updateInputData == ""){
+          alert("Enter Valid Repair ID");
+        
+        }else{
+          const responseCheckUserType= await fetch(`https://localhost:7096/api/Repair/CheckUserType?userId=${UserId}`,{
+            "method":"POST",
+            "headers":{
+              "Content-Type": "application/json"
+            },
+
+          });
+          if(!responseCheckUserType.ok){
+            throw new Error(`Http error! status:${responseCheckUserType.status}`);
+          }
+
+          const data = await responseCheckUserType.json();
+          console.log(data);
+          navigate(`/RepairUpdate/${updateInputData}`);
+
+        }
+      }
+      catch(err){
+        console.error('Error',err)
+        alert("You Do not Have Permission To Update Repair Data");
+      }
+    
+    }
+    navigateToRepairUpdate();
+    
+  }
+
+  const handleRepairDelete=(repairId)=>{
+    fetch(`https://localhost:7096/api/Repair/DeleteRepairData?repairId=${repairId}`,{
+      method:"POST",
+      headers:{
+
+        "Content-Type": "application/json"
+      },
+
+    })
+    .then(response =>{
+      if(!response.ok){
+        throw new Error (`Http error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data =>{
+      console.log(data);
+      alert("Reapir Data Deleted Successfully")
+    })
+    .catch(error =>{
+      console.error(error);
+      alert("Opereation Failed");
+    })
+  }
+
+  const handleAddButtonClick = () =>{
+      navigate("/AddRepair");
+  }
+
+  const filteredServiceDatas = allserviceDatas.filter((data) => {
+    return (
+      data.service_id.toString().includes(serviceSearchTerm) ||
+      data.date.includes(serviceSearchTerm) ||
+      data.vehicle_Id.toString().includes(serviceSearchTerm) ||
+      data.service_center.toLowerCase().includes(serviceSearchTerm.toLowerCase()) ||
+      data.phone_no.toString().includes(serviceSearchTerm) ||
+      data.odometer_reading.toString().includes(serviceSearchTerm)||
+      data.amount.toString().includes(serviceSearchTerm)
+    );
+  });
+
+  const handleServiceTableClick = (serviceId) =>{
+    setSerViceUpdateInputData(serviceId);
+  }
+
+  const serviceAddButtonClick = ()=>{
+    navigate("/AddService");
+  }
+
+  const handleServiceDelete=(serviceId)=>{
+    fetch (`https://localhost:7096/api/Service/DeleteServiceData?serviceId=${serviceId}`,
+      {
+        method : "POST",
+        headers:{
+          "Content-Type": "application/json"
+        },
+
+        
+
+      }
+    )
+    .then(response =>{
+      if(!response.ok){
+        throw new Error(`Http error!Status :${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data =>{
+      console.log(data);
+
+      alert("Service Deleted SuccessFully")
+    })
+    .catch(err=>{
+      console.log(err);
+      alert("operaton Failed");
+    })
+  }
+
+  async function handleServiceUpdate(){
+
+    try{
+      const UserId = localStorage.getItem("userId");
+
+      if(serviceUpdateInputData==""){
+        alert("Enter Valid Service ID");
+        return;
+
+      }
+
+
+      const responseCheckServiceId = await fetch(`https://localhost:7096/api/Service/CheckUserTypeAndServiceId?userId=${UserId}&serviceId=${serviceUpdateInputData}`,{
+        method : "POST",
+        header: {
+          "Content-Type": "application/json"
+        },
+      });
+      if(!responseCheckServiceId.ok){
+        throw new Error(`Http error! status:${responseCheckServiceId.status}`);
+      }
+      const accessStatus = await responseCheckServiceId.json();
+      console.log(accessStatus);
+
+      if(accessStatus.isValidRepairId != true){
+        alert("You Do not Have Any Data For Given Service Id");
+      }
+      else if(accessStatus.isValidUserType != true){
+        alert("You Do not Have Permission to Update This Data");
+
+      }else{
+          navigate(`/ServiceUpdate/${serviceUpdateInputData}`);
+      }
+      
+    }
+    catch(err){
+      console.error("Error",err);
+      alert("An Error Occured");
+    }
+  }
   return (
     <div>
+      {/* {serviceSearchTerm} */}
       {/* {vehicleIds} */}
       {/* {vehicleId}
       {repairDate}
@@ -243,8 +428,7 @@ export default function Maintenance() {
             <div class="nav nav-tabs " id="nav-tab" role="tablist">
               <button class="nav-link active" id="nav-RepairHistory-tab" data-bs-toggle="tab" data-bs-target="#nav-RepairHistory" type="button" role="tab" aria-controls="nav-RepairHistory" aria-selected="true">Repair History</button>
               <button class="nav-link " id="nav-ServiceHistory-tab" data-bs-toggle="tab" data-bs-target="#nav-ServiceHistory" type="button" role="tab" aria-controls="nav-ServiceHistory" aria-selected="false">Service History</button>
-              <button class="nav-link " id="nav-AddRepair-tab" data-bs-toggle="tab" data-bs-target="#nav-AddRepair" type="button" role="tab" aria-controls="nav-AddRepair" aria-selected="false">Add Repairs</button>
-              <button class="nav-link" id="nav-AddService-tab" data-bs-toggle="tab" data-bs-target="#nav-AddService" type="button" role="tab" aria-controls="nav-AddService" aria-selected="false">Add Services</button>
+            
               
              
             </div>
@@ -263,10 +447,10 @@ export default function Maintenance() {
                   />
                 </div>
                 <div className='col-3 d-flex justify-content-end'> 
-                  <input className='form-control mx-2' type="text" id="updateRepair" placeholder="Enter RepairId..." value={updateInputData} />
-                  <button className='btn btn-success mx-2'>Update</button>
+                  <input className='form-control ' type="text" id="updateRepair" placeholder="Enter RepairId..." value={updateInputData} onChange={(e)=>setUpdateInputData(e.target.value)} />
+                  <button className='btn btn-success mx-1' onClick={handleUpdate}>Update</button>
+                  <button className='btn btn-primary w-50' onClick={()=>handleAddButtonClick()}>Add</button>
                   
-                  <button className='btn btn-danger'>Delete</button>
                   
 
                 </div>
@@ -282,7 +466,8 @@ export default function Maintenance() {
                         <th>Vehicle Id</th>
                         <th>Garage Name</th>
                         <th>Contact Number</th>
-                        <th>Total Amount</th>
+                        <th>Total Amount(LKR)</th>
+                        <th></th>
                         <th></th>
                       </tr>
 
@@ -297,7 +482,8 @@ export default function Maintenance() {
                             <td>{data.garage_name}</td>
                             <td>{data.phone_no}</td>
                             <td>{data.total_amount}</td>
-                            <td className='text-center'><button className='btn btn-info' onClick={()=>handleViewClick(data.repair_id)}>View</button></td>
+                            <td className='text-center'><button className='btn btn-info w-75' onClick={()=>handleViewClick(data.repair_id)}>View</button></td>
+                            <td className='text-center'><button className='btn btn-danger w-75'onClick={()=>handleRepairDelete(data.repair_id)}>Delete</button></td>
                           
 
                         </tr>
@@ -315,240 +501,98 @@ export default function Maintenance() {
               </div>
             </div>
             <div class="tab-pane fade " id="nav-ServiceHistory" role="tabpanel" aria-labelledby="nav-ServiceHistory-tab">
-                Anush
-            </div>
-            <div class="tab-pane fade " id="nav-AddRepair" role="tabpanel" aria-labelledby="nav-AddRepair-tab">
-            <div className="row justify-content-center">
-              <div className="col-6">
-                <div className='card'>
-                  <div className='card-header'>
-                    <h4 className='text-center'>Vehicle Repairs</h4>
-                  </div>
-                  
-                  <div className='card-body'>
+            <div className='row mx-1 mt-3'>
+                <div className='col'>
+                  <input
+                    type="text"
+                    id='serviceSearchInput'
+                    name ="serviceSearchInput"
+                    className="form-control w-25"
+                    placeholder="Search..."
+                    value={serviceSearchTerm}
+                    onChange={(e)=>setServiceSearchTerm(e.target.value)}
                     
-                  </div>
-
-                  
-            
-                    
-                    {/* plateno */}
-                    <div className="row  mx-2 ">
-                        <div className="col-5">
-                          <label for="plateno" className="form-label">Vehicle Id</label>
-                        </div>
-                        <div className="col-5">
-                            <select class="form-control " id="vehicleType" name="vehicleType"  value={vehicleId} onChange={(e) => setVehicleId(e.target.value)}>
-                                <option value="" disabled selected>Select Vehicle </option>
-                                
-                                  {vehicleIds.map((ids,index)=>(
-                                    <option key={index} >{ids}</option>
-                                  ))}
-                            </select>
-                          
-
-                        </div>
-                      </div>
-
-                    {/* date row */}
-                    <div className="row my-2 mx-2 ">
-                      <div className="col-5">
-                        <label for="dateinput" className="form-label">Date</label>
-                      </div>
-                      <div className="col-5" >
-                      <input type="Datetime-local" className='form-control' id="dateinput"  value={repairDate} onChange={(e)=>setRepairDate(e.target.value)} />
-                      </div>
-                    </div>
-
-                    {/* Garage Name */}
-                    <div className="row  mx-2 ">
-                      <div className='col'>
-                        <label for="garagenameinput" className="form-label">Garage Name</label>
-                        <input  type="text" className="form-control w-100" id="garagenameinputs" value={garageName} onChange={(e)=>setGarageName(e.target.value)}/>
-                      </div>
-                    </div>
-                    {/* Garage Address */}
-                    <div className="row  mx-2 ">
-                      <div className='col'>
-                        <label for="garageaddressinput" className="form-label">Address</label> 
-                        <input  type="text" className="form-control " id="garageaddressinput" value={address} onChange={(e)=>setAddress(e.target.value)}/>
-                      </div>
-                    </div>
-
-                    {/* Garage Phone No */}
-                    <div className="row  mx-2 ">
-                      <div className='col'>
-                        <label for="garagephonenoinput" className="form-label">Phone No</label>
-                        <input  type="tel" className="form-control " id="garagephonenoinput" value={phoneNo} onChange={(e) => setPhoneNo(e.target.value.replace(/\D/g, ''))} maxLength={10} />
-                      </div>
-                     
-                    </div>
-
-                  {/* Malfunction details */}
-                  <div className="row  mx-2 ">
-                    <div className='col'>
-                      <label for="malfunctioninput" className="form-label">Malfunction Details</label>
-                      <textarea className="form-control " id="malfunctioninput"  value={malfunctionDetails} onChange={(e)=>setMalfunctionDetails(e.target.value)}/>
-                    </div>
-                  </div>
-
-                  {/* Total Payment */}
-                  <div className="row  mx-2 ">
-                    <div className='col'>
-                      <label for="totalamountinput" className="form-label">Total Amount</label>
-                      <input  type="number" className="form-control " id="totalamountinput" value={totalAmount} onChange={(e)=> setTotalAmount(e.target.value)}/>
-                    </div>
-                  </div>
-
-                 
-                  {/* save and cancel row */}
-                  <div className="row my-2 justify-content-center"> 
-                    <div className="col-6">
-                      <button type="button" class="btn btn-success w-100"  onClick={handleRepairSubmit}>Save</button>
-                    </div>
-                  </div>
-
-                  <div className="row my-2 justify-content-center"> 
-                    <div className="col-3">
-                      <button type="button" class="btn btn-danger w-100" onClick={handleCancel}>Clear</button>
-                    </div>
-                  </div>
-
-                  
-                  
-            
-                     
-
-                    
+                  />
                 </div>
-
-              </div>
-              
-
-            </div>
-            
-            </div>
-            <div class="tab-pane fade" id="nav-AddService" role="tabpanel" aria-labelledby="nav-AddService-tab">
-              <div className='row justify-content-center'>
-                <div className="col-6">
-                  <div className='card'>
-                    <div className='card-header'>
-                      <h4 className='text-center'>General Services</h4>
-                    </div>
-
-                    <div className='card-body'>
-                      {/* plateno */}
-                      <div className="row mt-4 mx-2 ">
-                          <div className="col-5">
-                            <label for="plateno" className="form-label">Vehicle Id</label>
-                          </div>
-                          
-                          <div className="col-6">
-                            
-                            <select class="form-control " id="vehicleType" name="vehicleType" value={serviceVehicleId} onChange={(e) => setServiceVehicleId(e.target.value)}>
-                            <option value="" disabled selected>Select Vehicle </option>
-                            {vehicleIds.map((ids,index)=>(
-                               <option key={index} >{ids}</option>
-                            ))}
-                                
-                               
-                               
-                            </select>
-                          
-
-                          </div>
-                      </div>
-
-                      
-              
-                      
-                      
-
-                      {/* date row */}
-                      <div className="row mt-4 mx-2 ">
-                        <div className="col-5">
-                          <label for="dateinput" className="form-label">Date</label>
-                        </div>
-                        <div className="col-6" >
-                        <input type="Datetime-local" className='form-control' id="dateinput" value={vehicleServicedate} onChange={(e)=> setVehicleServiceDate(e.target.value)}/>
-                        </div>
-                      </div>
-
-                      {/* odemeter reading row */}
-                      <div className="row  mx-2">
-                        <div className="col">
-                          <label for="odometerreadinginput" className="form-label" >Odometer Reading(Km)</label>
-                          <input  type="text" className="form-control w-100" id="odometerreadinginput" value={serviceOdoReading} onChange={(e) => setServiceOdoReading(e.target.value.replace(/\D/g, ''))}  maxLength={10}/>
-                        </div>
-                      </div>
-
-                      {/* Service Center */}
-                      <div className="row  mx-2 ">
-                        <div className="col">
-                          <label for="servicecenterinput" className="form-label">Service Center</label>
-                          <input  type="text" className="form-control w-100" id="servicecenterinput" value={service} onChange={(e)=>setService(e.target.value)}/>
-                        </div>
-                      </div>                         
-                          
-                      {/* Service  Phone No */}
-                      <div className="row  mx-2 ">
-                        <div className="col">
-                          <label for="centerphonenoinput" className="form-label">Phone No</label>
-                          <input  type="text" className="form-control " id="centerphonenoinput" value={servicePhoneNo} onChange={(e)=>setServicePhoneNo(e.target.value.replace(/\D/g, ''))} maxLength={10}/>
-                        </div>
-                      </div>
-                        
-                      {/* Service Description */}
-                      <div className="row  mx-2 ">
-                        <div className="col">
-                          <label for="servicedescriptioninput" className="form-label">Service Description </label>
-                          <textarea className="form-control " id="servicedescriptioninput" value={serviceDescription} onChange={(e)=>setServiceDescription(e.target.value)}/>
-                        </div>
-                      </div>
-                        
-                      {/* Total Payment */}
-                      <div className="row  mx-2 ">
-                        <div className="col">
-                          <label for="totalamountinput" className="form-label">Total Amount</label>
-                          <input  type="number" className="form-control " id="totalamountinput" value={serviceTotalAmount} onChange={(e)=>setServiceTotalAmount(e.target.value)}/>
-                        </div>
-                      </div>
-                        
-                      {/* save and cancel row */}
-                      <div className="row justify-content-center my-2  mx-2 "> 
-                        <div className="col-6 d-flex gap-2">
-                          <button type="button" class="btn btn-success w-100" onClick={handleServiceSubmit}>Save</button>
-                        </div>
-                      </div>
-
-                      <div className="row justify-content-center my-1  mx-2 "> 
-                        <div className="col-3 d-flex gap-2">
-                          <button type="button" class="btn btn-danger w-100" onClick={handleServiceCancel} >Cancel</button>
-                        </div>
-                      </div>
-
-                      
-                        
-                    
-                    </div>
-
-                  </div>
+                <div className='col-3 d-flex justify-content-end'> 
+                  <input className='form-control mx-2' type="text" id="updateRepair" placeholder="Enter ServiceId..." value={serviceUpdateInputData} onChange={(e)=>setSerViceUpdateInputData(e.target.value.replace(/\D/g, ''))} />
+                  <button className='btn btn-success mx-2' onClick={handleServiceUpdate}>Update</button>
+                  <button className='btn btn-primary w-50' onClick={serviceAddButtonClick}>Add</button>
                   
-                     
-
-                      
-
-                    
-                    
-              
-                      
-
-                      
                   
 
                 </div>
               </div>
+              <div className='row justify-content-center mt-3 mx-1'>
+                <div class =" col-md-12">
+                  
+                  <table id="tblCategory" class=" table table-striped table-bordered table-hover" >
+                    <thead>
+                      <tr>
+                        <th>Service ID</th>
+                        <th>Date</th>
+                        <th>Vehicle Id</th>
+                        <th>Service Center</th>
+                        <th>Contact Number</th>
+                        <th>Odometer Reading(LKR)</th>
+                        <th>Amount</th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+
+                    </thead>
+                    <tbody>
+                      {filteredServiceDatas.length>0?(
+                        filteredServiceDatas.map((data)=>(
+                          <tr key={data.service_id} onClick={()=>handleServiceTableClick(data.service_id)}>
+                          <td>{data.service_id}</td>
+                          <td>{data.date}</td>
+                          <td>{data.vehicle_Id}</td>
+                          <td>{data.service_center}</td>
+                          <td>{data.phone_no}</td>
+                          <td>{data.odometer_reading}</td>
+                          <td>{data.amount}</td>
+                          <td className='text-center'><button className='btn btn-info w-75'>View</button></td>
+                          <td className='text-center'><button className='btn btn-danger w-75' onClick={()=>handleServiceDelete(data.service_id)}>Delete</button></td>
+
+                          
+                        </tr>
+                          ))
+                        ):(
+                          <tr>
+                          <td colSpan="7" className="text-center">No results found</td>
+                          </tr>
+                        )}
+                      
+                      {/* {filteredRepairDatas.length>0?(
+                        filteredRepairDatas.map((data)=>(
+                          <tr key={data.repair_id} onClick={()=>handleTableOnclick(data.repair_id)}>
+                            <td>{data.repair_id}</td>
+                            <td>{data.date}</td>
+                            <td>{data.vehicle_id}</td>
+                            <td>{data.garage_name}</td>
+                            <td>{data.phone_no}</td>
+                            <td>{data.total_amount}</td>
+                            <td className='text-center'><button className='btn btn-info w-75' onClick={()=>handleViewClick(data.repair_id)}>View</button></td>
+                            <td className='text-center'><button className='btn btn-primary w-75' onClick={()=>handleAddButtonClick(data.repair_id)}>Add</button></td>
+                          
+
+                        </tr>
+                        ))
+                      ):(
+                        <tr>
+                          <td colSpan="7" className="text-center">No results found</td>
+                        </tr>
+                      )}
+                      */}
+                      
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
+            
+           
             
           </div>
       </div>

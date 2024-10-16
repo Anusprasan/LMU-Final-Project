@@ -61,6 +61,19 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
             return sqlAccess.Insertdata(SqlString);
         }
+
+        public bool CheckVehicleId(int vehicleId)
+        {
+            string SqlString = $"select 1 from Vehicle where Vehicle_id = {vehicleId} ";
+
+            return sqlAccess.CheckData(SqlString);
+        }
+
+        public bool CheckUserType (int userId)
+        {
+            string SqlString = $"select 1 from Users where User_id='{userId}' and (UserType='Owner' or UserType = 'Admin')";
+            return sqlAccess.CheckData(SqlString);
+        }
     }
 
 

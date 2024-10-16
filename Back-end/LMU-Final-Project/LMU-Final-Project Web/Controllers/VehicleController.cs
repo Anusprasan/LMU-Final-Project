@@ -14,7 +14,8 @@ namespace LMU_Final_Project_Web.Controllers
     public class VehicleController : ControllerBase
 
     {
-      
+
+        VehicleRepository vehicleRepository = new VehicleRepository();
         
         [Route("[action]")]
         [HttpGet]
@@ -78,6 +79,29 @@ namespace LMU_Final_Project_Web.Controllers
         public ActionResult post(string Data)
         {
             return Ok();
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public ActionResult CheckVehicleIdAndUsertype(int vehicleId, int userId)
+        {
+            try
+            {
+                bool hasValidVehicleId = vehicleRepository.CheckVehicleId(vehicleId);
+
+                bool hasValidUserType = vehicleRepository.CheckUserType(userId);
+
+                
+                return Ok(new { hasValidVehicleId, hasValidUserType });
+                
+               
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred:{ex.Message}");
+
+            }
         }
     }
 }

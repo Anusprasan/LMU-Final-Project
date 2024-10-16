@@ -32,5 +32,18 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
             return sqlAccess.GetDataFromTables(SqlString);
         }
+
+        public bool DeleteRepairData(int repairId)
+        {
+            string SqlString = $"delete from Repair where Repair_id = '{repairId}'";
+            return sqlAccess.Insertdata(SqlString);
+        }
+
+        public bool CheckUserType(int userId)
+        {
+            string SqlString = $" select 1 from Users where User_id ='{userId}' and UserType = 'Owner' ";
+
+            return sqlAccess.CheckData(SqlString);
+        }
     }
 }

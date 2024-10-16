@@ -1,28 +1,21 @@
 import React from 'react'
-import{Toaster,EditableText} from '@blueprintjs/core';
 import {useEffect,useState } from 'react';
-
-
 import { useNavigate } from 'react-router-dom';
+
 export default function Vehicle() {
   const navigate = useNavigate();
-
+  const [searchTerm,setSearchTerm] = useState('');
+  const [updateInputData ,setUpdateInputData] = useState('');
   const [vehicles,setVehicles] = useState([]);
-  const [vehicleTypes,setVehicleTypes] = useState([]);
+  const [vehicleTypes,setVehicleTypes]= useState([]);
   const [newVehicleType,setNewVehicleType] = useState("Select");
   const [vehicleBrands,setVehicleBrands] = useState([]);
   const [newVehicleBrand,setNewVehicleBrand] = useState("Select");
   const [newVehicleModel,setNewVehicleModel] = useState("");
   const [newVehiclePlateNo,setNewVehiclePlateNo] = useState("");
-  const [newRevenueLicenceIssuedDate,setNewRevenueLicenceIssuedDate] = useState("");
-  const [newRevenueLicenceExpiryDate,setNewRevenueLicenceExpiryDate] = useState("");
-  const [newInsuranceIssuedDate,setNewInsuranceIssuedDate] = useState("");
-  const [newInsuranceExpirydate,setNewInsuranceExpiryDate] = useState("");
-  const [vehicleStatus,setVehicleStatus] = useState("");
-  const [hoveredVehicleId, setHoveredVehicleId] = useState(null);
-  const [userId,setUserId] = useState('');
+  const [userId,setUserId] = useState("");
   const [companyId,setCompanyId] = useState('');
- 
+  
 
   useEffect(()=>{
     // GetVehicleData();
@@ -68,138 +61,102 @@ export default function Vehicle() {
           
 
   },[]);
-  //function for get all vehicle data
-//   function GetVehicleData(){
-   
-// }
 
-
-   
-
-  function handlesubmit(){
-     const type = newVehicleType.trim();
-     const brand = newVehicleBrand.trim();
-     const model = newVehicleModel.trim();
-     const plate_no = newVehiclePlateNo.trim();
-     const LicenceIssuedDate =newRevenueLicenceIssuedDate.trim();
-     const LicenceExpiryDate = newRevenueLicenceExpiryDate.trim();
-     const InsuranceIssuedDate = newInsuranceIssuedDate.trim();
-     const InsuranceExpiryDate = newInsuranceExpirydate.trim();
-     const User_id  = userId;
-     const CompanyId =companyId;
-     
-     
-    // console.log(type);
-    // console.log(model);
-    // console.log(brand);
-    // console.log(plate_no);
-    // console.log(LicenceIssuedDate);
-    // console.log(LicenceExpiryDate);
-    // console.log(InsuranceIssuedDate);
-    // console.log(InsuranceExpirydate);
-
-  
-    fetch('https://localhost:7096/api/Vehicle/AddVehicle', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        type,
-        brand,
-        model,
-        plate_no,
-        LicenceIssuedDate,
-        LicenceExpiryDate,
-        InsuranceIssuedDate,
-        InsuranceExpiryDate,
-        vehicleStatus:"",
-        User_id,
-        CompanyId
-        
-      })
-    })
+  const filteredVehicleDatas = vehicles.filter((data) => {
+    return (
+      data.vehicle_id.toString().includes(searchTerm) ||
+      data.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      data.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      data.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      data.plate_no.toLowerCase().includes(searchTerm.toLowerCase()) 
       
-      .then(data => {
-        console.log(data); // The response data from the API
-        alert("Vehicle added successfully");
-        
-        
-        // Reset form fields (optional)
-        // setNewVehicleModel("");
-        // setNewVehiclePlateNo("");
-      })
-      .catch((err) => {
-        console.error('Error:', err); // Catch and log any errors
-        alert("An error occurred while adding the vehicle.");
-        // GetVehicleData();
-      });
-      
-      
-    
+    );
+  });
 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleUpdateClick = () =>{
+
+      const  checkData = async ()=>{
+        try{
+            if(updateInputData==""){
+              alert("Enter Valid Data For All Input Fields");
+              return;
+
+            }
+            const repsonseOfCheckUserIdandVehicleId =await fetch (`https://localhost:7096/api/Vehicle/CheckVehicleIdAndUsertype?vehicleId=${updateInputData}&userId=${userId}`,{
+                method:"POST",
+                headers:{
+                  "Content-Type":"application/json"
+                },
+
+
+
+            });
+
+            if(!repsonseOfCheckUserIdandVehicleId.ok){
+              throw new Error (`Http error! status:${repsonseOfCheckUserIdandVehicleId.status}`);
+            }
+
+            const data = await repsonseOfCheckUserIdandVehicleId.json();
+            if(data.hasValidVehicleId != true){
+              alert("Check Your Vehicle Id");
+            }
+            else if(data.hasValidUserType !=true){
+              alert("You Do not Have Permission To Update this Data");
+            }
+            else{
+              navigate(`/VehicleUpdate/${updateInputData}`);
+            }
+
+        }
+        catch(err){
+          Console.error(err);
+          alert("Ann error Occured");
+        }
+      }
+      checkData();
   }
-    const onClickUpdate= (vehicleid)=>{
-      navigate(`/Vehicleupdate/${vehicleid}`)
-    }
 
-    const onClickDelete=(vehicle_id)=>{
-        fetch(`https://localhost:7096/api/Vehicle/DeleteVehicle?Vehicle_id=${vehicle_id}`,
-          {
-            method:"POST",
-            headers:{
-              "Content-Type": "application/json"
-            },
-            
-            
-            
-          }
+  const onClickDelete=(vehicle_id)=>{
+    fetch(`https://localhost:7096/api/Vehicle/DeleteVehicle?Vehicle_id=${vehicle_id}`,
+      {
+        method:"POST",
+        headers:{
+          "Content-Type": "application/json"
+        },
         
-          ).then ((response)  =>console.log(response.data))
-            
-          .then(data =>{
-            console.log(data)
-            // setVehicles([...vehicles,data]);
-            alert("Vehicle Deleted successfully");
-            // GetVehicleData();
-            
-            
+        
+        
+      }
     
-            // setNewVehicleModel(" ");
-            // setNewVehiclePlateNo(" ");
-          })
-          .catch((err)=>console.log(err));
-          
+      ).then ((response)  =>console.log(response.data))
         
-    };
-
-    // const handleStatusUpdate=(vehicle_id,vehicleCurrentStatus)=>{
+      .then(data =>{
+        console.log(data)
+        // setVehicles([...vehicles,data]);
+        alert("Vehicle Deleted successfully");
+        // GetVehicleData();
         
-       
-      
-    // }
-    const handleMouseEnter = (vehicleId) => {
-      setHoveredVehicleId(vehicleId);  // Set the hovered vehicle ID
-    };
-  
-    const handleMouseLeave = () => {
-      setHoveredVehicleId(null);  // Reset the hovered vehicle ID when mouse leaves
-    };
+        
 
-    function handleStatusUpdate(){
+        // setNewVehicleModel(" ");
+        // setNewVehiclePlateNo(" ");
+      })
+      .catch((err)=>console.log(err));
       
-    }
+    
+  };
 
+  const handleTableOnclick=(vehicle_id)=>{
+    setUpdateInputData(vehicle_id);
+};
+
+ 
   return (
     <div>
-      {/* <h1>{newVehicleModel}</h1>
-      <h1>{newVehicleType}</h1>
-      <h1>{newVehiclePlateNo}</h1>
-      <h1>{newVehicleBrand}</h1>
-      <h1>{newRevenueLicenceIssuedDate}</h1>
-      <h1>{newRevenueLicenceExpiryDate}</h1>f
-      <h1>{newInsuranceIssuedDate}</h1>
-      <h1>{newInsuranceExpirydate}</h1> */}
       <div className="row">
         <div className="col">
           <nav>
@@ -211,210 +168,72 @@ export default function Vehicle() {
           </nav>
       </div>
       </div>
-    <div className="tab-content" id="nav-tabContent">
-    <div className="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-  <div className='vehiclelist card text-bg-light mx-5 mt-5' 
-    style={{
-      borderRadius: '10px', 
-      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-      padding: '15px'
-    }}>
-    
-    {/* Header Row */}
-    <div className="row pt-3 mx-1" style={{borderBottom: '2px solid #007BFF', paddingBottom: '10px'}}>
-      
-      <div className="col-1 d-flex justify-content-center"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>ID</h5></div>
-      <div className="col-2"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Vehicle Type</h5></div>
-      <div className="col-2"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Brand</h5></div>
-      <div className='col-2'><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Vehicle Model</h5></div>
-      <div className='col-2'><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Plate No</h5></div>
-      
-      <div className="col-2"><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Action</h5></div>
-      <div className='col-1'><h5 style={{ fontWeight: 'bold', color: '#007BFF' }}>Status</h5></div>
-    </div>
-
-    {/* Vehicle Rows */}
-    {vehicles.map((vehicle) => (
-      <div className="row pt-4 mx-1 d-flex justify-content-center align-items-center" 
-        key={vehicle.vehicle_id}
-        onMouseEnter={() => handleMouseEnter(vehicle.vehicle_id)}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          cursor: 'pointer',
-          backgroundColor: hoveredVehicleId === vehicle.vehicle_id ? '#e9f7ff' : 'white',
-          borderBottom: '1px solid #007BFF',
-          transition: 'background-color 0.3s ease'
-        }}
-      >
-        <div className="col-1 d-flex justify-content-center align-items-center" style={{ fontWeight: '500' }}>{vehicle.vehicle_id}</div>
-        <div className="col-2">{vehicle.type}</div>
-        <div className="col-2"><EditableText value={vehicle.brand}/></div>
-        <div className="col-2">{vehicle.model}</div>
-        <div className="col-2"><EditableText value={vehicle.plate_no}/></div>
-        <div className="col-2 d-flex align-items-center">
-          <button className='btn' style={{ backgroundColor: '#007BFF', color: 'white', marginRight: '10px', borderRadius: '5px', padding: '5px 15px' }} onClick={() => onClickUpdate(vehicle.vehicle_id)}>Update</button>
-          <button className='btn' style={{ backgroundColor: '#dc3545', color: 'white', marginRight: '10px', borderRadius: '5px', padding: '5px 15px' }} onClick={() => onClickDelete(vehicle.vehicle_id)}>Delete</button>
-          
-        </div>
-        <div className="col-1" style={{color: vehicle.vehicleStatus === 'Available' ? 'green' :vehicle.vehicleStatus==='On Journey' ? 'Blue': 'Red',fontWeight: 'bold',}}>{vehicle.vehicleStatus }</div>
-      </div>
-    ))}
-  </div>
-</div>
-
-      <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-        <div className='row'>
-          <div className='col'>
-          <div className="addvehiclecontent card text-bg-light mx-1 mt-3 p-3 shadow-lg" style={{ borderRadius: '15px' }}>
-            {/* heading row */}
-           <div className="card-header" >
-              <h4 className='text-center'>Vehicle General Information</h4>
-           </div>  
-           
-           <div className="card-body">
-           <div className="row">
-              {/* vehicle general information */}
-              <div className="col-6">
-                {/* vehicleType row */}
-                <div className="row my-3">
-                  <div className="col-4">
-                    <label htmlFor="plateno" className="form-label" >Vehicle Type</label>
-                  </div>
-                  <div className="col-6">
-                    <div className="btn-group w-100">
-                      <button type="button" className="btn btn-secondary">{newVehicleType}</button>
-                      <button type="button" className="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span className="visually-hidden">Toggle Dropdown</span>
-                      </button>
-                      <ul className="dropdown-menu">
-                        {vehicleTypes.map((types) => (
-                          <li key={types.type}><a className="dropdown-item" href="#" onClick={() => setNewVehicleType(types.type)}>{types.type}</a></li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
+      <div className='row mx-1 mt-3'>
+                <div className='col'>
+                  <input
+                    type="text"
+                    className="form-control w-25"
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    
+                  />
                 </div>
+                <div className='col-3 d-flex justify-content-end'> 
+                  <input className='form-control ' type="text" id="updateRepair" placeholder="Enter VehicleId..." value={updateInputData} onChange={(e)=>setUpdateInputData(e.target.value)} />
+                  <button className='btn btn-success mx-1' onClick={handleUpdateClick}>Update</button>
+                  <button className='btn btn-primary w-50' onClick={()=>handleAddButtonClick()}>Add</button>
+                  
+                  
 
-                {/* vehiclebrand row */}
-                <div className="row my-3">
-                  <div className="col-4">
-                    <label htmlFor="plateno" className="form-label" >Brand</label>
-                  </div>
-                  <div className="col-6">
-                    <div className="btn-group w-100">
-                      <button type="button" className="btn btn-secondary">{newVehicleBrand}</button>
-                      <button type="button" className="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span className="visually-hidden">Toggle Dropdown</span>
-                      </button>
-                      <ul className="dropdown-menu">
-                        {vehicleBrands.map((brands) => (
-                          <li key={brands.brand}><a className="dropdown-item" href="#" onClick={() => setNewVehicleBrand(brands.brand)}>{brands.brand}</a></li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                {/* vehicle model row */}
-                <div className="row my-3">
-                  <div className="col-10">
-                    <label htmlFor="vehicleModel" className="form-label" >Vehicle Model</label>
-                    <input type="text" className="form-control" id="vehicleModel" placeholder="Enter Vehicle Model..." onChange={(e) => setNewVehicleModel(e.target.value)} />
-                  </div>
-                </div>
-
-                {/* vehicle plate no row */}
-                <div className="row my-3">
-                  <div className="col-10">
-                    <label htmlFor="vehicleplateno" className="form-label" >Vehicle Plate No</label>
-                    <input type="text" className="form-control" id="vehicleplateno" placeholder="Enter Vehicle Plate No..." onChange={(e) => setNewVehiclePlateNo(e.target.value)} />
-                  </div>
                 </div>
               </div>
+              <div className='row justify-content-center mt-3 mx-1'>
+                <div class =" col-md-12">
+                  
+                  <table id="tblCategory" class=" table table-striped table-bordered table-hover" >
+                    <thead>
+                      <tr>
+                        <th>Vehicle ID</th>
+                        <th>Vehicle Type</th>
+                        <th>Brand</th>
+                        <th>Vehicle Model</th>
+                        <th>Plate No</th>
+                        <th>Vehicle Status</th>
+                        
+                        <th></th>
+                        <th></th>
+                      </tr>
 
-              <div className="col-6">
-                {/* revenue licence row */}
-                <div className="row mb-3">
-                  <div className="col-12">
-                    <h6 style={{ color: '#007BFF', fontWeight: 'bold' }}>Revenue Licence</h6>
-                  </div>
-                  <div className="col-12 d-flex">
-                    <div className="col-4">
-                      <label htmlFor="issueddateinput" className="form-label" >Issued Date</label>
-                    </div>
-                    <div className="col-8">
-                      <input type="date" className="form-control" id="issueddateinput" onChange={(e) => setNewRevenueLicenceIssuedDate(e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="col-12 d-flex mt-3">
-                    <div className="col-4">
-                      <label htmlFor="expirydateinput" className="form-label" >Expiry Date</label>
-                    </div>
-                    <div className="col-8">
-                      <input type="date" className="form-control" id="expirydateinput" onChange={(e) => setNewRevenueLicenceExpiryDate(e.target.value)} />
-                    </div>
-                  </div>
-                </div>
+                    </thead>
+                    <tbody>
+                      {filteredVehicleDatas.length>0?(
+                        filteredVehicleDatas.map((data)=>(
+                          <tr key={data.vehicle_id} onClick={()=>handleTableOnclick(data.vehicle_id)}>
+                            <td>{data.vehicle_id}</td>
+                            <td>{data.type}</td>
+                            <td>{data.brand}</td>
+                            <td>{data.model}</td>
+                            <td>{data.plate_no}</td>
+                            <td style={{color: data.vehicleStatus === 'Available' ? 'green' :data.vehicleStatus==='On Journey' ? 'Blue': 'Red',fontWeight: 'bold',}}>{data.vehicleStatus}</td>
+                            
+                            <td className='text-center'><button className='btn btn-info w-75' onClick={()=>handleViewClick(data.vehicle_id)}>View</button></td>
+                            <td className='text-center'><button className='btn btn-danger w-75'onClick={() => onClickDelete(data.vehicle_id)}>Delete</button></td>
+                          
 
-                {/* insurance details row */}
-                <div className="row mb-3">
-                  <div className="col-12">
-                    <h6 style={{ color: '#007BFF', fontWeight: 'bold' }}>Vehicle Insurance</h6>
-                  </div>
-                  <div className="col-12 d-flex">
-                    <div className="col-4">
-                      <label htmlFor="Insuranceissueddateinput" className="form-label" >Issued Date</label>
-                    </div>
-                    <div className="col-8">
-                      <input type="date" className="form-control" id="Insuranceissueddateinput" onChange={(e) => setNewInsuranceIssuedDate(e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="col-12 d-flex mt-3">
-                    <div className="col-4">
-                      <label htmlFor="Insuranceexpirydateinput" className="form-label" >Expiry Date</label>
-                    </div>
-                    <div className="col-8">
-                      <input type="date" className="form-control" id="Insuranceexpirydateinput" onChange={(e) => setNewInsuranceExpiryDate(e.target.value)} />
-                    </div>
-                  </div>
+                        </tr>
+                        ))
+                      ):(
+                        <tr>
+                          <td colSpan="7" className="text-center">No results found</td>
+                        </tr>
+                      )}
+                     
+                      
+                    </tbody>
+                  </table>
                 </div>
               </div>
-            </div>
-
-            {/* <div className="row ">
-                <div className="col-6">
-                  <label for="imageUpload" className="form-label ">Choose an image:</label>
-                  <input type="file" id="imageUpload" className="form-control"accept="image/*"/>
-                </div>
-            </div> */}
-
-            {/* Add and Cancel row */}
-            <div className="row justify-content-center mt-4 ">
-              <div className="col-6 ">
-               <button type="button" className="btn btn-success w-100"  onClick={handlesubmit}>Add</button>
-              </div>
-            </div>
-
-            <div className="row justify-content-center mt-4 ">
-              <div className="col-3">
-                <button type="button" className="btn btn-danger w-100" >Cancel</button>
-              </div>
-            </div>
-
-            
-            </div>
-
-
-          </div>
-        
-          </div>
-        </div>
-          
-      </div>
-
-              
-    </div>
-      
     </div>
   )
 }
