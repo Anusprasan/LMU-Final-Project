@@ -27,7 +27,7 @@ export default function Navbaritems() {
 
       {/* Home row */}
       <Link to="/Home" className='text-decoration-none'  style={{color:'#A2A3A3'}}>
-        <div className="Navbaritems row ps-2" onClick={handlelinkcolour} style={{backgroundColor:divColor}}>
+        <div className="Navbaritems row ps-2" >
           <div className='col py-3 ' >
             <img src={home} class="img-fluid p-2" alt="..."/>
               Home
@@ -66,11 +66,21 @@ export default function Navbaritems() {
       </Link>
       
       {/* Real time data row */}
-      <Link to="/Realtimedata" className='text-decoration-none' style={{color:'#A2A3A3'}}>
+      <Link to="/RealTimeDataAccessPage" className='text-decoration-none' style={{color:'#A2A3A3'}}>
         <div className="row Navbaritems ps-2">
           <div className='col py-3 '>
             <img src={realtimedata} class="img-fluid p-2 " alt="..."/>
               Real Time Data
+          </div>
+        </div>
+      </Link>
+
+      {/* Accounts row */}
+      <Link to="/Map" className=' text-decoration-none' style={{color:'#A2A3A3'}}>
+        <div className="row Navbaritems ps-2">
+          <div className='col py-3 '>
+            <img src={accounts} class="img-fluid p-2 " alt="..."/>
+              Map
           </div>
         </div>
       </Link>
@@ -85,15 +95,7 @@ export default function Navbaritems() {
         </div>
       </Link>
       
-      {/* Accounts row */}
-      <Link to="/Accounts" className=' text-decoration-none' style={{color:'#A2A3A3'}}>
-        <div className="row Navbaritems ps-2">
-          <div className='col py-3 '>
-            <img src={accounts} class="img-fluid p-2 " alt="..."/>
-              Accounts
-          </div>
-        </div>
-      </Link>
+      
       
       {/* Logout row */}
       <div className=' text-decoration-none' onClick={handleLogout} style={{color:'#A2A3A3'}}>

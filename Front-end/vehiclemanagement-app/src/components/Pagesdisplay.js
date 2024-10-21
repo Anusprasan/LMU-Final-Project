@@ -5,7 +5,7 @@ import Vehicle from '../pages/Vehicle';
 import Reports from '../pages/Reports';
 import Journey from '../pages/Journey';
 import Mainetnance from '../pages/Maintenance';
-import Realtimedata from '../pages/Realtimedata';
+
 import Accounts from '../pages/Accounts';
 import Logout from '../pages/Logout';
 import Vehicleupdate from '../pages/Vehicleupdate';
@@ -16,6 +16,11 @@ import RepairUpdate from '../pages/RepairUpdate';
 import AddRepair from '../pages/AddRepair';
 import AddService from '../pages/AddService';
 import ServiceUpdate from '../pages/ServiceUpdate';
+import Map from '../pages/Map';
+import RealTimeDataAccessPage from '../pages/RealTimeDataAccessPage';
+import Realtimedata from '../pages/Realtimedata';
+
+
 
 export default function Pagesdisplay() {
   return (
@@ -27,7 +32,7 @@ export default function Pagesdisplay() {
         <Route path="/Vehicle" element={<Vehicle />} />
         <Route path="/Journey" element={<Journey />} />
         <Route path="/Maintenance" element={<Mainetnance />} />
-        <Route path="/Realtimedata" element={<Realtimedata/>} />
+        
         <Route path="/Reports" element={<Reports />} />
         <Route path="/Accounts" element={<Accounts />} />
         <Route path="/Logout" element={<Logout />} />
@@ -38,6 +43,10 @@ export default function Pagesdisplay() {
         <Route path= "/AddRepair" element = {<AddRepair/>}></Route>
         <Route path= "/AddService" element = {<AddService/>}></Route>
         <Route path= "/ServiceUpdate/:ServiceId" element = {<ServiceUpdate/>}></Route>
+        <Route path="/Map" element = {<Map/>}></Route>
+        <Route path ="/RealTimeDataAccessPage" element ={<RealTimeDataAccessPage/>}></Route>
+        <Route path ="/Realtimedata/:VehicleId" element={<Realtimedata/>}></Route>
+        
 
       </Routes>
       

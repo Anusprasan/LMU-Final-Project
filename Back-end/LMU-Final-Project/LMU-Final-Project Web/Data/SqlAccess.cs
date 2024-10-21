@@ -206,8 +206,7 @@ namespace LMU_Final_Project_Web.Data
                 {
                     Devicedata devicedata = new Devicedata();
                     devicedata.Device_id = Convert.ToInt32(reader["Device_id"]);
-                    devicedata.DTC_code = Convert.ToString(reader["DTC_id"]);
-                    devicedata.DateTime = Convert.ToDateTime(reader["DateTime"]);
+                    
 
                     devicedatas.Add(devicedata);
 
