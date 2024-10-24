@@ -45,5 +45,11 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
             return sqlAccess.GetDataFromTables(SqlString);
         }
+
+        public DataTable GetJourneyClients()
+        {
+            string SqlString = "select * from Journey join Client on Journey.Journey_id = Client.Journey_id";
+            return sqlAccess.GetDataFromTables(SqlString);
+        }
     }
 }

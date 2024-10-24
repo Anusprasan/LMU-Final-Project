@@ -108,10 +108,68 @@ namespace LMU_Final_Project_Web.Controllers
 
         }
 
+        //[Route("[action]")]
+        //[HttpGet]
+
+        //public ActionResult<List<Devicedata>>  GetAllDeviceData(int companyId)
+        //{
+
+        //    try
+        //    {
+
+        //        DataTable DeviceDataTable = devicedatarepository.GetDeviceData(companyId);
+        //        if (DeviceDataTable == null || DeviceDataTable.Rows.Count == 0)
+        //        {
+        //            return NotFound(new { message = "No Vehicle Data Found For The Given Company ID" });
+        //        }
+        //        else
+        //        {
+                   
+
+                    
+
+        //                Devicedata devicedata = new Devicedata();
+        //                DataRow row = DeviceDataTable.Rows[0];
+
+        //                devicedata.DrivingMode = Convert.ToString(row["DrivingMode"]);
+        //                devicedata.Speed = Convert.ToInt32(row["Speed"]);
+        //                devicedata.Temperature = Convert.ToInt32(row["Temperature"]);
+        //                devicedata.FuelLevel = Convert.ToInt32(row["FuelLevel"]);
+        //                devicedata.BatteryVoltage = Convert.ToInt32(row["BatteryVoltage"]);
+        //                devicedata.DTC = Convert.ToString(row["DTC"]);
+        //                devicedata.Mileage = Convert.ToInt32(row["Mileage"]);
+        //                devicedata.OilTemperature = Convert.ToInt32(row["OilTemperature"]);
+        //                devicedata.EngineOilLevel = Convert.ToInt32(row["EngineOilLevel"]);
+        //                devicedata.AirbagStatus = Convert.ToString(row["AirbagStatus"]);
+
+        //                return Ok(devicedata);
+                    
+                    
+
+        //        }
+            
+
+
+
+        //    }
+
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error: {ex.Message}");
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+        //    }
+
+
+
+
+
+        //}
+
+
         [Route("[action]")]
         [HttpGet]
 
-        public ActionResult<Devicedata>  GetDeviceData(int companyId, int vehicle_id)
+        public ActionResult<Devicedata> GetDeviceData(int companyId, int vehicle_id)
         {
 
             try
@@ -124,30 +182,29 @@ namespace LMU_Final_Project_Web.Controllers
                 }
                 else
                 {
-                   
 
-                    
 
-                        Devicedata devicedata = new Devicedata();
-                        DataRow row = DeviceDataTable.Rows[0];
 
-                        devicedata.DrivingMode = Convert.ToString(row["DrivingMode"]);
-                        devicedata.Speed = Convert.ToInt32(row["Speed"]);
-                        devicedata.Temperature = Convert.ToInt32(row["Temperature"]);
-                        devicedata.FuelLevel = Convert.ToInt32(row["FuelLevel"]);
-                        devicedata.BatteryVoltage = Convert.ToInt32(row["BatteryVoltage"]);
-                        devicedata.DTC = Convert.ToString(row["DTC"]);
-                        devicedata.Mileage = Convert.ToInt32(row["Mileage"]);
-                        devicedata.OilTemperature = Convert.ToInt32(row["OilTemperature"]);
-                        devicedata.EngineOilLevel = Convert.ToInt32(row["EngineOilLevel"]);
-                        devicedata.AirbagStatus = Convert.ToString(row["AirbagStatus"]);
+                    Devicedata devicedata = new Devicedata();
+                    DataRow row = DeviceDataTable.Rows[0];
 
-                        return Ok(devicedata);
-                    
-                    
+                    devicedata.DrivingMode = Convert.ToString(row["DrivingMode"]);
+                    devicedata.Speed = Convert.ToInt32(row["Speed"]);
+                    devicedata.Temperature = Convert.ToInt32(row["Temperature"]);
+                    devicedata.FuelLevel = Convert.ToInt32(row["FuelLevel"]);
+                    devicedata.BatteryVoltage = Convert.ToInt32(row["BatteryVoltage"]);
+                    devicedata.DTC = Convert.ToString(row["DTC"]);
+                    devicedata.Mileage = Convert.ToInt32(row["Mileage"]);
+                    devicedata.OilTemperature = Convert.ToInt32(row["OilTemperature"]);
+                    devicedata.EngineOilLevel = Convert.ToInt32(row["EngineOilLevel"]);
+                    devicedata.AirbagStatus = Convert.ToString(row["AirbagStatus"]);
+
+                    return Ok(devicedata);
+
+
 
                 }
-            
+
 
 
 

@@ -1,5 +1,6 @@
 ﻿using LMU_Final_Project_Web.Controllers;
 using LMU_Final_Project_Web.Models;
+using System.Data;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 
@@ -74,7 +75,21 @@ namespace LMU_Final_Project_Web.Data.Repositories
             string SqlString = $"select 1 from Users where User_id='{userId}' and (UserType='Owner' or UserType = 'Admin')";
             return sqlAccess.CheckData(SqlString);
         }
-    }
 
+        public DataTable GetVehicleDatasById(int companyId, int vehicleId)
+        {
+            string SqlString = $"select * from Vehicle where CompanyId = '{companyId}' and Vehicle_id = '{vehicleId}'";
+
+            return sqlAccess.GetDataFromTables(SqlString);
+        }
+
+        public bool CheckIsOwner(int userId)
+        {
+            string SqlString = $"select 1 from Users where User_id = {userId} and UserType = 'Owner'";
+
+            return sqlAccess.CheckData(SqlString);
+        }
+    }
+    
 
 }

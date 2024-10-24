@@ -110,27 +110,39 @@ export default function Vehicle() {
   };
 
   const onClickDelete = (vehicle_id) => {
-    fetch(
-      `https://localhost:7096/api/Vehicle/DeleteVehicle?Vehicle_id=${vehicle_id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    const uploadInfo = async ()=>{
+      try{
+        const UserId = localStorage.getItem('userId');
+        const responseDeleteVehicle = await fetch(
+          `https://localhost:7096/api/Vehicle/DeleteVehicle?Vehicle_id=${vehicle_id}&userId=${UserId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+
+        if (responseDeleteVehicle.status === 400) {
+          alert('You do not have permission to delete');
+        } else if (!responseDeleteVehicle.ok) {
+          throw new Error(`Http error! status: ${responseDeleteVehicle.status}`);
+        } else {
+          const data = await responseDeleteVehicle.json();
+          console.log(data);
+          alert('Vehicle deleted successfully');
+        }
+
+        
       }
-    )
-      .then((response) => console.log(response.data))
+      catch(error){
 
-      .then((data) => {
-        console.log(data);
-        // setVehicles([...vehicles,data]);
-        alert("Vehicle Deleted successfully");
-        // GetVehicleData();
+        console.error('Error:', error);
 
-        // setNewVehicleModel(" ");
-        // setNewVehiclePlateNo(" ");
-      })
-      .catch((err) => console.log(err));
+      }
+    }
+    uploadInfo();
+      
   };
 
   const handleTableOnclick = (vehicle_id, vehicleStatus) => {
@@ -144,7 +156,7 @@ export default function Vehicle() {
     } else if (vehicleStatus != "Available") {
       alert("This Vehicle is not Avilable Right Now");
     } else {
-      navigate(`/Journey`);
+      navigate(`/AddJourney/${updateInputData}`);
     }
   };
 
@@ -191,6 +203,8 @@ export default function Vehicle() {
       .then((data) => {
         console.log(data); // The response data from the API
         alert("Vehicle added successfully");
+        navigate("/Vehicle-home");
+
 
         // Reset form fields (optional)
         // setNewVehicleModel("");
@@ -202,7 +216,9 @@ export default function Vehicle() {
         // GetVehicleData();
       });
   }
-  const handleViewClick = () => {};
+  const handleViewClick = (vehicleId) => {
+    navigate(`/VehicleViewMore/${vehicleId}`);
+  };
 
   return (
     <div>

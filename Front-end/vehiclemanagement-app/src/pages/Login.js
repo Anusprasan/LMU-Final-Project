@@ -1,9 +1,10 @@
 import { Error } from '@blueprintjs/icons';
 import React from 'react'
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login({ onLoginSuccess }) {
-
+ const navigate = useNavigate();
  const [userName,setUserName] = useState('');
  const [password,setPassword] = useState('');
  const [error,setError] = useState('');
@@ -49,6 +50,7 @@ export default function Login({ onLoginSuccess }) {
         // localStorage.setItem('userId',data.userId)
         onLoginSuccess(data);
         alert('Login successful');
+        navigate("/Home");
 
       } else {
         setError('Invalid credentials');

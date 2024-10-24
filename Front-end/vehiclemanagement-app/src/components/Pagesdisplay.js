@@ -19,6 +19,8 @@ import ServiceUpdate from '../pages/ServiceUpdate';
 import Map from '../pages/Map';
 import RealTimeDataAccessPage from '../pages/RealTimeDataAccessPage';
 import Realtimedata from '../pages/Realtimedata';
+import VehicleViewMore from '../pages/VehicleViewMore';
+import AddJourney from '../pages/AddJourney';
 
 
 
@@ -46,6 +48,9 @@ export default function Pagesdisplay() {
         <Route path="/Map" element = {<Map/>}></Route>
         <Route path ="/RealTimeDataAccessPage" element ={<RealTimeDataAccessPage/>}></Route>
         <Route path ="/Realtimedata/:VehicleId" element={<Realtimedata/>}></Route>
+        <Route path="/VehicleViewMore/:VehicleId" element={<VehicleViewMore/>}></Route>
+        <Route path="/AddJourney/:VehicleId" element={<AddJourney/>}></Route>
+        
         
 
       </Routes>

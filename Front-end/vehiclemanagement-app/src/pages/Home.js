@@ -1,7 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Home() {
   const [vehicleCount,setVehicleCount ] = useState(10);
+  const [companyId,setCompanyId] = useState('');
+
+  // useEffect(()=>{
+  //   const getRealTimeData = async()=>{
+  //     try{
+  //        const CompanyId = localStorage.getItem('companyId')
+  //        setCompanyId(CompanyId);
+
+  //        const responseRealTimeData = await fetch(`https://localhost:7096/api/Devicedata/GetDeviceData?companyId=${}&vehicle_id=122`)
+
+  //     }
+  //     catch{
+
+  //     }
+  //   }
+  // })
   return (
     <div>
       <div _ngcontent-nfx-c4="" className="row mt-2 mx-2">

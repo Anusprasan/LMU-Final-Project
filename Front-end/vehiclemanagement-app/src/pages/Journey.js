@@ -14,6 +14,7 @@ import { useState,useEffect } from 'react';
 export default function Journey() {
   const navigate = useNavigate();
   const [allVehicleId,setAllVehicleId]= useState([]);
+  const [journeyClientDatas,setJourneyClientData] = useState([]);
   const [userId,setUserId] = useState('');
   const [vehicleId,setVehicleId] = useState('Select');
   const [jouneyStartDate,setJouneyStartDate] = useState('');
@@ -28,255 +29,146 @@ export default function Journey() {
   const [drivingLicensePhoto, setDrivingLicensePhoto] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [companyId,setCompanyId] = useState('');
+  const [searchTerm,setSearchTerm] = useState('');
  
   // const [journey,setJouney] = useState({
 
   // })
   useEffect(()=>{
+    const fetchData = async ()=>{
+        try{
+          const responseJourenyClientData= await fetch(`https://localhost:7096/api/Journey/GetJourneyClient`);
 
-    const UserId = localStorage.getItem("userId");
-    setUserId(UserId);
+          if(responseJourenyClientData.status==400){
+            console.log(responseJourenyClientData.status)
+          }else if(!responseJourenyClientData.ok){
+            throw new Error(`Http error! status:${
+              responseJourenyClientData.status
+            }`);
+          }else{
+            const data = await responseJourenyClientData.json();
+            console.log(data);
+            setJourneyClientData(data);
 
-    const CompanyId = localStorage.getItem("companyId");
-    setCompanyId(CompanyId);
-
-    fetch(`https://localhost:7096/api/Journey/GetVehicleId?userId=${UserId}`) // Replace with your correct API URL
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Step 3: Store the fetched vehicle IDs in the state
-        if (Array.isArray(data)) {
-          setAllVehicleId(data); // data should be [55, 59, 82, 83, 89]
-        } else {
-          throw new Error("Unexpected API response format");
-        }
-      })
-      .catch(error => {
-        // Handle any errors during the fetch operation
-        console.error('Error fetching vehicle IDs:', error);
-        
-      })
-      
-  }, [userId]);
-
-  function handleSubmit(){
-
-    const journeyData = {
-       vehicle_id:vehicleId,
-       started_date: jouneyStartDate,
-       UserId :userId,
-      //  End_date:"",
-       odometerreading_beforejourney :odoReading,
-      //  odometerreading_afterjjourney :"",
-       journey_description :journeyDescription,
-      //  vehiclestatus_beforejouney :"",
-      //  vehiclestatus_afterjounrey : "",
-       Vehiclestatus_beforejourney : malfunction,
-       companyId
-    }
-    if(!vehicleId||!jouneyStartDate||!odoReading||!malfunction||!journeyDescription){
-      alert("Check your fields");
-      
-      
-    }
-    else{
-      fetch(`https://localhost:7096/api/Journey/AddJourney`,
-        {
-          method:"POST",
-          headers:{
-            "Content-Type": "application/json"
-          },
-          
-          
-          
-        
-        body: JSON.stringify(journeyData)
-      })
-      
-        .then (response  =>{
-          if (!response.ok){
-            throw new Error(`HTtp error! Status:${response.status}`);
+            
           }
-          return response.json();
-        })
-          
-        .then(data =>{
-          console.log(data);
-          
-          // alert("sdbccbxnbnm")
-          setShowAlert(true);
-  
-          // Auto-hide the alert after 3 seconds
-          setTimeout(() => {
-            setShowAlert(false);
-          }, 3000);
-  
-          navigate(`/Journeyclientdetails/`);
-          
-          
-  
-      
-        })
-        .catch((err)=>{
-          console.log(err);
-          alert("Operation failed");
-      
-         });
+
+        }
+        catch(err){
+          console.error('Error',err);
+        }
     }
-   
 
-    
+    fetchData();
 
+  },[]);
 
-   
+  const filterJourneyClientDatas = journeyClientDatas.filter((data)=>{
+    return(
+      data.journey.journey_id.toString().includes(searchTerm)||
+      data.journey.vehicle_id.toString().includes(searchTerm)||
+      data.client.name.toLowerCase().includes(searchTerm.toLowerCase())||
+      data.client.phone_no.toString().includes(searchTerm)|| 
+      data.journey.started_date.toLowerCase().includes(searchTerm.toLowerCase())||
+      data.journey.journeyStatus.toLowerCase().includes(searchTerm.toLowerCase())  
+    )
+  })
 
-
-
-
-
-
-  }
 
 
   return (
     <div>
-       
+       {searchTerm}
       {/* navigation row */}
       <div className="row ">
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Journey Start</button>
+            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Journey History</button>
             <button class="nav-link" id="nav-Journeyend-tab" data-bs-toggle="tab" data-bs-target="#nav-Journeyend" type="button" role="tab" aria-controls="nav-Journeyend" aria-selected="false">Journey End</button>
-            <button class="nav-link" id="nav-Journeyhistory-tab" data-bs-toggle="tab" data-bs-target="#nav-Journeyhistory" type="button" role="tab" aria-controls="nav-Journeyhistory" aria-selected="false">Journey history</button>
+           
             
           </div>
         </nav>
           <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-            <div className='row justify-content-center'>
-              <div className='col-6'>
-                <div className='card'>
-                  <div className='card-header'>
-                    <h4 className='text-center'>Journey Details</h4>
-                  </div>
-                  <div className='card-body'>
 
-                  </div>
+          <div className="row mx-1 mt-3">
+            <div className="col">
+              <input
+                type="text"
+                className="form-control w-25"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e)=>setSearchTerm(e.target.value)}
                 
-                <div className="row">
-                  
-                  
-                  
-                    {/* {userId}
-                    
-                    {jouneyStartDate}
-                    {odoReading}
-                    {journeyDescription}
-                    {malfunction}
-                    {vehiclePhoto}
-                    {clientName}
-                    {clientPhoneNo}
-                    {clientAddress}
-                    {clientNIC}
-                    {drivingLicensePhoto} */}
+              />
+            </div>
+            <div className="col-5 d-flex justify-content-end mx-1">
+              <input
+                className="form-control "
+                type="text"
+                id="updateRepair"
+                placeholder="Enter VehicleId..."
+                // value={updateInputData}
+                // onChange={(e) => setUpdateInputData(e.target.value)}
+              />
+              <button
+                className="btn btn-success mx-1"
+                // onClick={handleUpdateClick}
+              >
+                Update
+              </button>
+              <button
+                className="btn btn-primary w-50 mx-1"
+                // onClick={() => handleAddButtonClick()}
+              >
+                Add Journey
+              </button>
+              <button className='btn btn-info mx-1'>More</button>
+              <button className='btn btn-danger mx-1'>Delete</button>
+            </div>
+          </div>
+              <div className='row justify-content-center mt-3 mx-1'>
+                <div class =" col-md-12">
+                  <table id="tblCategory" class=" table table-striped table-bordered table-hover" >
+                    <thead>
+                      <tr>
+                        <th>Journey ID</th>
+                        <th>Vehicle ID</th>
+                        <th>Client Name</th>
+                        <th>Conatact Number</th>
+                        <th>Date of Departure</th>
+                        <th>Journey Status</th>
+                        <th></th>
+                        
+                      </tr>
 
-                    {/* Vehicle Id*/}
-                    <div className="row my-1 mx-2">
-                      <div className="col-4">
-                        <label for="plateno" className="form-label">Vehicle Id</label>
-                      </div>
-                      <div className="col-4">
-                        <div class="btn-group w-100">
-                          <button type="button" class="btn btn-secondary" style={{backgroundColor:'#24314C'}}>{vehicleId}</button>
-                          <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:'#24314C'}} required>
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                          </button>
-                          <ul class="dropdown-menu">
-                            {allVehicleId.map((vehicleId)=>(
-                              <li key={vehicleId}><a class="dropdown-item" href="#" onClick={()=>setVehicleId(vehicleId)}>{vehicleId}</a></li>
-                            ))}
-                            
-                            
-                          </ul>
-                        </div>
-
-                      </div>
-                    </div>
-                    {/* date row */}
-
-                    <div className="row my-1 mx-2">
-                      <div className="col-4">
-                        <label for="dateinput" className="form-label">Date</label>
-                      </div>
-                      <div className="col-4" >
-                      <input type="datetime-local" className='form-control' id="dateinput" onChange={(e)=>setJouneyStartDate(e.target.value)} />
-                      </div>
-                    </div>
-
-                    
-                    {/* odemeter reading row */}
-                    <div className="row my-1 mx-2">
-                      <div className='col-11'>
-                        <label for="odometerreadinginput" className="form-label">Odometer Reading(Km)</label>
-                        <input  type="text" className="form-control w-100" id="odometerreadinginput" value={odoReading} onChange={(e) => setOdoReading(e.target.value.replace(/\D/g, ''))}  maxLength={6}/>
-                      </div>
-                    </div>
-                    {/* Journey Description */}
-                    <div className="row my-1 mx-2">
-                      <div className='col-11'>
-                      <label for="journeydescription" className="form-label">Journey Description</label>
-                      <textarea className="form-control " id="journeydescription" value={journeyDescription} onChange={(e) => setJourneyDescription(e.target.value)} />
-                      </div>
-                       
-                    </div>
-                    {/* Malfunction*/}
-                    <div className="row my-1 mx-2">
-                      <div className='col-11'>
-                        <label for="malfunctioninput" className="form-label">Malfunction</label>
-                        <textarea className="form-control w-100" id="malfunctioninput" value={malfunction}onChange={(e) => setMalfunction(e.target.value)} />
-                      </div>
-                      
-                    </div>
-                    {/* uploadvehiclephotos
-                    <div className="row mt-4 mx-2">
-                      <div className="col-4">
-                        <label for="uploadinput" className="form-label">Upload Vehicle Photo</label>
-                      </div>
-                      <div className="col-6">
-                        <input class="form-control" type="file"  id="vehiclePhotoInput" onChange={(e) => setVehiclePhoto(e.target.files[0])}/>
-                      </div>
-                    </div> */}
-                  
-                    
-                    
-                  </div>
-                  
-                {/* save and cancel row */}
-                <div className="row d-flex justify-content-center my-1"> 
-                      <div className='col-6'>
-                        <button type="button" class="btn btn-success w-100"onClick={handleSubmit}>Next</button>
-                      </div>
-                </div>
-
-                <div className="row d-flex justify-content-center my-1"> 
-                      <div className='col-3'>
-                      <button type="button" class="btn btn-danger w-100">Cancel</button>
-                      </div>
-                </div>
-                </div>
-                
-              
+                    </thead>
+                    <tbody>
+                      {filterJourneyClientDatas.length>0?(
+                        filterJourneyClientDatas.map((data)=>(
+                          <tr>
+                             <td>{data.journey.journey_id}</td>
+                             <td>{data.journey.vehicle_id}</td>
+                             <td>{data.client.name}</td>
+                             <td>{data.client.phone_no}</td>
+                             <td>{data.journey.started_date.split('T')[0]}</td>
+                             <td>{data.journey.journeyStatus}</td>
+                             <td className='text-center'><button className='btn btn-dark w-75'>End</button></td>
+                         </tr>
+                        ))
+                      ):(
+                        <tr>
+                          <td colSpan="7" className="text-center">
+                               No results found
+                          </td>
+                        </tr>
+                      )};
+                                        
+                    </tbody>
+                  </table>
                 </div>
               </div>
-              {showAlert && (
-              <div className="alert alert-success" role="alert">
-                Data inserted successfully!
-              </div>
-            )}
           </div>
             
             
@@ -389,7 +281,7 @@ export default function Journey() {
                   {/* save and cancel row */}
                   <div className="row d-flex justify-content-center mt-5"> 
                     <div className="col-2 d-flex gap-2">
-                      <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}} onClick={handleSubmit}>Save</button>
+                      <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}} >Save</button>
                       <button type="button" class="btn w-100" style={{backgroundColor:"#24314C",color:"white"}}>Cancel</button>
                     </div>
                     
@@ -410,24 +302,7 @@ export default function Journey() {
 
           {/* Journey History Tab */}
           <div class="tab-pane fade" id="nav-Journeyhistory" role="tabpanel" aria-labelledby="nav-Journeyhistory-tab">
-              <div className='row justify-content-center mt-3 mx-1'>
-                <div class =" col-md-12">
-                  <table id="tblCategory" class=" table table-striped table-bordered table-hover" >
-                    <thead>
-                      <tr>
-                        <th>Journey ID</th>
-                        <th>Vehicle ID</th>
-                        <th>Client Name</th>
-                        <th>NIC No</th>
-                        <th>Date of Departure</th>
-                        <th>Journey Status</th>
-                        
-                      </tr>
-
-                    </thead>
-                  </table>
-                </div>
-              </div>
+              
             
           </div>
           </div>
