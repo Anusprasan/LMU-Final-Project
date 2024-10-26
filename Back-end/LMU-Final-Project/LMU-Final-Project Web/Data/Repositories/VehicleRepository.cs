@@ -19,10 +19,10 @@ namespace LMU_Final_Project_Web.Data.Repositories
             return sqlAccess.LoadVehicleById(sqlString);
         }
 
-        public void AddVehicle(Vehicle vehicleData)
+        public bool AddVehicle(Vehicle vehicleData)
         {
             string sqlString = $"insert into Vehicle (Type,Brand,Model,Plate_no ,Licence_Issued_Date,Licence_Expiry_Date ,Insurance_Issued_Date ,Insurance_Expiry_Date, VehicleStatus,User_id,CompanyId,Created_by,Created_on) values('{vehicleData.Type}','{vehicleData.Brand}','{vehicleData.Model}','{vehicleData.Plate_no}','{vehicleData.LicenceIssuedDate}','{vehicleData.LicenceExpiryDate }','{vehicleData.InsuranceIssuedDate }','{vehicleData.InsuranceExpiryDate }','Available','{vehicleData.User_id}','{vehicleData.CompanyId}','{vehicleData.User_id}',GETDATE())";
-            sqlAccess.InsertVehicle(sqlString);
+            return sqlAccess.Insertdata(sqlString);
         }
         
         public List<Vehicle> GetVehicles(int companyId)
@@ -88,6 +88,13 @@ namespace LMU_Final_Project_Web.Data.Repositories
             string SqlString = $"select 1 from Users where User_id = {userId} and UserType = 'Owner'";
 
             return sqlAccess.CheckData(SqlString);
+        }
+
+        public DataTable GetLastVehicleId()
+        {
+            string SqlString = "SELECT TOP 1 vehicle_id FROM Vehicle ORDER BY vehicle_id DESC;";
+
+            return sqlAccess.GetDataFromTables(SqlString);
         }
     }
     

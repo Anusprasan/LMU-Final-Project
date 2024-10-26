@@ -279,7 +279,7 @@ export default function Vehicle() {
                 id="updateRepair"
                 placeholder="Enter VehicleId..."
                 value={updateInputData}
-                onChange={(e) => setUpdateInputData(e.target.value)}
+                onChange={(e) => setUpdateInputData(e.target.value.replace(/\D/g, ''))}
               />
               <button
                 className="btn btn-success mx-1"

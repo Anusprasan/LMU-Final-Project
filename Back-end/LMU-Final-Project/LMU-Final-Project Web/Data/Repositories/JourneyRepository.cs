@@ -51,5 +51,53 @@ namespace LMU_Final_Project_Web.Data.Repositories
             string SqlString = "select * from Journey join Client on Journey.Journey_id = Client.Journey_id";
             return sqlAccess.GetDataFromTables(SqlString);
         }
+
+        public bool CheckDataForJourneyUpdate(int userId)
+        {
+            string SqlString = $"select 1 from Users where User_id = '{userId}' and UserType = 'Owner'";
+
+            return sqlAccess.CheckData(SqlString);
+        }
+
+        public bool CheckJourneyId(int journeyId)
+        {
+            string SqlString = $"select 1 from journey where Journey_id='{journeyId}'";
+            return sqlAccess.CheckData(SqlString);
+        }
+
+        public DataTable GetJourneyClientById(int journeyId)
+        { 
+            string SqlString = $"select * from Journey  join Client on Journey.Journey_id = Client.Journey_id where Journey.Journey_id = '{journeyId}'";
+            
+            
+            return sqlAccess.GetDataFromTables(SqlString);
+        }
+
+        public bool checkEndJourneyData(Journey journey)
+        {
+            string SqlString = $"select 1 from Journey where Journey_id = '{journey.Journey_id}' and Vehicle_id ='{journey.Vehicle_id}'";
+            return sqlAccess.CheckData(SqlString);
+
+        }
+
+        public bool InsertEndJourney(Journey journey)
+        {
+            string SqlStirng = $"update Journey set End_date = '{journey.End_date}', Odometerreading_afterjourney ='{journey.Odometerreading_afterjourney}',Payment ='{journey.Payment}', Vehiclestatus_afterjourney='{journey.Vehiclestatus_afterjourney}',Modify_by ='{journey.Journey_modifyby}',Modify_on = GETDATE(),JourneyStatus = 'Completed' where Journey_id = '{journey.Journey_id}'";
+            return sqlAccess.Insertdata(SqlStirng);
+        }
+
+        public bool CheckUserType(int userId)
+        {
+            string SqlString = $"select 1 from Users where User_id ='{userId}' and UserType ='Owner'";
+
+            return sqlAccess.CheckData(SqlString);  
+        }
+
+        public bool DeleteJourney (int journeyId)
+        {
+            string SqlString = $"delete from Journey where Journey_id = '{journeyId}'";
+
+            return sqlAccess.Insertdata(SqlString);
+        }
     }
-}
+} 

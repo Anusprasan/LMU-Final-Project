@@ -30,6 +30,7 @@ export default function Journey() {
   const [showAlert, setShowAlert] = useState(false);
   const [companyId,setCompanyId] = useState('');
   const [searchTerm,setSearchTerm] = useState('');
+  const [journeyIdInput,setJourneyIdInput] = useState('');
  
   // const [journey,setJouney] = useState({
 
@@ -74,6 +75,106 @@ export default function Journey() {
     )
   })
 
+  const handleAddButtonClick = ()=>
+  {
+    navigate("/Vehicle");
+  } 
+
+  const handleUpdateClick = ()=>{
+    const inputValidate= async ()=>{
+        try{
+          const CompanyId = localStorage.getItem("companyId");
+          const UserId = localStorage.getItem('userId');
+          
+        
+          if(journeyIdInput ==""){
+              alert("Please Provide Vehicle ID");
+              return;
+          }
+          else{
+            const responseJourneyUpdateData = await fetch(`https://localhost:7096/api/Journey/CheckDataForJourneyUpdate?userId=${UserId}&journeyId=${journeyIdInput}`,{
+              method:"POST",
+              headers:{
+                "Content-Type":"application/json",
+              }
+            });
+
+            if(responseJourneyUpdateData.status == 403){
+              alert("You Do not Have Permission to Update This Data");
+            }
+            else if(responseJourneyUpdateData.status == 404){
+              alert("Enter Valid Journey ID");
+            }
+            else if(!responseJourneyUpdateData.ok){
+              alert("An Error Occured");
+              throw new Error(`Http error!:${responseJourneyUpdateData.status}`);
+
+            }
+            else{
+              const data = await responseJourneyUpdateData.json();
+              console.log(data)
+              navigate(`/JourneyUpdate/${journeyIdInput}`);
+            }
+
+          }
+          
+
+          
+
+        }
+        catch(err){
+          console.error(`Error:${err}`)
+        }
+    }
+    inputValidate();
+  }
+
+  const handleJourneyEnd = (journeyId,vehicleId) =>{
+    navigate(`/EndJourney/${journeyId}/${vehicleId}`)
+  }
+
+  const handleDelete = ()=>{
+    const uploadDeleteData = async ()=>{
+      try{
+          const UserId = localStorage.getItem('userId');
+          if(journeyIdInput ==""){
+            alert("Enter Journey Id")
+          }
+          else{
+            const responseDeleteData = await fetch(`https://localhost:7096/api/Journey/DeleteJourneyData?journeyId=${journeyIdInput}&userId=${UserId}`,{
+              method : "POST",
+              headers :{
+                "Content-type":"application/json"
+              }
+            });
+
+            if(responseDeleteData.status == 404){
+              if(message =="This User Do not Have Permission To Delete This Data"){
+                alert("This User Do not Have Permission To Delete This Data");
+
+              }else{
+                alert("Invalid Journey Id");
+              }
+            }
+            else if(responseDeleteData.status == 400){
+              alert("Failed to Delete");
+            }
+            else if(!responseDeleteData.status.ok){
+              throw new Error ( `Http error:${responseDeleteData.status}`)
+            }
+            else{
+              alert("Deleted Successfully");
+            }
+          }
+      }
+      catch(err){
+        console.error(`Error:`,err)
+      }
+
+    }
+    uploadDeleteData();
+  }
+
 
 
   return (
@@ -109,23 +210,23 @@ export default function Journey() {
                 type="text"
                 id="updateRepair"
                 placeholder="Enter VehicleId..."
-                // value={updateInputData}
-                // onChange={(e) => setUpdateInputData(e.target.value)}
+                value={journeyIdInput}
+                onChange={(e) => setJourneyIdInput(e.target.value.replace(/\D/g, ''))}
               />
               <button
                 className="btn btn-success mx-1"
-                // onClick={handleUpdateClick}
+                onClick={handleUpdateClick}
               >
                 Update
               </button>
               <button
                 className="btn btn-primary w-50 mx-1"
-                // onClick={() => handleAddButtonClick()}
+                onClick={() => handleAddButtonClick()}
               >
                 Add Journey
               </button>
-              <button className='btn btn-info mx-1'>More</button>
-              <button className='btn btn-danger mx-1'>Delete</button>
+              {/* <button className='btn btn-info mx-1'>More</button> */}
+              <button className='btn btn-danger mx-1' onClick={handleDelete}>Delete</button>
             </div>
           </div>
               <div className='row justify-content-center mt-3 mx-1'>
@@ -147,14 +248,18 @@ export default function Journey() {
                     <tbody>
                       {filterJourneyClientDatas.length>0?(
                         filterJourneyClientDatas.map((data)=>(
-                          <tr>
+                          <tr onClick={()=>setJourneyIdInput(data.journey.journey_id)}>
                              <td>{data.journey.journey_id}</td>
                              <td>{data.journey.vehicle_id}</td>
                              <td>{data.client.name}</td>
                              <td>{data.client.phone_no}</td>
                              <td>{data.journey.started_date.split('T')[0]}</td>
-                             <td>{data.journey.journeyStatus}</td>
-                             <td className='text-center'><button className='btn btn-dark w-75'>End</button></td>
+                             <td style={{ color: data.journey.journeyStatus === "Completed" ? "red" : "green" }}>{data.journey.journeyStatus}</td>
+                            <td className='text-center'>{data.journey.journeyStatus === 'In Progress' && (
+                              <button className='btn btn-dark w-75' onClick={() => handleJourneyEnd(data.journey.journey_id, data.journey.vehicle_id)}>
+                                  End
+                              </button>
+                          )}</td>
                          </tr>
                         ))
                       ):(

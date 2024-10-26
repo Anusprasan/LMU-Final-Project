@@ -1,6 +1,7 @@
 ﻿using LMU_Final_Project_Web.Data;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,10 +13,19 @@ namespace LMU_FinalProject.Data.Repositories
         SqlAccess sqlAccess = new SqlAccess();
         public bool UpdateDrivingMode(string mode)
         {
-            int[] VehicleIds = { 55, 82, 83, 122, 123, 125, 126 };
             bool isSuccess = true;
+            string sqlString = "SELECT Vehicle_id FROM Vehicle"; 
+            DataTable vehicleData = sqlAccess.GetDataFromTables(sqlString); 
+            List<int> vehicleIds = new List<int>();
 
-            foreach (int VehicleId in VehicleIds)
+            foreach (DataRow row in vehicleData.Rows)
+            {
+                vehicleIds.Add(Convert.ToInt32(row["Vehicle_id"]));
+            }
+
+            vehicleIds.ToArray();
+
+            foreach (int VehicleId in vehicleIds)
             {
                 string SqlString = $"update Devicedata set DrivingMode ='{mode}' where VehicleId ='{VehicleId}'";
 

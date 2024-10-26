@@ -221,5 +221,30 @@ namespace LMU_Final_Project_Web.Controllers
 
 
         }
+
+
+        [Route("[action]")]
+        [HttpGet]
+
+        public ActionResult<List<Devicedata>> GetLocation()
+        {
+            DataTable locationDataTable  = devicedatarepository.GetLocation();
+            List<Devicedata> deviceDatas = new List<Devicedata>();
+            foreach (DataRow row in locationDataTable.Rows)
+
+            {
+                
+                Devicedata devicedata = new Devicedata();
+
+                devicedata.Lat = Convert.ToDouble(row["Lat"]);
+                devicedata.Lng = Convert.ToDouble(row["Lng"]);
+                devicedata.Title = Convert.ToString(row["Title"]);
+
+                deviceDatas.Add(devicedata);
+               
+            }
+            return Ok(deviceDatas);
+
+        }
     }
 }

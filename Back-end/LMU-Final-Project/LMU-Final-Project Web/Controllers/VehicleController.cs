@@ -16,13 +16,14 @@ namespace LMU_Final_Project_Web.Controllers
     public class VehicleController : ControllerBase
 
     {
-
+        Devicedatarepository deviceRepository = new Devicedatarepository();
         VehicleRepository vehicleRepository = new VehicleRepository();
         
         [Route("[action]")]
         [HttpGet]
         public ActionResult<List<Vehicle>>  GetAllVehicles(int companyId)
         {
+            
            VehicleRepository vehicleRepositoryObject = new VehicleRepository();
            var vehicleList = vehicleRepositoryObject.GetVehicles(companyId);
            
@@ -35,10 +36,36 @@ namespace LMU_Final_Project_Web.Controllers
         [HttpPost]
         public ActionResult AddVehicle([FromBody] Vehicle vehicleData)
         {
-            //Console.WriteLine(vehicle.Type);
+
             VehicleRepository vehicleRepositoryObject = new VehicleRepository();
-            vehicleRepositoryObject.AddVehicle(vehicleData);
-            
+            bool isInserted = vehicleRepositoryObject.AddVehicle(vehicleData);
+            if(isInserted)
+            {
+                DataTable vehicleIdData = vehicleRepository.GetLastVehicleId();
+
+                DataRow row = vehicleIdData.Rows[0];
+                Devicedata devicedata = new Devicedata();
+
+                devicedata.VehicleId = Convert.ToInt32(row["Vehicle_id"]);
+
+                Random random = new Random();
+                double minLat = 5.92;
+                double maxLat = 9.84;
+                double minLng = 79.69;
+                double maxLng = 81.89;
+
+                double randomLat = random.NextDouble() * (maxLat - minLat) + minLat;
+                double randomLng = random.NextDouble() * (maxLng - minLng) + minLng;
+
+                devicedata.Lat = randomLat;
+                devicedata.Lng = randomLng;
+
+                deviceRepository.AddLocations(devicedata, vehicleData);
+
+            }
+
+
+
 
             return Ok();
         }

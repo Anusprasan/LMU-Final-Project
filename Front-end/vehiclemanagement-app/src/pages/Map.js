@@ -1,18 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 export default function MultipleMarkersMap() {
+  const [locations, setLocations] = useState([]);
+
   const mapRef = useRef(null);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
 
-  // Array of locations for the markers
-  const locations = [
-    { lat: 40.7128, lng: -74.0060, title: 'New York City' }, // NYC
-    { lat: 34.0522, lng: -118.2437, title: 'Los Angeles' },   // LA
-    { lat: 51.5074, lng: -0.1278, title: 'London' },          // London
-  ];
+  // Fetch locations from the API
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await fetch("https://localhost:7096/api/Devicedata/GetLocation");
+        const data = await response.json();
+
+        const mappedLocations = data.map((location) => ({
+          lat: location.lat,
+          lng: location.lng,
+          title: location.title,
+        }));
+
+        setLocations(mappedLocations); // Update the state with fetched locations
+      } catch (err) {
+        console.error("Error fetching locations:", err);
+      }
+    };
+
+    fetchLocations();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -27,19 +44,22 @@ export default function MultipleMarkersMap() {
 
     // Initialize the map
     const initMap = () => {
-      const map = new window.google.maps.Map(mapRef.current, {
-        center: locations[0], // Center the map on the first location
-        zoom: 3,              // Zoom level for better visibility of all markers
-      });
-
-      // Add markers to the map
-      locations.forEach((location) => {
-        new window.google.maps.Marker({
-          position: location,
-          map: map,
-          title: location.title,
+      if (locations.length > 0) {
+        const map = new window.google.maps.Map(mapRef.current, {
+          center: locations[0], // Center the map on the first location
+          zoom: 8,              // Zoom level for better visibility of all markers
         });
-      });
+
+        // Add markers to the map
+        locations.forEach((location) => {
+          new window.google.maps.Marker({
+            position: location,
+            map: map,
+            label: location.title,  // Set label to the location's title
+            title: location.title,  // This adds the title tooltip on hover
+          });
+        });
+      }
     };
 
     // Load the map when the component mounts
@@ -54,13 +74,12 @@ export default function MultipleMarkersMap() {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [locations]); // Add locations as a dependency to reinitialize the map when locations change
 
   return (
     <div>
-     
       {/* Map Container */}
-      <div ref={mapRef} style={{ width: '100%', height: '500px' }}></div>
+      <div ref={mapRef} style={{ width: '100%', height: '800px' }}></div>
     </div>
   );
 }

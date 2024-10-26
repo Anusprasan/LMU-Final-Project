@@ -16,6 +16,9 @@
         public int? OilTemperature { get; set; }
         public int? EngineOilLevel { get; set; }
         public string? AirbagStatus { get; set; }
+        public Double? Lat { get; set; }
+        public Double? Lng { get; set; }
+        public string? Title { get; set; }
 
 
     }

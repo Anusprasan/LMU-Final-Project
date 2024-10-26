@@ -36,5 +36,24 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
             return sqlAccess.GetDataFromTables(SqlString);
         }
+    
+    
+           public DataTable GetLocation()
+        {
+            string SqlString = $"select Lat,Lng,Title from Devicedata";
+
+            return sqlAccess.GetDataFromTables(SqlString);
+        }
+
+        public bool AddLocations(Devicedata devicedata,Vehicle vehicleData)
+        {
+            string SqlString = $"insert into Devicedata (CompanyId,UserId,VehicleId,DrivingMode,Speed,Temperature,FuelLevel,BatteryVoltage,DTC,Mileage,OilTemperature,EngineOilLevel,AirbagStatus,Lat,Lng,Title) values('{vehicleData.CompanyId}','{vehicleData.User_id}','{devicedata.VehicleId}','Sport','80','90','25','123','P0005','31305','123','80','Fault','{devicedata.Lat}','{devicedata.Lng}','{vehicleData.Plate_no}')";
+
+            return sqlAccess.Insertdata(SqlString);
+        }
+
+
     }
+
+
 }
