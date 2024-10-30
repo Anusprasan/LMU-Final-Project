@@ -20,6 +20,8 @@
         public string? Vehiclephoto_beforejourney { get; set; }
         public string? Vehiclephoto_afterjourney { get; set; }
         public int? Payment { get; set; }
+        public DateTime? EstimatedArrivalDate { get; set; }
+        public string? Package { get; set; }
         public string? Journey_createdby { get; set; }
         public DateTime? Journey_createdon { get; set; }
         public string? Journey_modifyby { get; set; }

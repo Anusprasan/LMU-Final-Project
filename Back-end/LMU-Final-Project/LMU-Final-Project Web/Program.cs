@@ -1,3 +1,5 @@
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using LMU_Final_Project_Web.Data.Repositories;
 using LMU_Final_Project_Web.Models;
 using LMU_Final_Project_Web.Services;
@@ -19,6 +21,8 @@ builder.Services.AddControllers();
 
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

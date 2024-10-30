@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Data;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.Contracts;
+using System.Text;
 
 namespace LMU_Final_Project_Web.Controllers
 {
@@ -244,5 +245,6 @@ namespace LMU_Final_Project_Web.Controllers
                 return StatusCode(500, $"An error occurred:{ex.Message}");
             }
         }
+       
     }
 }

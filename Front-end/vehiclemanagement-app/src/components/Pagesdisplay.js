@@ -26,9 +26,10 @@ import EndJourney from '../pages/EndJourney';
 
 
 
+
 export default function Pagesdisplay() {
   return (
-    <div>
+    <div className="pagesdisplay-container">
 
       <Routes>
         

@@ -203,7 +203,7 @@ export default function Vehicle() {
       .then((data) => {
         console.log(data); // The response data from the API
         alert("Vehicle added successfully");
-        navigate("/Vehicle-home");
+        navigate("/Vehicle");
 
 
         // Reset form fields (optional)

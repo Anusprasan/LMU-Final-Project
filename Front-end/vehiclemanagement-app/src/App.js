@@ -59,10 +59,10 @@ function App() {
           {/* Navbar & Content Section */}
           <div className='content '>
             <div className='row contentfullheight'>
-              <div className='sidenav col-1-5  h-100 ' style={{backgroundColor:'#24314C'}}>
+              <div className='sidenav col-1-5  ' style={{backgroundColor:'#24314C'}}>
                 <Navbaritems/>
               </div>
-              <div className='app col   h-100 ' style={{backgroundColor:'#eeecec'}}>
+              <div className='app col    ' style={{backgroundColor:'#eeecec'}}>
                 <div className="row">
                   <div className="col">
                     <Pagesdisplay/>

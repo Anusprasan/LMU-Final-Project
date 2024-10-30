@@ -2,7 +2,12 @@
 using LMU_Final_Project_Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Net;
+using System.Net.Http;
+using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace LMU_Final_Project_Web.Controllers
 {
@@ -12,9 +17,17 @@ namespace LMU_Final_Project_Web.Controllers
 
 
     {
+        private readonly HttpClient _httpClient;
+
+        public JourneyController(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
 
         JourneyRepository journeyRepository = new JourneyRepository();
         VehicleRepository vehicleRepository = new VehicleRepository();
+
+
         [Route("[action]")]
         [HttpGet]
         public ActionResult<List<Journey>> GetAllJourneys()
@@ -129,10 +142,13 @@ namespace LMU_Final_Project_Web.Controllers
                         journey.UserId = Convert.ToInt32(row["UserId"]);
                         journey.Started_date = Convert.ToDateTime(row["Started_date"]);
                         journey.JourneyStatus = Convert.ToString(row["JourneyStatus"]);
+                        journey.EstimatedArrivalDate = row["EstimatedArrivalDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["EstimatedArrivalDate"]);
+                        journey.Package = row["Package"] == DBNull.Value ? (string?)null:Convert.ToString(row["Package"]);
                         client.Name = Convert.ToString(row["Name"]);
                         client.Nic_no = Convert.ToString(row["Nic_no"]);
                         client.Journey_id = Convert.ToInt32(row["journey_id"]);
                         client.Phone_no = Convert.ToInt32(row["phone_no"]);
+                        
 
                         journeyClients.Journey = journey;
                         journeyClients.Client = client;
@@ -266,6 +282,7 @@ namespace LMU_Final_Project_Web.Controllers
                 if (isValid)
                 {
                     bool isUpdated = journeyRepository.InsertEndJourney(journey);
+                    bool isVehicleStatusUpdated = journeyRepository.UpdateVehicleStatusAfterJourney(journey);
 
                     if (isUpdated)
                     {
@@ -332,5 +349,79 @@ namespace LMU_Final_Project_Web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
             }
         }
+
+        [Route("[action]")]
+        [HttpPost]
+
+        public async Task<ActionResult> SendSms([FromBody] SmsRequest request)
+        {
+            if(request == null || string.IsNullOrEmpty(request.Message))
+            {
+                return BadRequest("Invalid request data");
+            }
+            
+                var smsUserId = "94767078650";
+                var smsPassword = "3199";
+
+                var encodedMessage = System.Web.HttpUtility.UrlEncode(request.Message);
+
+                var url = $"https://www.textit.biz/sendmsg?id={smsUserId}&pw={smsPassword}&to={request.PhoneNumber}&text={encodedMessage}";
+
+               
+
+
+
+            try
+            {
+                var response = await _httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok(new {message="SMS Sent Successfully"});
+                }
+                else
+                {
+                    return StatusCode((int)response.StatusCode, "Failed to send SMS");
+                }
+
+            }
+            catch (HttpRequestException e)
+            {
+                return StatusCode(500, $"Error sending SMS: {e.Message}");
+            }
+        }
+
+
+        [Route("[action]")]
+        [HttpPost]
+
+        public async Task<IActionResult> SendEmail([FromBody] EmailRequest request)
+        {
+            try
+            {
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress($"{request.From}"),
+                    Subject = $"Vehicle Rental Booking Confirmation - [Booking ID: {request.JounreyId}]",
+                    Body = "Thank you for choosing Apaps Cab for your vehicle rental needs.",
+                    IsBodyHtml= true
+                };
+
+                mailMessage.To.Add(request.To);
+
+                using (var smtpClient= new SmtpClient("smtp.gmail.com",587))
+                {
+                    smtpClient.Credentials = new NetworkCredential($"{request.From}", $"{request.MailPassword}");
+                    smtpClient.EnableSsl = true;
+                    await smtpClient.SendMailAsync(mailMessage);
+                }
+
+                return Ok("email sent successfully");
+            }
+            catch(Exception ex)
+            {
+                return  BadRequest(ex.Message);
+            }
+        }
+
     }
 }

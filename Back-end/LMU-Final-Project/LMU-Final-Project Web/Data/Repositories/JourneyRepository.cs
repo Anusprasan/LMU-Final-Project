@@ -24,7 +24,7 @@ namespace LMU_Final_Project_Web.Data.Repositories
 
         public bool AddJourney(Journey journey)
         {
-            string SqlString = $"Insert into Journey (CompanyId,Vehicle_id,UserId,Started_date,Odometerreading_beforejourney,Journey_description,Vehiclestatus_beforejourney,JourneyStatus,CreatedBy,CreatedOn) values ('{journey.CompanyId}','{journey.Vehicle_id}','{journey.UserId}','{journey.Started_date}','{journey.Odometerreading_beforejourney}','{journey.Journey_description}','{journey.Vehiclestatus_beforejourney}','In Progress','{journey.UserId}',GETDATE())";
+            string SqlString = $"Insert into Journey (CompanyId,Vehicle_id,UserId,Started_date,Odometerreading_beforejourney,Journey_description,Vehiclestatus_beforejourney,JourneyStatus,CreatedBy,CreatedOn,EstimatedArrivalDate,Package) values ('{journey.CompanyId}','{journey.Vehicle_id}','{journey.UserId}','{journey.Started_date}','{journey.Odometerreading_beforejourney}','{journey.Journey_description}','{journey.Vehiclestatus_beforejourney}','In Progress','{journey.UserId}',GETDATE(),'{journey.EstimatedArrivalDate}','{journey.Package}')";
 
             return sqlAccess.Insertdata(SqlString);
 
@@ -97,6 +97,13 @@ namespace LMU_Final_Project_Web.Data.Repositories
         {
             string SqlString = $"delete from Journey where Journey_id = '{journeyId}'";
 
+            return sqlAccess.Insertdata(SqlString);
+        }
+
+        public  bool UpdateVehicleStatusAfterJourney(Journey journey)
+        {
+            string SqlString = $"update Vehicle set VehicleStatus = 'Available' where Vehicle_id ='{journey.Vehicle_id}'";
+             
             return sqlAccess.Insertdata(SqlString);
         }
     }

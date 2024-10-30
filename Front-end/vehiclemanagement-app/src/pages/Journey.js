@@ -31,6 +31,31 @@ export default function Journey() {
   const [companyId,setCompanyId] = useState('');
   const [searchTerm,setSearchTerm] = useState('');
   const [journeyIdInput,setJourneyIdInput] = useState('');
+  const [mobileNumberInput,setMobileNumberInput] = useState('');
+  const smsUserId = "94771161760";
+  const smsPassword = "4489";
+  const no="0762328496";
+  const [smsMessage,setSmsMessage] = useState('');
+
+  
+  // For Modal Box
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const handleOpenModal = () => {
+      if(!mobileNumberInput == ''){
+        setModalOpen(true);
+      }
+      else
+      {
+        alert('Enter Valid Mobile Number');
+      }
+        
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setSmsMessage('');
+    };
  
   // const [journey,setJouney] = useState({
 
@@ -175,11 +200,59 @@ export default function Journey() {
     uploadDeleteData();
   }
 
+    const handleTableRowClick = (journey_id,phone_no,clientName)=>{
+      setJourneyIdInput(journey_id);
+      setMobileNumberInput(phone_no);
+      setClientName(clientName);
+      
 
+    }
+
+    const handleSmsSend = () => {
+      const fetchData = async () => {
+       
+          try {
+            const encodeMessage = encodeURIComponent(smsMessage);
+              const smsData ={
+                phoneNumber:mobileNumberInput,
+                message:encodeMessage
+              }
+  
+              const response = await fetch("https://localhost:7096/api/Journey/SendSms", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json"
+                  },
+                  body:JSON.stringify(smsData)
+              });
+  
+            
+              if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+              }
+  
+              const data = await response.json(); 
+              console.log('SMS sent successfully:', data);
+              alert("SMS sent successfully");
+              handleCloseModal();
+          } catch (error) {
+              console.error("Error sending SMS:", error);
+          }
+      }
+  
+      fetchData();
+  }
+  
+    const handleInputMessageChange = (event)=>{
+        const message = event.target.value;
+      
+        setSmsMessage(message);
+    }
+ 
 
   return (
     <div>
-       {searchTerm}
+       
       {/* navigation row */}
       <div className="row ">
         <nav>
@@ -192,6 +265,43 @@ export default function Journey() {
         </nav>
           <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+          <div className="row mx-1 mt-3">
+            <div className="col-2">
+              <input
+                type="text"
+                className="form-control w-100"
+                placeholder="Mobile Number..."
+                value={mobileNumberInput}
+                
+                
+              />
+            </div>
+            <div className='col'>
+              <button className='btn btn-warning' onClick={handleOpenModal}>SMS</button>
+            </div>
+          </div> 
+           {/* Modal */}
+           <div className={`modal ${modalOpen ? 'show' : ''}`} style={{ display: modalOpen ? 'block' : 'none' }}>
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Message To : {clientName}</h5>
+                            
+                        </div>
+                        <div className="modal-body">
+                            <textarea className='form-control' id ='SMSMessage Input' value={smsMessage} onChange={handleInputMessageChange}></textarea>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+                                Close
+                            </button><button type="button" className="btn btn-success" onClick={handleSmsSend}>
+                                Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
           <div className="row mx-1 mt-3">
             <div className="col">
@@ -239,6 +349,8 @@ export default function Journey() {
                         <th>Client Name</th>
                         <th>Conatact Number</th>
                         <th>Date of Departure</th>
+                        <th>Estimated Arrival Date</th>
+                        <th>Package</th>
                         <th>Journey Status</th>
                         <th></th>
                         
@@ -248,12 +360,14 @@ export default function Journey() {
                     <tbody>
                       {filterJourneyClientDatas.length>0?(
                         filterJourneyClientDatas.map((data)=>(
-                          <tr onClick={()=>setJourneyIdInput(data.journey.journey_id)}>
+                          <tr onClick={()=>handleTableRowClick(data.journey.journey_id,data.client.phone_no,data.client.name)}>
                              <td>{data.journey.journey_id}</td>
                              <td>{data.journey.vehicle_id}</td>
                              <td>{data.client.name}</td>
                              <td>{data.client.phone_no}</td>
                              <td>{data.journey.started_date.split('T')[0]}</td>
+                             <td>{data.journey.estimatedArrivalDate}</td>
+                             <td>{data.journey.package}</td>
                              <td style={{ color: data.journey.journeyStatus === "Completed" ? "red" : "green" }}>{data.journey.journeyStatus}</td>
                             <td className='text-center'>{data.journey.journeyStatus === 'In Progress' && (
                               <button className='btn btn-dark w-75' onClick={() => handleJourneyEnd(data.journey.journey_id, data.journey.vehicle_id)}>

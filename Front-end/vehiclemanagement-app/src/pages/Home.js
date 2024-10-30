@@ -1,8 +1,48 @@
 import React, { useEffect, useState } from "react";
+import { Doughnut } from 'react-chartjs-2';
+import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+
+// Register the ArcElement and other required components
+Chart.register(ArcElement, Tooltip, Legend);
+
 
 export default function Home() {
   const [vehicleCount,setVehicleCount ] = useState(10);
   const [companyId,setCompanyId] = useState('');
+
+  const data = {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
+    datasets: [
+      {
+        label: 'Colors',
+        data: [95, 19, 3, 5, 2],
+        backgroundColor: [
+          'rgba(255, 0, 0, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+    },
+  };
 
   // useEffect(()=>{
   //   const getRealTimeData = async()=>{
@@ -222,6 +262,19 @@ export default function Home() {
           </sb-card-view-details>
         </div>
       </div>
+
+      <div className="row mx-2 justify-content-center">
+        <div className="col-8 text-center">
+          <div className="card ">
+            <div className="card-body d-flex justify-content-center align-items-cente">
+              <Doughnut data={data} options={options} style={{ maxWidth: '500px', maxHeight: '500px' }}/>;
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
+
+

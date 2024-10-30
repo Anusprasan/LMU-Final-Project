@@ -14,6 +14,10 @@ export default function Journeyclientdetails() {
   const [clientAddress, setClientAddress] = useState(''); 
   const [clientNIC, setClientNIC] = useState(''); 
   const [companyId,setCompanyId] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [companyMailId,setCompanyMailId] = useState('');
+  const [mailPassword,setMailPassowrd] = useState('');
+  const [receiverMailId,setReceiverMailId] = useState('');
 
   useEffect(()=>{
 
@@ -41,6 +45,7 @@ export default function Journeyclientdetails() {
 
   function handleSubmit(e){
     e.preventDefault(); 
+   
     const clientdata ={
         name : clientName,
         phone_no : clientPhoneNo,
@@ -50,47 +55,90 @@ export default function Journeyclientdetails() {
         companyId,
         created_by:userId,
         vehicleId:lastJourneyVehicleId,
-        userId
+        userId,
+        to:receiverMailId,
+        from:companyId,
+        mailPassword,
+        jounreyId:lastJourneyId
         
+
         
 
     };
 
-    if(!clientName||!clientPhoneNo||!clientAddress||!clientNIC||!lastJourneyId){
-        alert("Check Your Fields")
-    }
-    else{
-        fetch('https://localhost:7096/api/Client/AddClients',
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
     
-                body:JSON.stringify(clientdata)
+    const mailData ={
+        to:receiverMailId,
+        from:companyMailId,
+        mailPassword,
+        jounreyId:lastJourneyId
         
-            })
-            .then(response =>{
-                if(!response.ok){
-                    console.log('Response',response);
-                    throw new Error(`Http error! Status:${response.status}`);
-    
+        }
+        const fetchdata = async ()=>{
+            try{
+
+               // Send email
+                const responseMail = await fetch('https://localhost:7096/api/Journey/SendEmail', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(mailData)
+                });
+
+                // Check if email sending was successful
+                if (!responseMail.ok) {
+                    console.log('Email Response:', responseMail);
+                    throw new Error(`Email sending failed! Status: ${responseMail.status}`);
                 }
-                return response.json();
-            })
-            .then(data =>{
+
+                // Now check the client data fields
+                if (!clientName || !clientPhoneNo || !clientAddress || !clientNIC || !lastJourneyId || !receiverMailId || !companyId || !mailPassword) {
+                    alert("Check Your Fields");
+                    return; // Exit the function if fields are invalid
+                }
+
+
+
+                const responseClientData = await fetch('https://localhost:7096/api/Client/AddClients', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(clientdata)
+                });
+        
+                // Check if client data was added successfully
+                if (!responseClientData.ok) {
+                    console.log('Client Response:', responseClientData);
+                    throw new Error(`Client data addition failed! Status: ${responseClientData.status}`);
+                }
+        
+                const data = await responseClientData.json();
                 console.log(data);
                 alert("Journey Added Successfully");
                 navigate("/Journey/");
-            })
-            .catch((err)=>{
-                console.log(err);
-               
+
+            }
+            catch(err){
+                console.error(err);
                 alert("Operation Failed: " + err.message);
-            });
+            }
+           
+                
+                    
+
+
+    
     
     
     }
+    fetchdata();
+
+    
+  
+
+
 
     
  
@@ -125,6 +173,20 @@ export default function Journeyclientdetails() {
             })
 
   }
+
+   // For Modal Box
+  
+
+   const handleOpenModal = () => {
+    setModalOpen(true);
+     
+       
+   };
+
+   const handleCloseModal = () => {
+       setModalOpen(false);
+     
+   };
 
   return (
     <div>
@@ -178,10 +240,43 @@ export default function Journeyclientdetails() {
                     <div class="row justify-content-center mt-4"> 
                         <div class="col-6"> 
                             <div class="form-group">
-                            <button class="form-control btn btn-success" name="btnSubmitTrip" id="btnSubmitTrip" onClick={handleSubmit}>Book Trip Now</button>
+                            <button class="form-control btn btn-success" name="btnSubmitTrip" id="btnSubmitTrip" onClick={handleOpenModal}>Next</button>
                             </div>
                         </div>
                     </div>
+
+                    {/* Modal */}
+                    <div className={`modal ${modalOpen ? 'show' : ''}`} style={{ display: modalOpen ? 'block' : 'none' }}>
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title">Mail To : {clientName}</h5>
+                                        
+                                    </div>
+                                    
+                                    <div className="row mt-4 mx-2">
+                                        <label for="companyMailId" className="form-label">Company Mail Id</label>
+                                        <input  type="text" className="form-control w-100" id="companyMailId" value={companyMailId} onChange={(e) => setCompanyMailId(e.target.value)} />
+                                    </div>
+                                    <div className="row mt-4 mx-2">
+                                        <label for="mailPassword" className="form-label">Mail Password</label>
+                                        <input  type="text" className="form-control w-100" id="mailPassword" value={mailPassword} onChange={(e) => setMailPassowrd(e.target.value)} />
+                                    </div>
+                                    <div className="row mt-4 mx-2">
+                                        <label for="companyMailId" className="form-label">Receiver Mail Id</label>
+                                        <input  type="text" className="form-control w-100" id="companyMailId" value={receiverMailId} onChange={(e) => setReceiverMailId(e.target.value)} />
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+                                            Close
+                                        </button><button type="button" className="btn btn-success" onClick={handleSubmit}>
+                                            Confirm The Trip
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                     <div class="row justify-content-center mt-4"> 
                         <div class="col-3"> 

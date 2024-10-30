@@ -11,6 +11,7 @@ export default function AddJourney() {
     const [userId,setUserId] = useState('');
     const [vehicleId,setVehicleId] = useState('Select');
     const [jouneyStartDate,setJouneyStartDate] = useState('');
+    const [arrivalDate,setArrivalDate] = useState('');
     const [odoReading,setOdoReading] = useState('');
     const [journeyDescription, setJourneyDescription] = useState('');
     const [malfunction, setMalfunction] = useState('');
@@ -22,6 +23,7 @@ export default function AddJourney() {
     const [drivingLicensePhoto, setDrivingLicensePhoto] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [companyId,setCompanyId] = useState('');
+    const [journeyPackage,setJourneyPackage] = useState('');
 
     useEffect(()=>{
 
@@ -32,11 +34,12 @@ export default function AddJourney() {
 
 
       function handleSubmit(){
-        
+        const UserId = localStorage.getItem('userId');
+        const CompanyId = localStorage.getItem('companyId');
         const journeyData = {
            vehicle_id:vehicleId,
            started_date: jouneyStartDate,
-           UserId :userId,
+           
           //  End_date:"",
            odometerreading_beforejourney :odoReading,
           //  odometerreading_afterjjourney :"",
@@ -44,9 +47,12 @@ export default function AddJourney() {
           //  vehiclestatus_beforejouney :"",
           //  vehiclestatus_afterjounrey : "",
            Vehiclestatus_beforejourney : malfunction,
-           companyId
+           companyId:CompanyId,
+           userId :UserId,
+           estimatedArrivalDate:arrivalDate,
+           package:journeyPackage
         }
-        if(!vehicleId||!jouneyStartDate||!odoReading||!malfunction||!journeyDescription){
+        if(!vehicleId||!jouneyStartDate||!odoReading||!malfunction||!journeyDescription||!arrivalDate||!journeyPackage){
           alert("Check your fields");
           
           
@@ -152,10 +158,34 @@ export default function AddJourney() {
 
                     <div className="row my-1 mx-2">
                       <div className="col-4">
-                        <label for="dateinput" className="form-label">Date</label>
+                        <label for="departuredateinput" className="form-label">Departure Date</label>
                       </div>
                       <div className="col-4" >
-                      <input type="datetime-local" className='form-control' id="dateinput" onChange={(e)=>setJouneyStartDate(e.target.value)} />
+                      <input type="datetime-local" className='form-control' id="departuredateinput" onChange={(e)=>setJouneyStartDate(e.target.value)} />
+                      </div>
+                    </div>
+                    {/* Estimated Arrival Date */}
+                    <div className="row my-1 mx-2">
+                      <div className="col-4">
+                        <label for="arrivalDateInput" className="form-label">Estimated Arrival  Date</label>
+                      </div>
+                      <div className="col-4" >
+                      <input type="datetime-local" className='form-control' id="arrivalDateInput" onChange={(e)=>setArrivalDate(e.target.value)} />
+                      </div>
+                    </div>
+
+                    {/* Package */}
+                    <div className="row my-1 mx-2">
+                      <div className="col-4">
+                          <label for="packageOption" className="form-label" >Package</label>    
+                      </div>
+                      <div className="col-4">
+                        
+                        <select className="form-control " id="packageOption" name="packageOption"  value={journeyPackage} onChange={(e) => setJourneyPackage(e.target.value)}>
+                            <option  disabled selected>Select Package </option>
+                            <option>Basic </option>
+                            <option>Unlimited </option>
+                        </select>
                       </div>
                     </div>
 
